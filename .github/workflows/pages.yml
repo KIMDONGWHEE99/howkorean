@@ -1,15 +1,18 @@
 name: Deploy Website to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '**/*.md'
-      - 'scripts/build_website.py'
-      - 'scripts/vendor_assets.py'
-      - 'scripts/website_templates/**'
-      - '.github/workflows/pages.yml'
+  # 한국어판: 이 저장소에는 GitHub Pages가 설정되어 있지 않으므로 푸시할 때
+  # 자동으로 배포하지 않고 Actions 탭에서 수동으로만 실행합니다.
+  # Pages를 설정한 뒤 자동 배포를 원하면 아래 주석을 해제하세요(원본 설정).
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - '**/*.md'
+  #     - 'scripts/build_website.py'
+  #     - 'scripts/vendor_assets.py'
+  #     - 'scripts/website_templates/**'
+  #     - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
