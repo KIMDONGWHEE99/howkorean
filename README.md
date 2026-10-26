@@ -80,7 +80,7 @@ Claude Code가 가진 힘의 90%를 그냥 내버려 두고 있는 셈입니다.
 
 ### 1. 내 수준 찾기
 
-[자가 진단 퀴즈](LEARNING-ROADMAP.md#-find-your-level)를 풀거나 Claude Code에서 `/self-assessment`를 실행하세요. 이미 아는 내용을 바탕으로 맞춤 로드맵을 받을 수 있습니다.
+[자가 진단 퀴즈](LEARNING-ROADMAP.md#-내-수준-찾기)를 풀거나 Claude Code에서 `/self-assessment`를 실행하세요. 이미 아는 내용을 바탕으로 맞춤 로드맵을 받을 수 있습니다.
 
 ### 2. 안내된 경로 따라가기
 
