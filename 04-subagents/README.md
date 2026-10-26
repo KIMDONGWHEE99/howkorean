@@ -3,115 +3,115 @@
   <img alt="Claude How To" src="../resources/logos/claude-howto-logo.svg">
 </picture>
 
-# Subagents - Complete Reference Guide
+# 서브에이전트 - 완전 레퍼런스 가이드
 
-Subagents are specialized AI assistants that Claude Code can delegate tasks to. Each subagent has a specific purpose, uses its own context window separate from the main conversation, and can be configured with specific tools and a custom system prompt.
+서브에이전트는 Claude Code가 작업을 위임할 수 있는 전문 AI 어시스턴트입니다. 각 서브에이전트는 저마다 정해진 목적이 있고, 메인 대화와 분리된 자체 컨텍스트 윈도우를 쓰며, 특정 도구와 사용자 정의 시스템 프롬프트로 설정할 수 있습니다.
 
-## Table of Contents
+## 목차
 
-1. [Overview](#overview)
-2. [Key Benefits](#key-benefits)
-3. [File Locations](#file-locations)
-4. [Configuration](#configuration)
-5. [Built-in Subagents](#built-in-subagents)
-6. [Managing Subagents](#managing-subagents)
-7. [Using Subagents](#using-subagents)
-8. [Resumable Agents](#resumable-agents)
-9. [Chaining Subagents](#chaining-subagents)
-10. [Persistent Memory for Subagents](#persistent-memory-for-subagents)
-11. [Background Subagents](#background-subagents)
-12. [Worktree Isolation](#worktree-isolation)
-13. [Forked Subagents](#forked-subagents)
-14. [Restrict Spawnable Subagents](#restrict-spawnable-subagents)
-15. [`claude agents` CLI Command](#claude-agents-cli-command)
-16. [Agent Teams (Experimental)](#agent-teams-experimental)
-17. [Plugin Subagent Security](#plugin-subagent-security)
-18. [Architecture](#architecture)
-19. [Context Management](#context-management)
-20. [When to Use Subagents](#when-to-use-subagents)
-21. [Best Practices](#best-practices)
-22. [Example Subagents in This Folder](#example-subagents-in-this-folder)
-23. [Installation Instructions](#installation-instructions)
-24. [File Structure](#file-structure)
-25. [Related Concepts](#related-concepts)
-26. [Observability](#observability)
-27. [Additional Resources](#additional-resources)
-
----
-
-## Overview
-
-Subagents enable delegated task execution in Claude Code by:
-
-- Creating **isolated AI assistants** with separate context windows
-- Providing **customized system prompts** for specialized expertise
-- Enforcing **tool access control** to limit capabilities
-- Preventing **context pollution** from complex tasks
-- Enabling **parallel execution** of multiple specialized tasks
-
-Each subagent operates independently with a clean slate, receiving only the specific context necessary for their task, then returning results to the main agent for synthesis.
-
-**Quick Start**: Ask Claude to create a subagent for you ("create a subagent that reviews security"), or add a `.claude/agents/<name>.md` file directly — see [Managing Subagents](#managing-subagents) below.
-
-> **Note**: As of v2.1.198, the `/agents` command no longer opens an interactive creation wizard. Create and manage subagents by asking Claude or editing `.claude/agents/` files directly.
+1. [개요](#개요)
+2. [주요 이점](#주요-이점)
+3. [파일 위치](#파일-위치)
+4. [설정](#설정)
+5. [기본 제공 서브에이전트](#기본-제공-서브에이전트)
+6. [서브에이전트 관리](#서브에이전트-관리)
+7. [서브에이전트 사용](#서브에이전트-사용)
+8. [재개 가능한 에이전트](#재개-가능한-에이전트)
+9. [서브에이전트 연결](#서브에이전트-연결)
+10. [서브에이전트의 지속 메모리](#서브에이전트의-지속-메모리)
+11. [백그라운드 서브에이전트](#백그라운드-서브에이전트)
+12. [worktree 격리](#worktree-격리)
+13. [포크된 서브에이전트](#포크된-서브에이전트)
+14. [생성 가능한 서브에이전트 제한](#생성-가능한-서브에이전트-제한)
+15. [`claude agents` CLI 명령어](#claude-agents-cli-명령어)
+16. [에이전트 팀(실험적 기능)](#에이전트-팀실험적-기능)
+17. [플러그인 서브에이전트 보안](#플러그인-서브에이전트-보안)
+18. [아키텍처](#아키텍처)
+19. [컨텍스트 관리](#컨텍스트-관리)
+20. [서브에이전트를 써야 할 때](#서브에이전트를-써야-할-때)
+21. [모범 사례](#모범-사례)
+22. [이 폴더의 예제 서브에이전트](#이-폴더의-예제-서브에이전트)
+23. [설치 방법](#설치-방법)
+24. [파일 구조](#파일-구조)
+25. [관련 개념](#관련-개념)
+26. [관측 가능성](#관측-가능성)
+27. [추가 자료](#추가-자료)
 
 ---
 
-## Key Benefits
+## 개요
 
-| Benefit | Description |
+서브에이전트는 Claude Code에서 다음과 같은 방식으로 작업을 위임해 실행할 수 있게 합니다:
+
+- 별도의 컨텍스트 윈도우를 가진 **격리된 AI 어시스턴트** 생성
+- 전문성을 위한 **사용자 정의 시스템 프롬프트** 제공
+- 기능을 제한하는 **도구 접근 제어** 적용
+- 복잡한 작업으로 인한 **컨텍스트 오염** 방지
+- 여러 전문 작업의 **병렬 실행** 지원
+
+각 서브에이전트는 깨끗한 상태에서 독립적으로 동작하며, 작업에 꼭 필요한 컨텍스트만 받은 뒤 결과를 메인 에이전트에 돌려주어 종합하게 합니다.
+
+**빠른 시작**: Claude에게 서브에이전트를 만들어 달라고 요청하거나("보안을 리뷰하는 서브에이전트를 만들어 줘"), `.claude/agents/<name>.md` 파일을 직접 추가하세요 — 아래 [서브에이전트 관리](#서브에이전트-관리)를 참고하세요.
+
+> **참고**: v2.1.198부터 `/agents` 명령어는 더 이상 대화형 생성 마법사를 열지 않습니다. 서브에이전트를 만들고 관리하려면 Claude에게 요청하거나 `.claude/agents/` 파일을 직접 편집하세요.
+
+---
+
+## 주요 이점
+
+| 이점 | 설명 |
 |---------|-------------|
-| **Context preservation** | Operates in separate context, preventing pollution of main conversation |
-| **Specialized expertise** | Fine-tuned for specific domains with higher success rates |
-| **Reusability** | Use across different projects and share with teams |
-| **Flexible permissions** | Different tool access levels for different subagent types |
-| **Scalability** | Multiple agents work on different aspects simultaneously |
+| **컨텍스트 보존** | 별도의 컨텍스트에서 동작해 메인 대화가 오염되지 않음 |
+| **전문성** | 특정 분야에 맞게 조정되어 성공률이 높음 |
+| **재사용성** | 여러 프로젝트에서 쓰고 팀과 공유 가능 |
+| **유연한 권한** | 서브에이전트 유형마다 도구 접근 수준을 다르게 설정 |
+| **확장성** | 여러 에이전트가 서로 다른 부분을 동시에 작업 |
 
 ---
 
-## File Locations
+## 파일 위치
 
-Subagent files can be stored in multiple locations with different scopes:
+서브에이전트 파일은 범위가 다른 여러 위치에 저장할 수 있습니다:
 
-| Priority | Type | Location | Scope |
+| 우선순위 | 유형 | 위치 | 범위 |
 |----------|------|----------|-------|
-| 1 (highest) | **Managed** | Managed settings | Organization-wide |
-| 2 | **CLI-defined** | Via `--agents` flag (JSON) | Session only |
-| 3 | **Project subagents** | `.claude/agents/` | Current project |
-| 4 | **User subagents** | `~/.claude/agents/` | All projects |
-| 5 (lowest) | **Plugin agents** | Plugin `agents/` directory | Via plugins |
+| 1 (가장 높음) | **관리형** | 관리형 설정 | 조직 전체 |
+| 2 | **CLI 정의** | `--agents` 플래그(JSON) | 세션 한정 |
+| 3 | **프로젝트 서브에이전트** | `.claude/agents/` | 현재 프로젝트 |
+| 4 | **사용자 서브에이전트** | `~/.claude/agents/` | 모든 프로젝트 |
+| 5 (가장 낮음) | **플러그인 에이전트** | 플러그인의 `agents/` 디렉토리 | 플러그인을 통해 |
 
-When duplicate names exist, higher-priority sources take precedence.
+이름이 겹치면 우선순위가 높은 쪽이 우선합니다.
 
-> **Nested `.claude/` precedence (v2.1.178)**: When the same agent name is defined in multiple nested `.claude/agents/` directories (for example, a monorepo with package-level `.claude/` folders), the definition **closest to your current working directory wins**. The same closest-wins rule applies to nested workflow and output-style definitions.
+> **중첩된 `.claude/`의 우선순위 (v2.1.178)**: 같은 에이전트 이름이 여러 중첩 `.claude/agents/` 디렉토리에 정의되어 있으면(예: 패키지마다 `.claude/` 폴더가 있는 모노레포) **현재 작업 디렉토리에 가장 가까운 정의가 이깁니다**. 중첩된 워크플로우와 출력 스타일 정의에도 같은 규칙이 적용됩니다.
 
 ---
 
-## Configuration
+## 설정
 
-### File Format
+### 파일 형식
 
-Subagents are defined in YAML frontmatter followed by the system prompt in markdown:
+서브에이전트는 YAML frontmatter와 그 뒤에 오는 마크다운 시스템 프롬프트로 정의합니다:
 
 ```yaml
 ---
 name: your-sub-agent-name
-description: Description of when this subagent should be invoked
-tools: tool1, tool2, tool3  # Optional - inherits all tools if omitted
-disallowedTools: tool4  # Optional - explicitly disallowed tools
-model: sonnet  # Optional - sonnet, opus, haiku, or inherit
-permissionMode: default  # Optional - permission mode
-maxTurns: 20  # Optional - limit agentic turns
-skills: skill1, skill2  # Optional - skills to preload into context
-mcpServers: server1  # Optional - MCP servers to make available
-memory: user  # Optional - persistent memory scope (user, project, local)
-background: false  # Optional - run as background task
-effort: high  # Optional - reasoning effort (low, medium, high, xhigh, max)
-isolation: worktree  # Optional - git worktree isolation
-initialPrompt: "Start by analyzing the codebase"  # Optional - auto-submitted first turn
-experimental:  # Optional - experimental settings block
-  cacheTtl: "1h"  # Cache TTL for this subagent: "5m" or "1h" (v2.1.248+)
-hooks:  # Optional - component-scoped hooks
+description: 이 서브에이전트를 언제 호출해야 하는지에 대한 설명
+tools: tool1, tool2, tool3  # 선택 - 생략하면 모든 도구를 상속
+disallowedTools: tool4  # 선택 - 명시적으로 금지할 도구
+model: sonnet  # 선택 - sonnet, opus, haiku, 또는 inherit
+permissionMode: default  # 선택 - 권한 모드
+maxTurns: 20  # 선택 - 에이전트 턴 수 제한
+skills: skill1, skill2  # 선택 - 컨텍스트에 미리 로드할 스킬
+mcpServers: server1  # 선택 - 제공할 MCP 서버
+memory: user  # 선택 - 지속 메모리 범위(user, project, local)
+background: false  # 선택 - 백그라운드 작업으로 실행
+effort: high  # 선택 - 추론 노력 수준(low, medium, high, xhigh, max)
+isolation: worktree  # 선택 - git worktree 격리
+initialPrompt: "코드베이스 분석부터 시작하세요"  # 선택 - 자동으로 제출되는 첫 턴
+experimental:  # 선택 - 실험적 설정 블록
+  cacheTtl: "1h"  # 이 서브에이전트의 캐시 TTL: "5m" 또는 "1h" (v2.1.248+)
+hooks:  # 선택 - 구성 요소 범위의 훅
   PreToolUse:
     - matcher: "Bash"
       hooks:
@@ -119,62 +119,61 @@ hooks:  # Optional - component-scoped hooks
           command: "./scripts/security-check.sh"
 ---
 
-Your subagent's system prompt goes here. This can be multiple paragraphs
-and should clearly define the subagent's role, capabilities, and approach
-to solving problems.
+서브에이전트의 시스템 프롬프트를 여기에 씁니다. 여러 문단으로 써도 되며,
+서브에이전트의 역할, 기능, 문제 해결 방식을 명확하게 정의해야 합니다.
 ```
 
-### Configuration Fields
+### 설정 필드
 
-| Field | Required | Description |
+| 필드 | 필수 | 설명 |
 |-------|----------|-------------|
-| `name` | Yes | Unique identifier (lowercase letters and hyphens). Lookup is normalized (case- and separator-insensitive — see below), but a name containing `:` is **rejected** as of v2.1.218: `:` is reserved for plugin namespacing |
-| `description` | Yes | Natural language description of purpose. Include "use PROACTIVELY" to encourage automatic invocation |
-| `tools` | No | Comma-separated list of specific tools. Omit to inherit all tools. Supports `Agent(agent_name)` syntax to restrict spawnable subagents when the agent runs as the main thread with `claude --agent`; inside a subagent the type list is ignored. MCP: `mcp__<server>__*` grants a whole server (v2.1.299+: matches only that exact server name). |
-| `disallowedTools` | No | Comma-separated list of tools the subagent must not use |
-| `model` | No | Model to use: `sonnet`, `opus`, `haiku`, full model ID, or `inherit`. Defaults to configured subagent model |
-| `permissionMode` | No | `default` (Manual mode; `manual` accepted as an alias since v2.1.200), `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan`, `auto`. As of v2.1.212, the Task tool's `mode` invocation parameter is deprecated and ignored — subagents inherit the parent session's permission mode by default unless overridden here. When the parent runs in `bypassPermissions`, `acceptEdits` or `auto`, the subagent's `permissionMode` is ignored |
-| `maxTurns` | No | Maximum number of agentic turns the subagent can take |
-| `skills` | No | Comma-separated list of skills to preload. Injects full skill content into the subagent's context at startup. **v2.1.133+:** subagents also discover project, user, and plugin skills via the Skill tool — same catalog as the main session, no longer limited to their own embedded set. At most 32 skills are preloaded, each once; a subagent with the Skill tool can still invoke the rest (v2.1.295). |
-| `mcpServers` | No | MCP servers to make available to the subagent |
-| `hooks` | No | Hooks that run only while this subagent is active. All hook events are supported; most common are `PreToolUse`, `PostToolUse`, `Stop` (runs as `SubagentStop`) |
-| `memory` | No | Persistent memory directory scope: `user`, `project`, or `local` |
-| `background` | No | Subagents already run in the background by default (v2.1.198). Since v2.1.302 the desktop app and VS Code also always run the main conversation's subagents in the background; a subagent's own Agent calls in `claude -p`, the Agent SDK, the desktop app and VS Code run in the foreground by default. Set to `true` to *force* background always and prevent inline execution |
-| `effort` | No | Reasoning effort level: `low`, `medium`, `high`, `xhigh`, or `max`. Overrides the session effort level; available levels depend on the model. Claude can also pass an `effort` value when it calls the Agent tool (v2.1.292). |
-| `isolation` | No | Set to `worktree` to give the subagent its own git worktree |
-| `initialPrompt` | No | Auto-submitted first turn when the subagent runs as the main agent |
-| `color` | No | Display color for the subagent in the task list and transcript. Accepts `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, or `cyan` |
-| `experimental` | No | Experimental settings block (v2.1.248+). `experimental.cacheTtl` sets the cache TTL for this subagent — `"5m"` or `"1h"` |
-| `omitClaudeMd` | No | Set to `true` to launch the subagent without the user, project, and local CLAUDE.md files (v2.1.271+). Managed policy files still load, except for managed subagents. Ignored when the agent runs as the main session agent via `--agent` or the `agent` setting. Also accepted in `--agents` JSON |
-| `autoCompactWindow` | No | Auto-compact this subagent's context earlier than the main conversation's window (v2.1.296+; also accepted in `--agents` JSON) |
+| `name` | 예 | 고유 식별자(소문자와 하이픈). 조회할 때는 정규화되지만(대소문자와 구분자를 가리지 않음 — 아래 참고), v2.1.218부터 `:`가 들어간 이름은 **거부됩니다**: `:`는 플러그인 네임스페이스용으로 예약되어 있습니다 |
+| `description` | 예 | 목적을 설명하는 자연어 문장. 자동 호출을 유도하려면 "use PROACTIVELY"를 넣으세요 |
+| `tools` | 아니요 | 특정 도구의 쉼표 구분 목록. 생략하면 모든 도구를 상속합니다. 에이전트가 `claude --agent`로 메인 스레드에서 실행될 때 생성할 수 있는 서브에이전트를 제한하는 `Agent(agent_name)` 문법을 지원하며, 서브에이전트 안에서는 이 타입 목록이 무시됩니다. MCP: `mcp__<server>__*`는 서버 전체를 허용합니다(v2.1.299+: 정확히 그 서버 이름에만 일치). |
+| `disallowedTools` | 아니요 | 서브에이전트가 쓰면 안 되는 도구의 쉼표 구분 목록 |
+| `model` | 아니요 | 사용할 모델: `sonnet`, `opus`, `haiku`, 전체 모델 ID, 또는 `inherit`. 기본값은 설정된 서브에이전트 모델 |
+| `permissionMode` | 아니요 | `default`(수동 모드. v2.1.200부터 별칭 `manual`도 허용), `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan`, `auto`. v2.1.212부터 Task 도구의 `mode` 호출 매개변수는 지원 중단되어 무시됩니다 — 여기서 재정의하지 않으면 서브에이전트는 기본적으로 상위 세션의 권한 모드를 상속합니다. 상위 세션이 `bypassPermissions`, `acceptEdits`, `auto`로 실행 중이면 서브에이전트의 `permissionMode`는 무시됩니다 |
+| `maxTurns` | 아니요 | 서브에이전트가 진행할 수 있는 최대 에이전트 턴 수 |
+| `skills` | 아니요 | 미리 로드할 스킬의 쉼표 구분 목록. 시작할 때 스킬 전체 내용을 서브에이전트의 컨텍스트에 넣습니다. **v2.1.133+:** 서브에이전트도 Skill 도구로 프로젝트, 사용자, 플러그인 스킬을 발견합니다 — 메인 세션과 같은 목록을 보며, 더 이상 자체 내장 스킬에만 제한되지 않습니다. 미리 로드되는 스킬은 최대 32개이며 각각 한 번씩만 로드되고, Skill 도구가 있는 서브에이전트는 나머지 스킬도 호출할 수 있습니다(v2.1.295). |
+| `mcpServers` | 아니요 | 서브에이전트에게 제공할 MCP 서버 |
+| `hooks` | 아니요 | 이 서브에이전트가 활성화된 동안에만 실행되는 훅. 모든 훅 이벤트를 지원하며, 가장 많이 쓰는 것은 `PreToolUse`, `PostToolUse`, `Stop`(`SubagentStop`으로 실행)입니다 |
+| `memory` | 아니요 | 지속 메모리 디렉토리 범위: `user`, `project`, `local` |
+| `background` | 아니요 | 서브에이전트는 이미 기본으로 백그라운드에서 실행됩니다(v2.1.198). v2.1.302부터는 데스크톱 앱과 VS Code에서도 메인 대화의 서브에이전트가 항상 백그라운드에서 실행되며, `claude -p`, Agent SDK, 데스크톱 앱, VS Code에서 서브에이전트가 직접 하는 Agent 호출은 기본적으로 포그라운드에서 실행됩니다. `true`로 설정하면 항상 백그라운드 실행을 *강제*하고 인라인 실행을 막습니다 |
+| `effort` | 아니요 | 추론 노력 수준: `low`, `medium`, `high`, `xhigh`, `max`. 세션의 노력 수준을 재정의하며, 쓸 수 있는 수준은 모델에 따라 다릅니다. Claude가 Agent 도구를 호출할 때 `effort` 값을 넘길 수도 있습니다(v2.1.292). |
+| `isolation` | 아니요 | `worktree`로 설정하면 서브에이전트에게 자체 git worktree를 줍니다 |
+| `initialPrompt` | 아니요 | 서브에이전트가 메인 에이전트로 실행될 때 자동으로 제출되는 첫 턴 |
+| `color` | 아니요 | 작업 목록과 대화 기록에서 서브에이전트를 표시할 색상. `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` 중 하나 |
+| `experimental` | 아니요 | 실험적 설정 블록(v2.1.248+). `experimental.cacheTtl`로 이 서브에이전트의 캐시 TTL을 정합니다 — `"5m"` 또는 `"1h"` |
+| `omitClaudeMd` | 아니요 | `true`로 설정하면 사용자, 프로젝트, 로컬 CLAUDE.md 파일 없이 서브에이전트를 실행합니다(v2.1.271+). 관리형 정책 파일은 여전히 로드되며, 관리형 서브에이전트는 예외입니다. 에이전트가 `--agent`나 `agent` 설정으로 메인 세션 에이전트로 실행될 때는 무시됩니다. `--agents` JSON에서도 쓸 수 있습니다 |
+| `autoCompactWindow` | 아니요 | 이 서브에이전트의 컨텍스트를 메인 대화의 윈도우보다 일찍 자동 컴팩션합니다(v2.1.296+. `--agents` JSON에서도 사용 가능) |
 
-#### Subagent Model Environment Variables
+#### 서브에이전트 모델 환경 변수
 
-Two environment variables affect which model a subagent runs on:
+서브에이전트가 어떤 모델로 실행될지에 영향을 주는 환경 변수는 두 가지입니다:
 
-| Variable | Version | Description |
+| 변수 | 버전 | 설명 |
 |----------|---------|-------------|
-| `CLAUDE_CODE_SUBAGENT_MODEL` | — | Sets the model used for subagents |
-| `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` | v2.1.257+ | Set to `1` to force the subagent model over a subagent's frontmatter `model:` |
+| `CLAUDE_CODE_SUBAGENT_MODEL` | — | 서브에이전트에 쓸 모델을 지정 |
+| `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` | v2.1.257+ | `1`로 설정하면 서브에이전트 frontmatter의 `model:`보다 서브에이전트 모델 설정을 강제로 우선 |
 
-> **Precedence changed in v2.1.251**: before that release, `CLAUDE_CODE_SUBAGENT_MODEL` came first and overrode agent frontmatter — including `model: inherit`. From v2.1.251 on, a subagent's own `model:` frontmatter wins. Set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` (v2.1.257+) when you want the environment variable to override frontmatter again, for example to pin an entire evaluation run to one model.
+> **v2.1.251에서 우선순위가 바뀌었습니다**: 그 이전에는 `CLAUDE_CODE_SUBAGENT_MODEL`이 먼저 적용되어 에이전트 frontmatter를 덮어썼습니다 — `model: inherit`까지 포함해서요. v2.1.251부터는 서브에이전트 자체의 `model:` frontmatter가 이깁니다. 환경 변수가 다시 frontmatter를 덮어쓰게 하려면(예: 평가 실행 전체를 한 모델로 고정할 때) `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1`(v2.1.257+)을 설정하세요.
 
-### Main-Thread Agent Frontmatter Honoring (v2.1.117+/v2.1.119+)
+### 메인 스레드 에이전트의 frontmatter 적용 (v2.1.117+/v2.1.119+)
 
-When an agent is invoked as the main-thread agent (via `claude --agent <name>` or `--print` mode), these frontmatter fields are honored:
+에이전트를 메인 스레드 에이전트로 호출하면(`claude --agent <name>`이나 `--print` 모드), 다음 frontmatter 필드가 적용됩니다:
 
-| Field | Version | Notes |
+| 필드 | 버전 | 참고 |
 |-------|---------|-------|
-| `mcpServers` | v2.1.117+ | Loaded when agent is invoked as main-thread agent via `claude --agent <name>` |
-| `permissionMode` | v2.1.119+ | Honored for built-in agents via `--agent <name>` |
-| `tools` / `disallowedTools` | v2.1.119+ | Honored in `--print` mode (non-interactive/scripted usage) |
+| `mcpServers` | v2.1.117+ | `claude --agent <name>`으로 메인 스레드 에이전트로 호출할 때 로드 |
+| `permissionMode` | v2.1.119+ | `--agent <name>`으로 호출한 기본 제공 에이전트에 적용 |
+| `tools` / `disallowedTools` | v2.1.119+ | `--print` 모드(비대화형/스크립트 사용)에서 적용 |
 
-**Example — agent with `mcpServers` and `permissionMode`:**
+**예 — `mcpServers`와 `permissionMode`를 쓰는 에이전트:**
 
 ```yaml
 ---
 name: secure-researcher
-description: Research agent with scoped MCP access and restricted permissions
+description: 범위를 제한한 MCP 접근과 제한된 권한으로 동작하는 조사 에이전트
 permissionMode: acceptEdits
 mcpServers:
   notion:
@@ -188,337 +187,336 @@ mcpServers:
 tools: Read, Grep, Glob
 ---
 
-You are a research agent. You may query Notion and GitHub through the
-configured MCP servers, and read local files, but you cannot write or
-execute commands outside of accepted edits.
+당신은 조사 에이전트입니다. 설정된 MCP 서버로 Notion과 GitHub를 조회하고
+로컬 파일을 읽을 수 있지만, 승인된 편집 외에는 파일을 쓰거나 명령어를 실행할 수 없습니다.
 ```
 
-Run with:
+실행 방법:
 
 ```bash
 claude --agent secure-researcher
 ```
 
-### Tool Configuration Options
+### 도구 설정 옵션
 
-**Option 1: Inherit All Tools (omit the field)**
+**옵션 1: 모든 도구 상속(필드 생략)**
 ```yaml
 ---
 name: full-access-agent
-description: Agent with all available tools
+description: 사용 가능한 모든 도구를 쓰는 에이전트
 ---
 ```
 
-**Option 2: Specify Individual Tools**
+**옵션 2: 도구를 개별 지정**
 ```yaml
 ---
 name: limited-agent
-description: Agent with specific tools only
+description: 지정한 도구만 쓰는 에이전트
 tools: Read, Grep, Glob, Bash
 ---
 ```
 
-> **Note on Glob/Grep (v2.1.113+):** On native macOS/Linux builds, Glob and Grep are provided as `bfs`/`ugrep` through the Bash tool rather than as separate tools. Windows and npm-JS builds still expose them as standalone tools. Authors can still reference Glob/Grep in `allowedTools`; the backend substitution is transparent.
+> **Glob/Grep 참고 (v2.1.113+):** macOS/Linux 네이티브 빌드에서는 Glob과 Grep이 별도 도구가 아니라 Bash 도구를 통한 `bfs`/`ugrep`으로 제공됩니다. Windows와 npm-JS 빌드에서는 여전히 독립 도구로 제공됩니다. `allowedTools`에서 Glob/Grep을 그대로 참조해도 되며, 내부 대체는 사용자에게 드러나지 않습니다.
 
-**Option 3: Conditional Tool Access**
+**옵션 3: 조건부 도구 접근**
 ```yaml
 ---
 name: conditional-agent
-description: Agent with filtered tool access
+description: 도구 접근이 필터링된 에이전트
 tools: Read, Bash(npm:*), Bash(test:*)
 ---
 ```
 
-### CLI-Based Configuration
+### CLI 기반 설정
 
-Define subagents for a single session using the `--agents` flag with JSON format:
+JSON 형식의 `--agents` 플래그로 한 세션에서만 쓸 서브에이전트를 정의할 수 있습니다:
 
 ```bash
 claude --agents '{
   "code-reviewer": {
-    "description": "Expert code reviewer. Use proactively after code changes.",
-    "prompt": "You are a senior code reviewer. Focus on code quality, security, and best practices.",
+    "description": "코드 리뷰 전문가. 코드를 변경한 뒤 적극적으로(proactively) 사용.",
+    "prompt": "당신은 시니어 코드 리뷰어입니다. 코드 품질, 보안, 모범 사례에 집중하세요.",
     "tools": ["Read", "Grep", "Glob", "Bash"],
     "model": "sonnet"
   }
 }'
 ```
 
-**JSON Format for `--agents` flag:**
+**`--agents` 플래그의 JSON 형식:**
 
 ```json
 {
   "agent-name": {
-    "description": "Required: when to invoke this agent",
-    "prompt": "Required: system prompt for the agent",
-    "tools": ["Optional", "array", "of", "tools"],
-    "model": "optional: sonnet|opus|haiku"
+    "description": "필수: 이 에이전트를 언제 호출할지",
+    "prompt": "필수: 에이전트의 시스템 프롬프트",
+    "tools": ["선택", "도구", "이름", "배열"],
+    "model": "선택: sonnet|opus|haiku"
   }
 }
 ```
 
-> **Note**: Since v2.1.243, `--agents` no longer silently ignores invalid JSON or invalid agent definitions — Claude Code exits with a clear error, matching the behavior of `--mcp-config`.
+> **참고**: v2.1.243부터 `--agents`는 잘못된 JSON이나 잘못된 에이전트 정의를 조용히 무시하지 않습니다 — `--mcp-config`와 마찬가지로 Claude Code가 명확한 오류를 내며 종료합니다.
 
-**Priority of Agent Definitions:**
+**에이전트 정의의 우선순위:**
 
-Agent definitions are loaded with this priority order (first match wins):
-1. **Managed** - managed settings (organization-wide)
-2. **CLI-defined** - `--agents` flag (session only, JSON)
-3. **Project-level** - `.claude/agents/` (current project)
-4. **User-level** - `~/.claude/agents/` (all projects)
-5. **Plugin-level** - Plugin `agents/` directory
+에이전트 정의는 다음 우선순위로 로드됩니다(먼저 일치하는 것이 이김):
+1. **관리형** - 관리형 설정(조직 전체)
+2. **CLI 정의** - `--agents` 플래그(세션 한정, JSON)
+3. **프로젝트 수준** - `.claude/agents/`(현재 프로젝트)
+4. **사용자 수준** - `~/.claude/agents/`(모든 프로젝트)
+5. **플러그인 수준** - 플러그인의 `agents/` 디렉토리
 
-This lets CLI definitions override project, user and plugin definitions for a single session; managed definitions still take precedence.
+덕분에 한 세션 동안 CLI 정의로 프로젝트, 사용자, 플러그인 정의를 덮어쓸 수 있습니다. 관리형 정의는 여전히 가장 우선합니다.
 
 ---
 
-## Built-in Subagents
+## 기본 제공 서브에이전트
 
-Claude Code includes several built-in subagents that are always available:
+Claude Code에는 항상 쓸 수 있는 기본 제공 서브에이전트가 여러 개 들어 있습니다:
 
-| Agent | Model | Purpose |
+| 에이전트 | 모델 | 목적 |
 |-------|-------|---------|
-| **general-purpose** | Inherits | Complex, multi-step tasks |
-| **Plan** | Inherits | Research for plan mode |
-| **Explore** | Inherits (capped at Opus) | Read-only codebase exploration (quick/medium/very thorough) |
-| **claude** | Inherits | Catch-all for tasks that don't fit a more specialized agent; has every tool available to subagents. Also the default agent for a dispatched background session |
-| **statusline-setup** | Sonnet | Runs when you use `/statusline` to configure your status line |
-| **claude-code-guide** | Haiku | Answers questions about Claude Code features |
+| **general-purpose** | 상속 | 복잡하고 여러 단계로 된 작업 |
+| **Plan** | 상속 | 계획 모드를 위한 조사 |
+| **Explore** | 상속(최대 Opus) | 읽기 전용 코드베이스 탐색(quick/medium/very thorough) |
+| **claude** | 상속 | 더 전문적인 에이전트에 맞지 않는 작업을 모두 맡는 범용 에이전트. 서브에이전트가 쓸 수 있는 모든 도구를 가짐. 백그라운드로 보낸 세션의 기본 에이전트이기도 함 |
+| **statusline-setup** | Sonnet | `/statusline`으로 상태 표시줄을 설정할 때 실행 |
+| **claude-code-guide** | Haiku | Claude Code 기능에 대한 질문에 답변 |
 
-### General-Purpose Subagent
+### 범용(general-purpose) 서브에이전트
 
-| Property | Value |
+| 속성 | 값 |
 |----------|-------|
-| **Model** | Inherits from parent |
-| **Tools** | All tools |
-| **Purpose** | Complex research tasks, multi-step operations, code modifications |
+| **모델** | 상위 세션에서 상속 |
+| **도구** | 모든 도구 |
+| **목적** | 복잡한 조사 작업, 여러 단계로 된 작업, 코드 수정 |
 
-**When used**: Tasks requiring both exploration and modification with complex reasoning.
+**사용 시점**: 탐색과 수정이 모두 필요하고 복잡한 추론이 필요한 작업.
 
-### Plan Subagent
+### Plan 서브에이전트
 
-| Property | Value |
+| 속성 | 값 |
 |----------|-------|
-| **Model** | Inherits from parent |
-| **Tools** | Read, Glob, Grep, Bash |
-| **Purpose** | Used automatically in plan mode to research codebase |
+| **모델** | 상위 세션에서 상속 |
+| **도구** | Read, Glob, Grep, Bash |
+| **목적** | 계획 모드에서 코드베이스를 조사할 때 자동으로 사용 |
 
-**When used**: When Claude needs to understand the codebase before presenting a plan.
+**사용 시점**: Claude가 계획을 제시하기 전에 코드베이스를 이해해야 할 때.
 
-### Explore Subagent
+### Explore 서브에이전트
 
-| Property | Value |
+| 속성 | 값 |
 |----------|-------|
-| **Model** | Inherits the session model, capped at Opus (v2.1.198). Set `model: haiku` to keep it fast and cheap |
-| **Mode** | Strictly read-only |
-| **Tools** | Glob, Grep, Read, Bash (read-only commands only) |
-| **Purpose** | Fast codebase searching and analysis |
+| **모델** | 세션 모델을 상속하되 최대 Opus까지(v2.1.198). 빠르고 저렴하게 쓰려면 `model: haiku`로 설정 |
+| **모드** | 엄격한 읽기 전용 |
+| **도구** | Glob, Grep, Read, Bash(읽기 전용 명령어만) |
+| **목적** | 빠른 코드베이스 검색과 분석 |
 
-**When used**: When searching/understanding code without making changes.
+**사용 시점**: 코드를 바꾸지 않고 검색하거나 이해할 때.
 
-**Thoroughness Levels** - Specify the depth of exploration:
-- **"quick"** - Fast searches with minimal exploration, good for finding specific patterns
-- **"medium"** - Moderate exploration, balanced speed and thoroughness, default approach
-- **"very thorough"** - Comprehensive analysis across multiple locations and naming conventions, may take longer
+**탐색 깊이 수준** - 탐색의 깊이를 지정합니다:
+- **"quick"** - 탐색을 최소화한 빠른 검색. 특정 패턴을 찾을 때 적합
+- **"medium"** - 속도와 철저함의 균형을 맞춘 보통 수준의 탐색. 기본 방식
+- **"very thorough"** - 여러 위치와 이름 규칙에 걸친 종합 분석. 시간이 더 걸릴 수 있음
 
-### Claude Subagent
+### claude 서브에이전트
 
-| Property | Value |
+| 속성 | 값 |
 |----------|-------|
-| **Model** | Inherits from parent |
-| **Tools** | Every tool available to subagents |
-| **Purpose** | Catch-all agent for tasks that don't fit a more specialized agent |
+| **모델** | 상위 세션에서 상속 |
+| **도구** | 서브에이전트가 쓸 수 있는 모든 도구 |
+| **목적** | 더 전문적인 에이전트에 맞지 않는 작업을 맡는 범용 에이전트 |
 
-**When used**: When a task doesn't match a more specialized built-in agent. It is also the default agent for a dispatched background session; which permission mode it starts in depends on how that session was started.
+**사용 시점**: 작업이 더 전문적인 기본 제공 에이전트와 맞지 않을 때. 백그라운드로 보낸 세션의 기본 에이전트이기도 하며, 어떤 권한 모드로 시작하는지는 그 세션을 어떻게 시작했는지에 따라 달라집니다.
 
-### Statusline Setup Subagent
+### 상태 표시줄 설정(statusline-setup) 서브에이전트
 
-| Property | Value |
+| 속성 | 값 |
 |----------|-------|
-| **Model** | Sonnet |
-| **Tools** | Read, Write, Bash |
-| **Purpose** | Configure the Claude Code status line display |
+| **모델** | Sonnet |
+| **도구** | Read, Write, Bash |
+| **목적** | Claude Code 상태 표시줄 설정 |
 
-**When used**: When setting up or customizing the status line.
+**사용 시점**: 상태 표시줄을 설정하거나 사용자 지정할 때.
 
-### Claude Code Guide Subagent (`claude-code-guide`)
+### Claude Code 가이드 서브에이전트 (`claude-code-guide`)
 
-| Property | Value |
+| 속성 | 값 |
 |----------|-------|
-| **Model** | Haiku (fast, low-latency) |
-| **Tools** | Read-only |
-| **Purpose** | Answer questions about Claude Code features and usage |
+| **모델** | Haiku(빠르고 지연 시간이 짧음) |
+| **도구** | 읽기 전용 |
+| **목적** | Claude Code 기능과 사용법에 대한 질문에 답변 |
 
-**When used**: When users ask questions about how Claude Code works or how to use specific features.
+**사용 시점**: 사용자가 Claude Code의 동작 방식이나 특정 기능의 사용법을 물을 때.
 
 ---
 
-## Managing Subagents
+## 서브에이전트 관리
 
-### Ask Claude (Recommended)
+### Claude에게 요청하기(권장)
 
-The simplest way to create or manage a subagent is to ask Claude directly:
+서브에이전트를 만들거나 관리하는 가장 간단한 방법은 Claude에게 직접 요청하는 것입니다:
 
 ```text
-Create a subagent that reviews code for security vulnerabilities.
+코드의 보안 취약점을 리뷰하는 서브에이전트를 만들어 줘.
 ```
 
-Claude writes the `.claude/agents/<name>.md` file for you, choosing sensible frontmatter (tools, model, description). You can then refine the file by hand or ask Claude to adjust it.
+Claude가 알맞은 frontmatter(도구, 모델, 설명)를 골라 `.claude/agents/<name>.md` 파일을 작성해 줍니다. 그다음 파일을 직접 다듬거나 Claude에게 수정을 요청하면 됩니다.
 
-> **Note**: The `/agents` command no longer opens an interactive creation wizard (removed in v2.1.198). It now points you to ask Claude or edit `.claude/agents/` files directly.
+> **참고**: `/agents` 명령어는 더 이상 대화형 생성 마법사를 열지 않습니다(v2.1.198에서 제거). 이제는 Claude에게 요청하거나 `.claude/agents/` 파일을 직접 편집하라고 안내합니다.
 
-### Direct File Management
+### 파일 직접 관리
 
 ```bash
-# Create a project subagent
+# 프로젝트 서브에이전트 만들기
 mkdir -p .claude/agents
 cat > .claude/agents/test-runner.md << 'EOF'
 ---
 name: test-runner
-description: Use proactively to run tests and fix failures
+description: 테스트를 실행하고 실패를 고칠 때 적극적으로(proactively) 사용
 ---
 
-You are a test automation expert. When you see code changes, proactively
-run the appropriate tests. If tests fail, analyze the failures and fix
-them while preserving the original test intent.
+당신은 테스트 자동화 전문가입니다. 코드 변경을 발견하면 알맞은 테스트를
+적극적으로 실행하세요. 테스트가 실패하면 실패 원인을 분석하고, 원래 테스트의
+의도를 지키면서 고치세요.
 EOF
 
-# Create a user subagent (available in all projects)
+# 사용자 서브에이전트 만들기(모든 프로젝트에서 사용 가능)
 mkdir -p ~/.claude/agents
 ```
 
 ---
 
-## Using Subagents
+## 서브에이전트 사용
 
-### Automatic Delegation
+### 자동 위임
 
-Claude proactively delegates tasks based on:
-- Task description in your request
-- The `description` field in subagent configurations
-- Current context and available tools
+Claude는 다음을 바탕으로 작업을 알아서 위임합니다:
+- 요청에 담긴 작업 설명
+- 서브에이전트 설정의 `description` 필드
+- 현재 컨텍스트와 사용 가능한 도구
 
-To encourage proactive use, include "use PROACTIVELY" or "MUST BE USED" in your `description` field:
+적극적인 사용을 유도하려면 `description` 필드에 "use PROACTIVELY"나 "MUST BE USED"를 넣으세요:
 
 ```yaml
 ---
 name: code-reviewer
-description: Expert code review specialist. Use PROACTIVELY after writing or modifying code.
+description: 코드 리뷰 전문가. 코드를 작성하거나 수정한 뒤 적극적으로(PROACTIVELY) 사용하세요.
 ---
 ```
 
-### Explicit Invocation
+### 명시적 호출
 
-You can explicitly request a specific subagent:
-
-```
-> Use the test-runner subagent to fix failing tests
-> Have the code-reviewer subagent look at my recent changes
-> Ask the debugger subagent to investigate this error
-```
-
-> **Case- and separator-insensitive `subagent_type` matching (v2.1.140)**: `subagent_type` (in `Agent` tool calls or `--agent` flags) is matched case-insensitively and ignores separator style — `code-reviewer`, `Code Reviewer`, and `code_reviewer` all resolve to the same agent. This removes a long-standing footgun where minor capitalization differences silently fell back to the default agent.
-
-### @-Mention Invocation
-
-Use the `@` prefix to guarantee a specific subagent is invoked (bypasses automatic delegation heuristics):
+특정 서브에이전트를 명시적으로 요청할 수 있습니다:
 
 ```
-> @"code-reviewer (agent)" review the auth module
+> test-runner 서브에이전트로 실패하는 테스트를 고쳐 줘
+> code-reviewer 서브에이전트에게 내 최근 변경 사항을 살펴보게 해 줘
+> debugger 서브에이전트에게 이 오류를 조사해 달라고 해 줘
 ```
 
-### Session-Wide Agent
+> **`subagent_type` 매칭에서 대소문자와 구분자 구분 안 함 (v2.1.140)**: `subagent_type`(`Agent` 도구 호출이나 `--agent` 플래그)은 대소문자를 가리지 않고 구분자 형식도 무시하고 매칭됩니다 — `code-reviewer`, `Code Reviewer`, `code_reviewer`가 모두 같은 에이전트로 해석됩니다. 대소문자가 조금만 달라도 아무 알림 없이 기본 에이전트로 넘어가던 오래된 함정이 사라졌습니다.
 
-Run an entire session using a specific agent as the main agent:
+### @ 멘션으로 호출
+
+`@` 접두사를 쓰면 특정 서브에이전트가 반드시 호출됩니다(자동 위임 판단을 거치지 않음):
+
+```
+> @"code-reviewer (agent)" auth 모듈을 리뷰해 줘
+```
+
+### 세션 전체 에이전트
+
+특정 에이전트를 메인 에이전트로 삼아 세션 전체를 실행합니다:
 
 ```bash
-# Via CLI flag
+# CLI 플래그로
 claude --agent code-reviewer
 
-# Via settings.json
+# settings.json으로
 {
   "agent": "code-reviewer"
 }
 ```
 
-### Listing Available Agents
+### 사용 가능한 에이전트 확인
 
-To see which subagents are configured, ask Claude or browse `.claude/agents/` and `~/.claude/agents/`. (`claude agents` is unrelated: it opens agent view for background sessions — see [CLI](../10-cli/README.md#agent-view-claude-agents-v21139).)
+설정된 서브에이전트를 확인하려면 Claude에게 묻거나 `.claude/agents/`와 `~/.claude/agents/`를 살펴보세요. (`claude agents`는 이와 관계없습니다: 백그라운드 세션을 보여 주는 에이전트 뷰를 엽니다 — [CLI](../10-cli/README.md#agent-view-claude-agents-v21139) 참고.)
 
 ---
 
-## Resumable Agents
+## 재개 가능한 에이전트
 
-Subagents can continue previous conversations with full context preserved:
+서브에이전트는 전체 컨텍스트를 보존한 채 이전 대화를 이어 갈 수 있습니다:
 
 ```bash
-# Initial invocation
-> Use the code-analyzer agent to start reviewing the authentication module
-# Returns agentId: "abc123"
+# 처음 호출
+> code-analyzer 에이전트로 인증 모듈 리뷰를 시작해 줘
+# agentId: "abc123" 반환
 
-# Resume the agent later
-> Resume agent abc123 and now analyze the authorization logic as well
+# 나중에 에이전트 재개
+> abc123 에이전트를 재개해서 이번에는 권한 부여 로직도 분석해 줘
 ```
 
-**Use cases**:
-- Long-running research across multiple sessions
-- Iterative refinement without losing context
-- Multi-step workflows maintaining context
+**활용 사례**:
+- 여러 세션에 걸친 장기 조사
+- 컨텍스트를 잃지 않고 반복해서 다듬기
+- 컨텍스트를 유지하는 여러 단계의 워크플로우
 
 ---
 
-## Chaining Subagents
+## 서브에이전트 연결
 
-Execute multiple subagents in sequence:
+여러 서브에이전트를 차례로 실행합니다:
 
 ```bash
-> First use the code-analyzer subagent to find performance issues,
-  then use the optimizer subagent to fix them
+> 먼저 code-analyzer 서브에이전트로 성능 문제를 찾고,
+  그다음 optimizer 서브에이전트로 고쳐 줘
 ```
 
-This enables complex workflows where the output of one subagent feeds into another.
+한 서브에이전트의 출력이 다음 서브에이전트의 입력이 되는 복잡한 워크플로우를 만들 수 있습니다.
 
 ---
 
-## Persistent Memory for Subagents
+## 서브에이전트의 지속 메모리
 
-The `memory` field gives subagents a persistent directory that survives across conversations. This allows subagents to build up knowledge over time, storing notes, findings, and context that persist between sessions.
+`memory` 필드는 서브에이전트에게 대화가 끝나도 유지되는 지속 디렉토리를 줍니다. 덕분에 서브에이전트는 세션 사이에 유지되는 메모, 발견 사항, 컨텍스트를 저장하며 시간이 지날수록 지식을 쌓을 수 있습니다.
 
-### Memory Scopes
+### 메모리 범위
 
-| Scope | Directory | Use Case |
+| 범위 | 디렉토리 | 활용 사례 |
 |-------|-----------|----------|
-| `user` | `~/.claude/agent-memory/<name>/` | Personal notes and preferences across all projects |
-| `project` | `.claude/agent-memory/<name>/` | Project-specific knowledge shared with the team |
-| `local` | `.claude/agent-memory-local/<name>/` | Local project knowledge not committed to version control |
+| `user` | `~/.claude/agent-memory/<name>/` | 모든 프로젝트에 걸친 개인 메모와 선호 |
+| `project` | `.claude/agent-memory/<name>/` | 팀과 공유하는 프로젝트별 지식 |
+| `local` | `.claude/agent-memory-local/<name>/` | 버전 관리에 커밋하지 않는 로컬 프로젝트 지식 |
 
-### How It Works
+### 동작 방식
 
-- The first 200 lines of `MEMORY.md` in the memory directory are automatically loaded into the subagent's system prompt
-- The `Read`, `Write`, and `Edit` tools are automatically enabled for the subagent to manage its memory files
-- The subagent can create additional files in its memory directory as needed
+- 메모리 디렉토리에 있는 `MEMORY.md`의 처음 200줄이 서브에이전트의 시스템 프롬프트에 자동으로 로드됩니다
+- 서브에이전트가 메모리 파일을 관리할 수 있도록 `Read`, `Write`, `Edit` 도구가 자동으로 켜집니다
+- 서브에이전트는 필요하면 메모리 디렉토리에 파일을 더 만들 수 있습니다
 
-### Example Configuration
+### 설정 예
 
 ```yaml
 ---
 name: researcher
-description: Research assistant that keeps findings in persistent memory across sessions
+description: 조사 결과를 세션 간 지속 메모리에 보관하는 조사 어시스턴트
 memory: user
 ---
 
-You are a research assistant. Use your memory directory to store findings,
-track progress across sessions, and build up knowledge over time.
+당신은 조사 어시스턴트입니다. 메모리 디렉토리를 활용해 조사 결과를 저장하고,
+세션을 넘나들며 진행 상황을 추적하고, 시간이 지날수록 지식을 쌓으세요.
 
-Check your MEMORY.md file at the start of each session to recall previous context.
+세션을 시작할 때마다 MEMORY.md 파일을 확인해 이전 컨텍스트를 떠올리세요.
 ```
 
 ```mermaid
 graph LR
-    A["Subagent<br/>Session 1"] -->|writes| M["MEMORY.md<br/>(persistent)"]
-    M -->|loads into| B["Subagent<br/>Session 2"]
-    B -->|updates| M
-    M -->|loads into| C["Subagent<br/>Session 3"]
+    A["서브에이전트<br/>세션 1"] -->|작성| M["MEMORY.md<br/>(지속)"]
+    M -->|로드| B["서브에이전트<br/>세션 2"]
+    B -->|갱신| M
+    M -->|로드| C["서브에이전트<br/>세션 3"]
 
     style A fill:#e1f5fe,stroke:#333,color:#333
     style B fill:#e1f5fe,stroke:#333,color:#333
@@ -528,32 +526,32 @@ graph LR
 
 ---
 
-## Background Subagents
+## 백그라운드 서브에이전트
 
-Subagents run in the background by default (v2.1.198). Since v2.1.302 the desktop app and VS Code also always run the main conversation's subagents in the background; a subagent's own Agent calls in `claude -p`, the Agent SDK, the desktop app and VS Code run in the foreground by default. Claude keeps working on the main conversation while a subagent runs and is notified when it finishes, so you no longer wait on a subagent to return before continuing.
+서브에이전트는 기본적으로 백그라운드에서 실행됩니다(v2.1.198). v2.1.302부터는 데스크톱 앱과 VS Code에서도 메인 대화의 서브에이전트가 항상 백그라운드에서 실행되며, `claude -p`, Agent SDK, 데스크톱 앱, VS Code에서 서브에이전트가 직접 하는 Agent 호출은 기본적으로 포그라운드에서 실행됩니다. 서브에이전트가 실행되는 동안 Claude는 메인 대화 작업을 계속하고, 서브에이전트가 끝나면 알림을 받습니다. 따라서 서브에이전트가 결과를 돌려줄 때까지 기다리지 않고 계속 진행할 수 있습니다.
 
-### Configuration
+### 설정
 
-Because background is already the default, `background: true` in the frontmatter *forces* the subagent to always run in the background and prevents it from running inline:
+이미 백그라운드 실행이 기본이므로, frontmatter의 `background: true`는 서브에이전트가 항상 백그라운드에서 실행되도록 *강제*하고 인라인으로 실행되지 않게 막습니다:
 
 ```yaml
 ---
 name: long-runner
 background: true
-description: Performs long-running analysis tasks in the background
+description: 오래 걸리는 분석 작업을 백그라운드에서 수행
 ---
 ```
 
-### Keyboard Shortcuts
+### 키보드 단축키
 
-| Shortcut | Action |
+| 단축키 | 동작 |
 |----------|--------|
-| `Ctrl+B` | Background a currently running subagent task |
-| `Ctrl+X` `Ctrl+K` | Stop all running background subagents (press twice within 3 seconds to confirm; this replaced `Ctrl+F`) |
+| `Ctrl+B` | 실행 중인 서브에이전트 작업을 백그라운드로 보내기 |
+| `Ctrl+X` `Ctrl+K` | 실행 중인 백그라운드 서브에이전트를 모두 중지(3초 안에 두 번 눌러 확인. `Ctrl+F`를 대체) |
 
-### Disabling Background Tasks
+### 백그라운드 작업 끄기
 
-Set the environment variable to disable background task support entirely:
+백그라운드 작업 지원을 완전히 끄려면 환경 변수를 설정하세요:
 
 ```bash
 export CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1
@@ -561,29 +559,29 @@ export CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1
 
 ---
 
-## Worktree Isolation
+## worktree 격리
 
-The `isolation: worktree` setting gives a subagent its own git worktree, allowing it to make changes independently without affecting the main working tree.
+`isolation: worktree` 설정은 서브에이전트에게 자체 git worktree를 주어, 메인 작업 트리에 영향을 주지 않고 독립적으로 변경할 수 있게 합니다.
 
-### Configuration
+### 설정
 
 ```yaml
 ---
 name: feature-builder
 isolation: worktree
-description: Implements features in an isolated git worktree
+description: 격리된 git worktree에서 기능 구현
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 ```
 
-### How It Works
+### 동작 방식
 
 ```mermaid
 graph TB
-    Main["Main Working Tree"] -->|spawns| Sub["Subagent with<br/>Isolated Worktree"]
-    Sub -->|makes changes in| WT["Separate Git<br/>Worktree + Branch"]
-    WT -->|no changes| Clean["Auto-cleaned"]
-    WT -->|has changes| Return["Returns worktree<br/>path and branch"]
+    Main["메인 작업 트리"] -->|생성| Sub["격리된 worktree를<br/>가진 서브에이전트"]
+    Sub -->|변경 작업| WT["별도의 Git<br/>worktree + 브랜치"]
+    WT -->|변경 없음| Clean["자동 정리"]
+    WT -->|변경 있음| Return["worktree 경로와<br/>브랜치 반환"]
 
     style Main fill:#e1f5fe,stroke:#333,color:#333
     style Sub fill:#f3e5f5,stroke:#333,color:#333
@@ -592,29 +590,29 @@ graph TB
     style Return fill:#fff3e0,stroke:#333,color:#333
 ```
 
-- The subagent operates in its own git worktree on a separate branch
-- If the subagent makes no changes, the worktree is automatically cleaned up
-- If changes exist, the worktree path and branch name are returned to the main agent for review or merging
+- 서브에이전트는 별도 브랜치의 자체 git worktree에서 작업합니다
+- 서브에이전트가 아무것도 바꾸지 않으면 worktree는 자동으로 정리됩니다
+- 변경 사항이 있으면 worktree 경로와 브랜치 이름이 메인 에이전트에 반환되어 검토하거나 병합할 수 있습니다
 
 ---
 
-## Forked Subagents
+## 포크된 서브에이전트
 
-A forked subagent inherits the parent's whole conversation at the moment of forking — system prompt, tools, model, message history and prompt cache — rather than starting with a clean slate. This is useful for exploring alternative paths without losing the work done so far.
+포크된 서브에이전트는 깨끗한 상태에서 시작하지 않고, 포크하는 순간 상위 세션의 대화 전체 — 시스템 프롬프트, 도구, 모델, 메시지 기록, 프롬프트 캐시 — 를 물려받습니다. 지금까지 한 작업을 잃지 않고 다른 경로를 탐색할 때 유용합니다.
 
-> **Availability**: GA in v2.1.117. **Since v2.1.232, fork mode is on by default in interactive sessions** — on every build, first-party or not. Since v2.1.302 it is also on by default in non-interactive mode (`claude -p`), the Agent SDK, the desktop app and VS Code; `claude mcp serve` never offers fork subagents. On Claude Code older than v2.1.232, or to turn it on where it is off by default, set `CLAUDE_CODE_FORK_SUBAGENT=1`.
+> **사용 가능 여부**: v2.1.117에서 정식 출시되었습니다. **v2.1.232부터 대화형 세션에서는 포크 모드가 기본으로 켜져 있습니다** — 공식 빌드인지와 관계없이 모든 빌드에서 그렇습니다. v2.1.302부터는 비대화형 모드(`claude -p`), Agent SDK, 데스크톱 앱, VS Code에서도 기본으로 켜져 있으며, `claude mcp serve`에서는 포크 서브에이전트를 제공하지 않습니다. v2.1.232보다 오래된 Claude Code에서 쓰거나, 기본으로 꺼진 곳에서 켜려면 `CLAUDE_CODE_FORK_SUBAGENT=1`을 설정하세요.
 
-> **Fork-mode subagents run in the background.** Where fork mode is on — as it is by default in an interactive session — Claude Code runs the subagent in the background, forked and non-forked subagents alike.
+> **포크 모드의 서브에이전트는 백그라운드에서 실행됩니다.** 포크 모드가 켜져 있으면(대화형 세션에서는 기본으로 켜짐) Claude Code는 포크 여부와 관계없이 서브에이전트를 백그라운드에서 실행합니다.
 
-### Configuration
+### 설정
 
-You don't define a fork in an agent file. Claude starts one through the Agent tool with `subagent_type: "fork"`, or you start one yourself with `/subtask <task>` (v2.1.212+):
+포크는 에이전트 파일에서 정의하지 않습니다. Claude가 Agent 도구를 `subagent_type: "fork"`로 호출해 시작하거나, 사용자가 `/subtask <task>`(v2.1.212+)로 직접 시작합니다:
 
 ```text
-/subtask Explore an alternative implementation path and report the trade-offs
+/subtask 다른 구현 방식을 탐색하고 장단점을 보고해 줘
 ```
 
-A fork can't spawn further forks. To block forks, add the deny rule `Agent(fork)`:
+포크는 다시 포크를 생성할 수 없습니다. 포크를 막으려면 거부 규칙 `Agent(fork)`를 추가하세요:
 
 ```json
 {
@@ -624,92 +622,92 @@ A fork can't spawn further forks. To block forks, add the deny rule `Agent(fork)
 }
 ```
 
-> **Note**: `context: fork` is a **skill** frontmatter field (see [Skills](../03-skills/README.md)), not a subagent field. Claude Code silently ignores fields it doesn't recognize in an agent definition.
+> **참고**: `context: fork`는 서브에이전트 필드가 아니라 **스킬**의 frontmatter 필드입니다([스킬](../03-skills/README.md) 참고). Claude Code는 에이전트 정의에서 인식하지 못하는 필드를 조용히 무시합니다.
 
-### Enabling Fork Mode Explicitly
+### 포크 모드를 명시적으로 켜기
 
-Set `CLAUDE_CODE_FORK_SUBAGENT=0` to turn fork mode off everywhere. On versions before v2.1.302, set it to `1` to turn forks on in `claude -p` and the Agent SDK.
+모든 곳에서 포크 모드를 끄려면 `CLAUDE_CODE_FORK_SUBAGENT=0`을 설정하세요. v2.1.302 이전 버전에서는 `1`로 설정해야 `claude -p`와 Agent SDK에서 포크가 켜집니다.
 
 ```bash
 export CLAUDE_CODE_FORK_SUBAGENT=0
 claude
 ```
 
-### When to Use Fork vs Clean Context
+### 포크와 깨끗한 컨텍스트 중 무엇을 쓸까
 
-| Scenario | Fork (`subagent_type: "fork"`) | Clean context (default) |
+| 상황 | 포크 (`subagent_type: "fork"`) | 깨끗한 컨텍스트(기본값) |
 |----------|-----------------|-------------------------|
-| Explore alternative implementations | Yes | No (would lose context) |
-| Long research with existing context | Yes | No |
-| Independent specialized task | No | Yes |
-| Avoiding context pollution | No | Yes |
+| 다른 구현 방식 탐색 | 예 | 아니요(컨텍스트를 잃음) |
+| 기존 컨텍스트를 활용한 긴 조사 | 예 | 아니요 |
+| 독립적인 전문 작업 | 아니요 | 예 |
+| 컨텍스트 오염 방지 | 아니요 | 예 |
 
 ---
 
-## Restrict Spawnable Subagents
+## 생성 가능한 서브에이전트 제한
 
-You can control which subagents an agent running as the main thread with `claude --agent` is allowed to spawn by using the `Agent(agent_type)` syntax in the `tools` field. This provides a way to allowlist specific subagents for delegation. In a subagent definition, any type list inside the parentheses is ignored.
+`tools` 필드에 `Agent(agent_type)` 문법을 쓰면, `claude --agent`로 메인 스레드에서 실행되는 에이전트가 생성할 수 있는 서브에이전트를 제어할 수 있습니다. 위임할 서브에이전트를 허용 목록으로 지정하는 방법입니다. 서브에이전트 정의 안에서는 괄호 안의 타입 목록이 무시됩니다.
 
-> **Note**: In v2.1.63, the `Task` tool was renamed to `Agent`. Existing `Task(...)` references still work as aliases.
+> **참고**: v2.1.63에서 `Task` 도구의 이름이 `Agent`로 바뀌었습니다. 기존 `Task(...)` 참조도 별칭으로 계속 동작합니다.
 
-### Example
+### 예
 
 ```yaml
 ---
 name: coordinator
-description: Coordinates work between specialized agents
+description: 전문 에이전트들 사이의 작업 조율
 tools: Agent(worker, researcher), Read, Bash
 ---
 
-You are a coordinator agent. You can delegate work to the "worker" and
-"researcher" subagents only. Use Read and Bash for your own exploration.
+당신은 조율 에이전트입니다. 작업은 "worker"와 "researcher" 서브에이전트에게만
+위임할 수 있습니다. 직접 탐색할 때는 Read와 Bash를 쓰세요.
 ```
 
-In this example, when you run `claude --agent coordinator`, the main thread can only spawn the `worker` and `researcher` subagents. It cannot spawn any other subagents, even if they are defined elsewhere. If `coordinator` runs as a subagent instead, the type list is ignored.
+이 예에서 `claude --agent coordinator`로 실행하면 메인 스레드는 `worker`와 `researcher` 서브에이전트만 생성할 수 있습니다. 다른 곳에 정의되어 있더라도 그 밖의 서브에이전트는 생성할 수 없습니다. `coordinator`가 대신 서브에이전트로 실행되면 타입 목록은 무시됩니다.
 
 ---
 
-## `claude agents` CLI Command
+## `claude agents` CLI 명령어
 
-`claude agents` opens **agent view** (v2.1.139+): a full-screen list of your background sessions grouped by state. It does not list configured subagent definitions; use `claude agents --json` to script against session state.
+`claude agents`는 **에이전트 뷰**(v2.1.139+)를 엽니다: 백그라운드 세션을 상태별로 묶어 보여 주는 전체 화면 목록입니다. 설정된 서브에이전트 정의를 나열하지는 않으며, 세션 상태를 스크립트로 다루려면 `claude agents --json`을 쓰세요.
 
 ```bash
 claude agents
 claude agents --json
 ```
 
-Configured subagents live in `.claude/agents/` (project) and `~/.claude/agents/` (user).
+설정된 서브에이전트는 `.claude/agents/`(프로젝트)와 `~/.claude/agents/`(사용자)에 있습니다.
 
 ---
 
-## Agent Teams (Experimental)
+## 에이전트 팀(실험적 기능)
 
-Agent Teams coordinate multiple Claude Code instances working together on complex tasks. Unlike subagents (which are delegated subtasks returning results), teammates work independently with their own context windows and can message each other directly through a shared mailbox system.
+에이전트 팀은 여러 Claude Code 인스턴스가 함께 복잡한 작업을 하도록 조율합니다. (위임받은 하위 작업의 결과를 돌려주는) 서브에이전트와 달리, 팀원은 자체 컨텍스트 윈도우를 가지고 독립적으로 일하며 공유 메일함 시스템으로 서로 직접 메시지를 주고받을 수 있습니다.
 
-> **Official Documentation**: [code.claude.com/docs/en/agent-teams](https://code.claude.com/docs/en/agent-teams)
+> **공식 문서**: [code.claude.com/docs/ko/agent-teams](https://code.claude.com/docs/ko/agent-teams)
 
-> **Note**: Agent Teams is experimental and disabled by default. Requires Claude Code v2.1.32+. Enable it before use.
+> **참고**: 에이전트 팀은 실험적 기능이며 기본으로 꺼져 있습니다. Claude Code v2.1.32 이상이 필요합니다. 쓰기 전에 켜세요.
 
-### Subagents vs Agent Teams
+### 서브에이전트와 에이전트 팀 비교
 
-| Aspect | Subagents | Agent Teams |
+| 측면 | 서브에이전트 | 에이전트 팀 |
 |--------|-----------|-------------|
-| **Delegation model** | Parent delegates subtask, waits for result | Team lead coordinates work, teammates execute independently |
-| **Context** | Fresh context per subtask, results distilled back | Each teammate maintains its own persistent context window |
-| **Coordination** | Sequential or parallel, managed by parent | Shared task list with automatic dependency management |
-| **Communication** | Results returned to parent only (no inter-agent messaging) | Teammates can message each other directly via mailbox |
-| **Session resumption** | Supported | Not supported with in-process teammates |
-| **Best for** | Focused, well-defined subtasks | Complex work requiring inter-agent communication and parallel execution |
+| **위임 모델** | 상위 에이전트가 하위 작업을 위임하고 결과를 기다림 | 팀 리드가 작업을 조율하고 팀원은 독립적으로 실행 |
+| **컨텍스트** | 하위 작업마다 새 컨텍스트, 결과는 요약되어 돌아옴 | 팀원마다 자체 지속 컨텍스트 윈도우 유지 |
+| **조율** | 순차 또는 병렬, 상위 에이전트가 관리 | 의존성이 자동 관리되는 공유 작업 목록 |
+| **커뮤니케이션** | 결과는 상위 에이전트에게만 반환(에이전트 사이 메시지 없음) | 팀원끼리 메일함으로 직접 메시지 가능 |
+| **세션 재개** | 지원 | 인프로세스 팀원은 지원하지 않음 |
+| **적합한 용도** | 범위가 분명하고 잘 정의된 하위 작업 | 에이전트 사이의 소통과 병렬 실행이 필요한 복잡한 작업 |
 
-### Enabling Agent Teams
+### 에이전트 팀 켜기
 
-Set the environment variable or add it to your `settings.json`:
+환경 변수를 설정하거나 `settings.json`에 추가하세요:
 
 ```bash
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 ```
 
-Or in `settings.json`:
+또는 `settings.json`에서:
 
 ```json
 {
@@ -719,33 +717,33 @@ Or in `settings.json`:
 }
 ```
 
-### Starting a team
+### 팀 시작하기
 
-Once enabled, ask Claude to work with teammates in your prompt:
+켜고 나면 프롬프트에서 Claude에게 팀원과 함께 일하라고 요청하세요:
 
 ```
-User: Build the authentication module. Use a team — one teammate for the API endpoints,
-      one for the database schema, and one for the test suite.
+사용자: 인증 모듈을 만들어 줘. 팀으로 진행해 줘 — 팀원 하나는 API 엔드포인트,
+       하나는 데이터베이스 스키마, 하나는 테스트 스위트를 맡아 줘.
 ```
 
-Claude will create the team, assign tasks, and coordinate the work automatically.
+Claude가 팀을 만들고, 작업을 배정하고, 작업을 자동으로 조율합니다.
 
-### Display modes
+### 표시 모드
 
-Control how teammate activity is displayed:
+팀원의 활동을 어떻게 표시할지 정합니다:
 
-| Mode | Flag | Description |
+| 모드 | 플래그 | 설명 |
 |------|------|-------------|
-| **Auto** | `--teammate-mode auto` | Automatically chooses the best display mode for your terminal |
-| **In-process** (default) | `--teammate-mode in-process` | Shows teammate output inline in the current terminal |
-| **Split-panes** | `--teammate-mode tmux` | Opens each teammate in a separate tmux or iTerm2 pane |
-| **iTerm2** | `--teammate-mode iterm2` | (v2.1.186+) Spawns teammates in dedicated iTerm2 panes. Requires the `it2` CLI; auto mode warns when it can't be found |
+| **자동** | `--teammate-mode auto` | 터미널에 가장 알맞은 표시 모드를 자동으로 선택 |
+| **인프로세스**(기본값) | `--teammate-mode in-process` | 현재 터미널에서 팀원 출력을 인라인으로 표시 |
+| **분할 창** | `--teammate-mode tmux` | 팀원마다 별도의 tmux 또는 iTerm2 창을 엶 |
+| **iTerm2** | `--teammate-mode iterm2` | (v2.1.186+) 팀원을 전용 iTerm2 창에서 실행. `it2` CLI가 필요하며, 찾을 수 없으면 자동 모드가 경고를 표시 |
 
 ```bash
 claude --teammate-mode tmux
 ```
 
-You can also set the display mode in `settings.json`:
+`settings.json`에서 표시 모드를 설정할 수도 있습니다:
 
 ```json
 {
@@ -753,42 +751,42 @@ You can also set the display mode in `settings.json`:
 }
 ```
 
-> **Note**: Split-pane mode requires tmux or iTerm2. It is not available in VS Code terminal, Windows Terminal, or Ghostty.
+> **참고**: 분할 창 모드에는 tmux나 iTerm2가 필요합니다. VS Code 터미널, Windows Terminal, Ghostty에서는 쓸 수 없습니다.
 
-### Navigation
+### 이동
 
-To move between teammates, use the up and down arrow keys in the agent panel and press Enter (in-process mode), or click into a teammate's pane (split-pane mode).
+팀원 사이를 이동하려면 에이전트 패널에서 위아래 화살표 키로 고른 뒤 Enter를 누르거나(인프로세스 모드), 팀원의 창을 클릭하세요(분할 창 모드).
 
-### Team Configuration
+### 팀 설정
 
-Team configurations are stored at `~/.claude/teams/{team-name}/config.json`.
+팀 설정은 `~/.claude/teams/{team-name}/config.json`에 저장됩니다.
 
-### Teammate Model Selection
+### 팀원 모델 선택
 
-As of v2.1.234, the "Default teammate model" `/config` setting was removed. Teammates now inherit the team lead's model by default, unless the spawn call specifies a different model explicitly.
+v2.1.234부터 `/config`의 "Default teammate model"(기본 팀원 모델) 설정이 제거되었습니다. 이제 팀원은 생성 호출에서 다른 모델을 명시하지 않는 한 기본적으로 팀 리드의 모델을 상속합니다.
 
-### Architecture
+### 아키텍처
 
 ```mermaid
 graph TB
-    Lead["Team Lead<br/>(Coordinator)"]
-    TaskList["Shared Task List<br/>(Dependencies)"]
-    Mailbox["Mailbox<br/>(Messages)"]
-    T1["Teammate 1<br/>(Own Context)"]
-    T2["Teammate 2<br/>(Own Context)"]
-    T3["Teammate 3<br/>(Own Context)"]
+    Lead["팀 리드<br/>(조율자)"]
+    TaskList["공유 작업 목록<br/>(의존성)"]
+    Mailbox["메일함<br/>(메시지)"]
+    T1["팀원 1<br/>(자체 컨텍스트)"]
+    T2["팀원 2<br/>(자체 컨텍스트)"]
+    T3["팀원 3<br/>(자체 컨텍스트)"]
 
-    Lead -->|assigns tasks| TaskList
-    Lead -->|sends messages| Mailbox
-    TaskList -->|picks up work| T1
-    TaskList -->|picks up work| T2
-    TaskList -->|picks up work| T3
-    T1 -->|reads/writes| Mailbox
-    T2 -->|reads/writes| Mailbox
-    T3 -->|reads/writes| Mailbox
-    T1 -->|updates status| TaskList
-    T2 -->|updates status| TaskList
-    T3 -->|updates status| TaskList
+    Lead -->|작업 배정| TaskList
+    Lead -->|메시지 전송| Mailbox
+    TaskList -->|작업 가져감| T1
+    TaskList -->|작업 가져감| T2
+    TaskList -->|작업 가져감| T3
+    T1 -->|읽기/쓰기| Mailbox
+    T2 -->|읽기/쓰기| Mailbox
+    T3 -->|읽기/쓰기| Mailbox
+    T1 -->|상태 갱신| TaskList
+    T2 -->|상태 갱신| TaskList
+    T3 -->|상태 갱신| TaskList
 
     style Lead fill:#e1f5fe,stroke:#333,color:#333
     style TaskList fill:#fff9c4,stroke:#333,color:#333
@@ -798,79 +796,79 @@ graph TB
     style T3 fill:#e8f5e9,stroke:#333,color:#333
 ```
 
-**Key components**:
+**핵심 구성 요소**:
 
-- **Team Lead**: The main Claude Code session that creates the team, assigns tasks, and coordinates
-- **Shared Task List**: A synchronized list of tasks with automatic dependency tracking
-- **Mailbox**: An inter-agent messaging system for teammates to communicate status and coordinate
-- **Teammates**: Independent Claude Code instances, each with their own context window
+- **팀 리드**: 팀을 만들고, 작업을 배정하고, 조율하는 메인 Claude Code 세션
+- **공유 작업 목록**: 의존성을 자동으로 추적하는, 동기화된 작업 목록
+- **메일함**: 팀원끼리 상태를 알리고 조율하는 에이전트 사이 메시지 시스템
+- **팀원**: 각자 자체 컨텍스트 윈도우를 가진 독립적인 Claude Code 인스턴스
 
-### Task assignment and messaging
+### 작업 배정과 메시지
 
-The team lead breaks work into tasks and assigns them to teammates. The shared task list handles:
+팀 리드는 작업을 여러 작업 단위로 나눠 팀원에게 배정합니다. 공유 작업 목록은 다음을 처리합니다:
 
-- **Automatic dependency management** — tasks wait for their dependencies to complete
-- **Status tracking** — teammates update task status as they work
-- **Inter-agent messaging** — teammates send messages via the mailbox for coordination (e.g., "Database schema is ready, you can start writing queries")
+- **자동 의존성 관리** — 작업은 의존하는 작업이 끝날 때까지 기다립니다
+- **상태 추적** — 팀원은 작업하면서 작업 상태를 갱신합니다
+- **에이전트 사이 메시지** — 팀원은 조율을 위해 메일함으로 메시지를 보냅니다(예: "데이터베이스 스키마가 준비됐으니 쿼리 작성을 시작해도 됩니다")
 
-### Plan approval workflow
+### 계획 승인 워크플로우
 
-For complex tasks, the team lead creates an execution plan before teammates begin work. The user reviews and approves the plan, ensuring the team's approach aligns with expectations before any code changes are made.
+복잡한 작업에서는 팀원이 작업을 시작하기 전에 팀 리드가 실행 계획을 세웁니다. 사용자가 계획을 검토하고 승인하므로, 코드가 바뀌기 전에 팀의 접근 방식이 기대와 맞는지 확인할 수 있습니다.
 
-### Hook events for teams
+### 팀용 훅 이벤트
 
-Agent Teams introduce two additional [hook events](../06-hooks/):
+에이전트 팀은 [훅 이벤트](../06-hooks/) 두 가지를 추가합니다:
 
-| Event | Fires When | Use Case |
+| 이벤트 | 발생 시점 | 활용 사례 |
 |-------|-----------|----------|
-| `TeammateIdle` | A teammate finishes its current task and has no pending work | Trigger notifications, assign follow-up tasks |
-| `TaskCompleted` | A task in the shared task list is marked complete | Run validation, update dashboards, chain dependent work |
+| `TeammateIdle` | 팀원이 현재 작업을 마치고 남은 작업이 없을 때 | 알림 보내기, 후속 작업 배정 |
+| `TaskCompleted` | 공유 작업 목록의 작업이 완료로 표시될 때 | 검증 실행, 대시보드 갱신, 의존 작업 연결 |
 
-### Best practices
+### 모범 사례
 
-- **Team size**: Keep teams at 3-5 teammates for optimal coordination
-- **Task sizing**: Break work into tasks that take 5-15 minutes each — small enough to parallelize, large enough to be meaningful
-- **Avoid file conflicts**: Assign different files or directories to different teammates to prevent merge conflicts
-- **Start simple**: Use in-process mode for your first team; switch to split-panes once comfortable
-- **Clear task descriptions**: Provide specific, actionable task descriptions so teammates can work independently
+- **팀 규모**: 조율이 잘 되도록 팀원은 3~5명으로 유지하세요
+- **작업 크기**: 작업마다 5~15분 정도 걸리도록 나누세요 — 병렬로 처리할 만큼 작고, 의미가 있을 만큼 크게
+- **파일 충돌 피하기**: 병합 충돌을 막으려면 팀원마다 다른 파일이나 디렉토리를 맡기세요
+- **간단하게 시작**: 첫 팀은 인프로세스 모드로 시작하고, 익숙해지면 분할 창으로 바꾸세요
+- **명확한 작업 설명**: 팀원이 독립적으로 일할 수 있도록 구체적이고 실행 가능한 작업 설명을 주세요
 
-### Limitations
+### 제한 사항
 
-- **Experimental**: Feature behavior may change in future releases
-- **No session resumption**: In-process teammates cannot be resumed after a session ends
-- **One team per session**: Cannot create nested teams or multiple teams in a single session
-- **Fixed leadership**: The team lead role cannot be transferred to a teammate
-- **Split-pane restrictions**: tmux/iTerm2 required; not available in VS Code terminal, Windows Terminal, or Ghostty
-- **No cross-session teams**: Teammates exist only within the current session
+- **실험적 기능**: 이후 릴리스에서 동작이 바뀔 수 있습니다
+- **세션 재개 불가**: 인프로세스 팀원은 세션이 끝난 뒤 재개할 수 없습니다
+- **세션당 팀 하나**: 한 세션에서 중첩된 팀이나 여러 팀을 만들 수 없습니다
+- **고정된 리더**: 팀 리드 역할을 팀원에게 넘길 수 없습니다
+- **분할 창 제약**: tmux/iTerm2가 필요하며, VS Code 터미널, Windows Terminal, Ghostty에서는 쓸 수 없습니다
+- **세션 간 팀 불가**: 팀원은 현재 세션 안에만 존재합니다
 
-> **Warning**: Agent Teams is experimental. Test with non-critical work first and monitor teammate coordination for unexpected behavior.
+> **경고**: 에이전트 팀은 실험적 기능입니다. 먼저 중요하지 않은 작업으로 테스트하고, 팀원 조율에 예상치 못한 동작이 없는지 지켜보세요.
 
 ---
 
-## Plugin Subagent Security
+## 플러그인 서브에이전트 보안
 
-Plugin-provided subagents have restricted frontmatter capabilities for security. The following fields are **not allowed** in plugin subagent definitions:
+플러그인이 제공하는 서브에이전트는 보안을 위해 frontmatter 기능이 제한됩니다. 플러그인 서브에이전트 정의에서는 다음 필드를 **쓸 수 없습니다**:
 
-- `hooks` - Cannot define lifecycle hooks
-- `mcpServers` - Cannot configure MCP servers
-- `permissionMode` - Cannot override permission settings
+- `hooks` - 수명 주기 훅을 정의할 수 없음
+- `mcpServers` - MCP 서버를 설정할 수 없음
+- `permissionMode` - 권한 설정을 재정의할 수 없음
 
-This prevents plugins from escalating privileges or executing arbitrary commands through subagent hooks.
+이렇게 해서 플러그인이 서브에이전트 훅을 통해 권한을 높이거나 임의의 명령어를 실행하지 못하게 막습니다.
 
-### Subagent Output Scanning (v2.1.210+)
+### 서브에이전트 출력 검사 (v2.1.210+)
 
-As of v2.1.210, Claude Code scans each subagent's final report for text that imitates the harness's own output format — fake `<system-reminder>`-style tags, fabricated `Human:`/`Assistant:` turns, or mentions of permission-bypass flags and settings-file paths. This defends against prompt injection carried in subagent output, such as a subagent that fetched a malicious web page containing fake control tokens designed to manipulate the parent session.
+v2.1.210부터 Claude Code는 각 서브에이전트의 최종 보고서에서 하네스 자체의 출력 형식을 흉내 내는 텍스트를 검사합니다 — `<system-reminder>` 같은 가짜 태그, 꾸며 낸 `Human:`/`Assistant:` 턴, 권한 우회 플래그나 설정 파일 경로 언급 등입니다. 서브에이전트 출력에 실려 오는 프롬프트 주입을 막기 위한 장치로, 예를 들어 상위 세션을 조작하려고 가짜 제어 토큰을 심어 둔 악성 웹 페이지를 서브에이전트가 가져온 경우를 방어합니다.
 
-When the scan flags something, Claude Code neutralizes it — inserting a backslash or an inline marker such as `[harness: subagent output matched instruction-shaped pattern(s): ...]` naming what triggered the scan — and the parent session is expected to treat the flagged text as a finding to relay, not an instruction to follow. The scan is on by default with no documented opt-out. It errs toward flagging: a legitimate subagent report that quotes a real flag name (e.g. `--dangerously-skip-permissions`) verbatim can trigger a marker even though nothing malicious occurred — a false positive is preferable to a missed injection.
+검사에서 무언가가 걸리면 Claude Code는 이를 무력화합니다 — 백슬래시를 넣거나, 무엇이 검사를 일으켰는지 밝히는 `[harness: subagent output matched instruction-shaped pattern(s): ...]` 같은 인라인 표시를 넣습니다. 상위 세션은 표시된 텍스트를 따를 지시가 아니라 전달할 발견 사항으로 다뤄야 합니다. 이 검사는 기본으로 켜져 있으며 끄는 방법은 문서화되어 있지 않습니다. 검사는 되도록 잡아내는 쪽으로 동작합니다: 정상적인 서브에이전트 보고서라도 실제 플래그 이름(예: `--dangerously-skip-permissions`)을 그대로 인용하면, 악의적인 일이 없었는데도 표시가 붙을 수 있습니다 — 주입을 놓치는 것보다 오탐이 낫기 때문입니다.
 
-### Subagent Concurrency and Depth Limits
+### 서브에이전트 동시 실행 수와 깊이 한도
 
-> **The per-session spawn cap is gone.** Claude Code capped subagent spawns at 200 per session from v2.1.212, but **v2.1.224 removed that cap** — long-running sessions no longer refuse new agents, and the official subagents reference now states plainly that there is no limit on the total number of subagents Claude can spawn over a session. The `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION` variable that overrode it is gone with it.
+> **세션당 생성 한도가 없어졌습니다.** Claude Code는 v2.1.212부터 세션당 서브에이전트 생성을 200개로 제한했지만, **v2.1.224에서 이 한도를 없앴습니다** — 오래 실행되는 세션도 더 이상 새 에이전트를 거부하지 않으며, 공식 서브에이전트 레퍼런스에도 한 세션 동안 Claude가 생성할 수 있는 서브에이전트의 총수에는 제한이 없다고 분명히 적혀 있습니다. 이 한도를 재정의하던 `CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION` 변수도 함께 없어졌습니다.
 
-Two limits on subagent fan-out do still apply, both set by environment variable:
+서브에이전트 확장에 대한 한도 두 가지는 여전히 적용되며, 둘 다 환경 변수로 설정합니다:
 
-- `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` (v2.1.217) - Maximum number of subagents running **concurrently** at once. Default: 20.
-- `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` (v2.1.217) - Maximum **nesting depth** for subagents spawning their own subagents. **Default: 3 since v2.1.219** (was 1 in v2.1.217–v2.1.218). Set this to `1` to disable nesting (see [Key Behaviors](#key-behaviors)).
+- `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` (v2.1.217) - **동시에** 실행되는 서브에이전트의 최대 수. 기본값: 20.
+- `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` (v2.1.217) - 서브에이전트가 자신의 서브에이전트를 생성할 때의 최대 **중첩 깊이**. **v2.1.219부터 기본값 3**(v2.1.217~v2.1.218에서는 1). 중첩을 끄려면 `1`로 설정하세요([주요 동작](#주요-동작) 참고).
 
 ```bash
 export CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=20
@@ -879,66 +877,66 @@ export CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=5
 
 ---
 
-## Architecture
+## 아키텍처
 
-### High-Level Architecture
+### 상위 수준 아키텍처
 
 ```mermaid
 graph TB
-    User["User"]
-    Main["Main Agent<br/>(Coordinator)"]
-    Reviewer["Code Reviewer<br/>Subagent"]
-    Tester["Test Engineer<br/>Subagent"]
-    Docs["Documentation<br/>Subagent"]
+    User["사용자"]
+    Main["메인 에이전트<br/>(조율자)"]
+    Reviewer["코드 리뷰어<br/>서브에이전트"]
+    Tester["테스트 엔지니어<br/>서브에이전트"]
+    Docs["문서화<br/>서브에이전트"]
 
-    User -->|asks| Main
-    Main -->|delegates| Reviewer
-    Main -->|delegates| Tester
-    Main -->|delegates| Docs
-    Reviewer -->|returns result| Main
-    Tester -->|returns result| Main
-    Docs -->|returns result| Main
-    Main -->|synthesizes| User
+    User -->|요청| Main
+    Main -->|위임| Reviewer
+    Main -->|위임| Tester
+    Main -->|위임| Docs
+    Reviewer -->|결과 반환| Main
+    Tester -->|결과 반환| Main
+    Docs -->|결과 반환| Main
+    Main -->|종합| User
 ```
 
-### Subagent Lifecycle
+### 서브에이전트 수명 주기
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant MainAgent as Main Agent
-    participant CodeReviewer as Code Reviewer<br/>Subagent
-    participant Context as Separate<br/>Context Window
+    participant User as 사용자
+    participant MainAgent as 메인 에이전트
+    participant CodeReviewer as 코드 리뷰어<br/>서브에이전트
+    participant Context as 별도의<br/>컨텍스트 윈도우
 
-    User->>MainAgent: "Build new auth feature"
-    MainAgent->>MainAgent: Analyze task
-    MainAgent->>CodeReviewer: "Review this code"
-    CodeReviewer->>Context: Initialize clean context
-    Context->>CodeReviewer: Load reviewer instructions
-    CodeReviewer->>CodeReviewer: Perform review
-    CodeReviewer-->>MainAgent: Return findings
-    MainAgent->>MainAgent: Incorporate results
-    MainAgent-->>User: Provide synthesis
+    User->>MainAgent: "새 인증 기능을 만들어 줘"
+    MainAgent->>MainAgent: 작업 분석
+    MainAgent->>CodeReviewer: "이 코드를 리뷰해 줘"
+    CodeReviewer->>Context: 깨끗한 컨텍스트 초기화
+    Context->>CodeReviewer: 리뷰어 지침 로드
+    CodeReviewer->>CodeReviewer: 리뷰 수행
+    CodeReviewer-->>MainAgent: 발견 사항 반환
+    MainAgent->>MainAgent: 결과 반영
+    MainAgent-->>User: 종합 결과 제공
 ```
 
 ---
 
-## Context Management
+## 컨텍스트 관리
 
 ```mermaid
 graph TB
-    A["Main Agent Context<br/>50,000 tokens"]
-    B["Subagent 1 Context<br/>20,000 tokens"]
-    C["Subagent 2 Context<br/>20,000 tokens"]
-    D["Subagent 3 Context<br/>20,000 tokens"]
+    A["메인 에이전트 컨텍스트<br/>50,000 토큰"]
+    B["서브에이전트 1 컨텍스트<br/>20,000 토큰"]
+    C["서브에이전트 2 컨텍스트<br/>20,000 토큰"]
+    D["서브에이전트 3 컨텍스트<br/>20,000 토큰"]
 
-    A -->|Clean slate| B
-    A -->|Clean slate| C
-    A -->|Clean slate| D
+    A -->|깨끗한 상태로 시작| B
+    A -->|깨끗한 상태로 시작| C
+    A -->|깨끗한 상태로 시작| D
 
-    B -->|Results only| A
-    C -->|Results only| A
-    D -->|Results only| A
+    B -->|결과만 전달| A
+    C -->|결과만 전달| A
+    D -->|결과만 전달| A
 
     style A fill:#e1f5fe
     style B fill:#fff9c4
@@ -946,309 +944,309 @@ graph TB
     style D fill:#fff9c4
 ```
 
-### Key Points
+### 핵심 요점
 
-- Each subagent gets a **fresh context window** without the main conversation history
-- Only the **relevant context** is passed to the subagent for their specific task
-- Results are **distilled** back to the main agent
-- This prevents **context token exhaustion** on long projects
+- 각 서브에이전트는 메인 대화 기록이 없는 **새 컨텍스트 윈도우**를 받습니다
+- 서브에이전트에게는 해당 작업에 **관련된 컨텍스트**만 전달됩니다
+- 결과는 **요약되어** 메인 에이전트로 돌아옵니다
+- 덕분에 긴 프로젝트에서도 **컨텍스트 토큰 소진**을 막을 수 있습니다
 
-### Performance Considerations
+### 성능 고려 사항
 
-- **Context efficiency** - Agents preserve main context, enabling longer sessions
-- **Latency** - Subagents start with clean slate and may add latency gathering initial context
+- **컨텍스트 효율성** - 에이전트가 메인 컨텍스트를 아껴 주므로 세션을 더 오래 이어 갈 수 있습니다
+- **지연 시간** - 서브에이전트는 깨끗한 상태에서 시작하므로 초기 컨텍스트를 모으느라 지연 시간이 늘어날 수 있습니다
 
-### Key Behaviors
+### 주요 동작
 
-- **Nested spawning on by default, depth 3 (v2.1.219)** - Subagents can spawn their own subagents up to three layers below the main conversation. Set `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` to change the limit, or `1` to turn nesting off. At the depth limit, Claude Code withholds the `Agent` tool from every subagent except a fork. (History: v2.1.172–v2.1.216 nested by default up to 5 layers with no way to change it; v2.1.217 made nesting opt-in at depth 1; v2.1.219 set the default to 3.) Use the `Agent(agent_type)` restriction syntax (see [Restrict Spawnable Subagents](#restrict-spawnable-subagents)) to control which subagents a main-thread agent (`claude --agent`) may spawn; inside a subagent the type list is ignored
-- **Background permissions** - When a background subagent needs a permission that is not pre-approved, the prompt appears in your main session and names the subagent that is asking
-- **Backgrounding** - Press `Ctrl+B` to background a currently running task
-- **Transcripts** - Subagent transcripts are stored at `~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl`
-- **Auto-compaction** - Subagent context auto-compacts at ~95% capacity (override with `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` environment variable)
-- **Extended thinking inherited (v2.1.198)** - Subagents and context compaction now inherit the session's extended-thinking configuration (previously always disabled). There is no per-subagent thinking field
+- **중첩 생성은 기본으로 켜져 있으며 깊이 3 (v2.1.219)** - 서브에이전트는 메인 대화 아래 세 단계까지 자신의 서브에이전트를 생성할 수 있습니다. 한도를 바꾸려면 `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`를 설정하고, 중첩을 끄려면 `1`로 설정하세요. 깊이 한도에 도달하면 Claude Code는 포크를 제외한 모든 서브에이전트에게서 `Agent` 도구를 빼앗습니다. (이력: v2.1.172~v2.1.216에서는 바꿀 방법 없이 기본으로 5단계까지 중첩됐고, v2.1.217에서 깊이 1의 선택 기능이 되었다가, v2.1.219에서 기본값이 3이 되었습니다.) 메인 스레드 에이전트(`claude --agent`)가 생성할 수 있는 서브에이전트를 제어하려면 `Agent(agent_type)` 제한 문법을 쓰세요([생성 가능한 서브에이전트 제한](#생성-가능한-서브에이전트-제한) 참고). 서브에이전트 안에서는 타입 목록이 무시됩니다
+- **백그라운드 권한** - 백그라운드 서브에이전트에 사전 승인되지 않은 권한이 필요하면, 요청하는 서브에이전트의 이름과 함께 메인 세션에 권한 프롬프트가 표시됩니다
+- **백그라운드로 보내기** - 실행 중인 작업을 백그라운드로 보내려면 `Ctrl+B`를 누르세요
+- **대화 기록** - 서브에이전트 대화 기록은 `~/.claude/projects/{project}/{sessionId}/subagents/agent-{agentId}.jsonl`에 저장됩니다
+- **자동 컴팩션** - 서브에이전트 컨텍스트는 약 95% 용량에서 자동으로 압축됩니다(`CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` 환경 변수로 재정의)
+- **확장 사고 상속 (v2.1.198)** - 이제 서브에이전트와 컨텍스트 컴팩션이 세션의 확장 사고 설정을 상속합니다(이전에는 항상 꺼져 있었음). 서브에이전트별 사고 설정 필드는 없습니다
 
-### Additional Controls
+### 추가 제어
 
-- **Disable built-in Explore/Plan agents** - Set `CLAUDE_CODE_DISABLE_EXPLORE_PLAN_AGENTS=1` to remove the built-in Explore and Plan agents (v2.1.198)
-- **Append to every subagent prompt** - In non-interactive / `--print` mode, `--append-subagent-system-prompt "<text>"` appends text to every subagent's system prompt (v2.1.205)
-- **Append from a file** - `--append-subagent-system-prompt-file ./subagent-rules.txt` reads the same appended text from a file, for prompts too long to pass on the command line. Also `-p`-only, and it cannot be combined with `--append-subagent-system-prompt` (v2.1.261)
+- **기본 제공 Explore/Plan 에이전트 끄기** - `CLAUDE_CODE_DISABLE_EXPLORE_PLAN_AGENTS=1`을 설정하면 기본 제공 Explore와 Plan 에이전트가 제거됩니다(v2.1.198)
+- **모든 서브에이전트 프롬프트에 덧붙이기** - 비대화형 / `--print` 모드에서 `--append-subagent-system-prompt "<text>"`는 모든 서브에이전트의 시스템 프롬프트에 텍스트를 덧붙입니다(v2.1.205)
+- **파일에서 덧붙이기** - `--append-subagent-system-prompt-file ./subagent-rules.txt`는 같은 덧붙일 텍스트를 파일에서 읽으므로, 명령줄로 넘기기에는 너무 긴 프롬프트에 씁니다. 이 역시 `-p` 전용이며 `--append-subagent-system-prompt`와 함께 쓸 수 없습니다(v2.1.261)
 
 ---
 
-## When to Use Subagents
+## 서브에이전트를 써야 할 때
 
-| Scenario | Use Subagent | Why |
+| 상황 | 서브에이전트 사용 | 이유 |
 |----------|--------------|-----|
-| Complex feature with many steps | Yes | Separate concerns, prevent context pollution |
-| Quick code review | No | Unnecessary overhead |
-| Parallel task execution | Yes | Each subagent has own context |
-| Specialized expertise needed | Yes | Custom system prompts |
-| Long-running analysis | Yes | Prevents main context exhaustion |
-| Single task | No | Adds latency unnecessarily |
+| 단계가 많은 복잡한 기능 | 예 | 관심사 분리, 컨텍스트 오염 방지 |
+| 빠른 코드 리뷰 | 아니요 | 불필요한 오버헤드 |
+| 병렬 작업 실행 | 예 | 서브에이전트마다 자체 컨텍스트 |
+| 전문 지식 필요 | 예 | 사용자 정의 시스템 프롬프트 |
+| 오래 걸리는 분석 | 예 | 메인 컨텍스트 소진 방지 |
+| 단일 작업 | 아니요 | 불필요하게 지연 시간이 늘어남 |
 
 ---
 
-## Best Practices
+## 모범 사례
 
-### Design Principles
+### 설계 원칙
 
-**Do:**
-- Start with Claude-generated agents - Generate initial subagent with Claude, then iterate to customize
-- Design focused subagents - Single, clear responsibilities rather than one doing everything
-- Write detailed prompts - Include specific instructions, examples, and constraints
-- Limit tool access - Grant only necessary tools for the subagent's purpose
-- Version control - Check project subagents into version control for team collaboration
+**권장:**
+- Claude가 만든 에이전트로 시작 - 첫 서브에이전트는 Claude로 만든 다음, 반복해서 다듬으며 맞춤 설정
+- 범위가 좁은 서브에이전트 설계 - 하나가 모든 일을 하기보다 하나의 명확한 책임
+- 자세한 프롬프트 작성 - 구체적인 지침, 예시, 제약 조건 포함
+- 도구 접근 제한 - 서브에이전트의 목적에 꼭 필요한 도구만 허용
+- 버전 관리 - 팀 협업을 위해 프로젝트 서브에이전트를 버전 관리에 커밋
 
-**Don't:**
-- Create overlapping subagents with same roles
-- Give subagents unnecessary tool access
-- Use subagents for simple, single-step tasks
-- Mix concerns in one subagent's prompt
-- Forget to pass necessary context
+**비권장:**
+- 역할이 겹치는 서브에이전트 만들기
+- 서브에이전트에게 불필요한 도구 접근 허용하기
+- 간단한 한 단계 작업에 서브에이전트 쓰기
+- 서브에이전트 하나의 프롬프트에 여러 관심사 섞기
+- 필요한 컨텍스트 전달 잊기
 
-### System Prompt Best Practices
+### 시스템 프롬프트 모범 사례
 
-1. **Be Specific About Role**
+1. **역할을 구체적으로**
    ```
-   You are an expert code reviewer specializing in [specific areas]
-   ```
-
-2. **Define Priorities Clearly**
-   ```
-   Review priorities (in order):
-   1. Security Issues
-   2. Performance Problems
-   3. Code Quality
+   당신은 [특정 분야]를 전문으로 하는 코드 리뷰 전문가입니다
    ```
 
-3. **Specify Output Format**
+2. **우선순위를 명확하게**
    ```
-   For each issue provide: Severity, Category, Location, Description, Fix, Impact
-   ```
-
-4. **Include Action Steps**
-   ```
-   When invoked:
-   1. Run git diff to see recent changes
-   2. Focus on modified files
-   3. Begin review immediately
+   리뷰 우선순위(순서대로):
+   1. 보안 문제
+   2. 성능 문제
+   3. 코드 품질
    ```
 
-### Tool Access Strategy
+3. **출력 형식 지정**
+   ```
+   문제마다 다음을 제공하세요: 심각도, 분류, 위치, 설명, 수정 방법, 영향
+   ```
 
-1. **Start Restrictive**: Begin with only essential tools
-2. **Expand Only When Needed**: Add tools as requirements demand
-3. **Read-Only When Possible**: Use Read/Grep for analysis agents
-4. **Sandboxed Execution**: Limit Bash commands to specific patterns
+4. **실행 단계 포함**
+   ```
+   호출되면:
+   1. git diff를 실행해 최근 변경 사항 확인
+   2. 수정된 파일에 집중
+   3. 바로 리뷰 시작
+   ```
 
----
+### 도구 접근 전략
 
-## Example Subagents in This Folder
-
-This folder contains ready-to-use example subagents:
-
-### 1. Code Reviewer (`code-reviewer.md`)
-
-**Purpose**: Comprehensive code quality and maintainability analysis
-
-**Tools**: Read, Grep, Glob, Bash
-
-**Specialization**:
-- Security vulnerability detection
-- Performance optimization identification
-- Code maintainability assessment
-- Test coverage analysis
-
-**Use When**: You need automated code reviews with focus on quality and security
+1. **제한적으로 시작**: 꼭 필요한 도구만으로 시작하세요
+2. **필요할 때만 확장**: 요구 사항이 생길 때 도구를 추가하세요
+3. **가능하면 읽기 전용**: 분석 에이전트에는 Read/Grep을 쓰세요
+4. **샌드박스 실행**: Bash 명령어는 특정 패턴으로 제한하세요
 
 ---
 
-### 2. Test Engineer (`test-engineer.md`)
+## 이 폴더의 예제 서브에이전트
 
-**Purpose**: Test strategy, coverage analysis, and automated testing
+이 폴더에는 바로 쓸 수 있는 예제 서브에이전트가 들어 있습니다:
 
-**Tools**: Read, Write, Bash, Grep
+### 1. 코드 리뷰어 (`code-reviewer.md`)
 
-**Specialization**:
-- Unit test creation
-- Integration test design
-- Edge case identification
-- Coverage analysis (>80% target)
+**목적**: 코드 품질과 유지 보수성 종합 분석
 
-**Use When**: You need comprehensive test suite creation or coverage analysis
+**도구**: Read, Grep, Glob, Bash
 
----
+**전문 분야**:
+- 보안 취약점 탐지
+- 성능 최적화 지점 파악
+- 코드 유지 보수성 평가
+- 테스트 커버리지 분석
 
-### 3. Documentation Writer (`documentation-writer.md`)
-
-**Purpose**: Technical documentation, API docs, and user guides
-
-**Tools**: Read, Write, Grep
-
-**Specialization**:
-- API endpoint documentation
-- User guide creation
-- Architecture documentation
-- Code comment improvement
-
-**Use When**: You need to create or update project documentation
+**사용 시점**: 품질과 보안에 초점을 맞춘 자동 코드 리뷰가 필요할 때
 
 ---
 
-### 4. Secure Reviewer (`secure-reviewer.md`)
+### 2. 테스트 엔지니어 (`test-engineer.md`)
 
-**Purpose**: Security-focused code review with minimal permissions
+**목적**: 테스트 전략, 커버리지 분석, 자동화된 테스트
 
-**Tools**: Read, Grep
+**도구**: Read, Write, Bash, Grep
 
-**Specialization**:
-- Security vulnerability detection
-- Authentication/authorization issues
-- Data exposure risks
-- Injection attack identification
+**전문 분야**:
+- 단위 테스트 작성
+- 통합 테스트 설계
+- 엣지 케이스 식별
+- 커버리지 분석(목표 80% 이상)
 
-**Use When**: You need security audits without modification capabilities
-
----
-
-### 5. Implementation Agent (`implementation-agent.md`)
-
-**Purpose**: Full implementation capabilities for feature development
-
-**Tools**: Read, Write, Edit, Bash, Grep, Glob
-
-**Specialization**:
-- Feature implementation
-- Code generation
-- Build and test execution
-- Codebase modification
-
-**Use When**: You need a subagent to implement features end-to-end
+**사용 시점**: 종합 테스트 스위트를 만들거나 커버리지를 분석해야 할 때
 
 ---
 
-### 6. Debugger (`debugger.md`)
+### 3. 문서 작성자 (`documentation-writer.md`)
 
-**Purpose**: Debugging specialist for errors, test failures, and unexpected behavior
+**목적**: 기술 문서, API 문서, 사용자 가이드
 
-**Tools**: Read, Edit, Bash, Grep, Glob
+**도구**: Read, Write, Grep
 
-**Specialization**:
-- Root cause analysis
-- Error investigation
-- Test failure resolution
-- Minimal fix implementation
+**전문 분야**:
+- API 엔드포인트 문서화
+- 사용자 가이드 작성
+- 아키텍처 문서화
+- 코드 주석 개선
 
-**Use When**: You encounter bugs, errors, or unexpected behavior
-
----
-
-### 7. Data Scientist (`data-scientist.md`)
-
-**Purpose**: Data analysis expert for SQL queries and data insights
-
-**Tools**: Bash, Read, Write
-
-**Specialization**:
-- SQL query optimization
-- BigQuery operations
-- Data analysis and visualization
-- Statistical insights
-
-**Use When**: You need data analysis, SQL queries, or BigQuery operations
+**사용 시점**: 프로젝트 문서를 만들거나 갱신해야 할 때
 
 ---
 
-### 8. Clean Code Reviewer (`clean-code-reviewer.md`)
+### 4. 보안 리뷰어 (`secure-reviewer.md`)
 
-**Purpose**: Readability and maintainability review against clean-code principles
+**목적**: 최소 권한으로 하는 보안 중심 코드 리뷰
 
-**Tools**: Read, Grep, Glob, Bash
+**도구**: Read, Grep
 
-**Specialization**:
-- Naming, function length, and argument count
-- Duplication and dead code
-- Comment quality and intent
-- Structural clarity over cleverness
+**전문 분야**:
+- 보안 취약점 탐지
+- 인증/인가 문제
+- 데이터 노출 위험
+- 인젝션 공격 식별
 
-**Use When**: You want a style and maintainability pass distinct from correctness review
-
----
-
-### 9. Performance Optimizer (`performance-optimizer.md`)
-
-**Purpose**: Identify and remediate performance bottlenecks
-
-**Tools**: Read, Edit, Bash, Grep, Glob
-
-**Specialization**:
-- Algorithmic complexity and hot paths
-- Memory allocation and leaks
-- Caching and query optimization
-- Concurrency and I/O bottlenecks
-
-**Use When**: Code is measurably slow and you need targeted optimization
+**사용 시점**: 수정 권한 없이 보안 감사를 해야 할 때
 
 ---
 
-## Installation Instructions
+### 5. 구현 에이전트 (`implementation-agent.md`)
 
-### Method 1: Ask Claude (Recommended)
+**목적**: 기능 개발을 위한 완전한 구현 기능
 
-Describe the subagent you want and let Claude create the file:
+**도구**: Read, Write, Edit, Bash, Grep, Glob
+
+**전문 분야**:
+- 기능 구현
+- 코드 생성
+- 빌드와 테스트 실행
+- 코드베이스 수정
+
+**사용 시점**: 서브에이전트가 기능을 처음부터 끝까지 구현해야 할 때
+
+---
+
+### 6. 디버거 (`debugger.md`)
+
+**목적**: 오류, 테스트 실패, 예상치 못한 동작을 다루는 디버깅 전문가
+
+**도구**: Read, Edit, Bash, Grep, Glob
+
+**전문 분야**:
+- 근본 원인 분석
+- 오류 조사
+- 테스트 실패 해결
+- 최소한의 수정 구현
+
+**사용 시점**: 버그, 오류, 예상치 못한 동작을 만났을 때
+
+---
+
+### 7. 데이터 과학자 (`data-scientist.md`)
+
+**목적**: SQL 쿼리와 데이터 인사이트를 위한 데이터 분석 전문가
+
+**도구**: Bash, Read, Write
+
+**전문 분야**:
+- SQL 쿼리 최적화
+- BigQuery 작업
+- 데이터 분석과 시각화
+- 통계적 인사이트
+
+**사용 시점**: 데이터 분석, SQL 쿼리, BigQuery 작업이 필요할 때
+
+---
+
+### 8. 클린 코드 리뷰어 (`clean-code-reviewer.md`)
+
+**목적**: 클린 코드 원칙에 따른 가독성과 유지 보수성 리뷰
+
+**도구**: Read, Grep, Glob, Bash
+
+**전문 분야**:
+- 이름, 함수 길이, 인수 개수
+- 중복과 죽은 코드
+- 주석의 품질과 의도
+- 기교보다 구조적 명확성
+
+**사용 시점**: 정확성 리뷰와 별개로 스타일과 유지 보수성을 점검하고 싶을 때
+
+---
+
+### 9. 성능 최적화 에이전트 (`performance-optimizer.md`)
+
+**목적**: 성능 병목을 찾아 해결
+
+**도구**: Read, Edit, Bash, Grep, Glob
+
+**전문 분야**:
+- 알고리즘 복잡도와 핫 패스
+- 메모리 할당과 누수
+- 캐싱과 쿼리 최적화
+- 동시성과 I/O 병목
+
+**사용 시점**: 코드가 측정 가능할 만큼 느려서 목표를 정한 최적화가 필요할 때
+
+---
+
+## 설치 방법
+
+### 방법 1: Claude에게 요청하기(권장)
+
+원하는 서브에이전트를 설명하고 Claude가 파일을 만들게 하세요:
 
 ```text
-Create a project-level subagent that runs tests and fixes failures.
-Give it access to Bash, Read, Edit, and Grep.
+테스트를 실행하고 실패를 고치는 프로젝트 수준 서브에이전트를 만들어 줘.
+Bash, Read, Edit, Grep 도구를 쓸 수 있게 해 줘.
 ```
 
-Claude writes `.claude/agents/<name>.md` with appropriate frontmatter. Review the generated file, then use it. (The `/agents` interactive creation wizard was removed in v2.1.198 — ask Claude or edit the file directly instead.)
+Claude가 알맞은 frontmatter로 `.claude/agents/<name>.md`를 작성합니다. 생성된 파일을 검토한 다음 사용하세요. (`/agents` 대화형 생성 마법사는 v2.1.198에서 제거되었으니, 대신 Claude에게 요청하거나 파일을 직접 편집하세요.)
 
-### Method 2: Copy to Project
+### 방법 2: 프로젝트에 복사
 
-Copy the agent files to your project's `.claude/agents/` directory:
+에이전트 파일을 프로젝트의 `.claude/agents/` 디렉토리에 복사하세요:
 
 ```bash
-# Navigate to your project
+# 프로젝트로 이동
 cd /path/to/your/project
 
-# Create agents directory if it doesn't exist
+# agents 디렉토리가 없으면 만들기
 mkdir -p .claude/agents
 
-# Copy all agent files from this folder
+# 이 폴더의 에이전트 파일을 모두 복사
 cp /path/to/04-subagents/*.md .claude/agents/
 
-# Remove the README (not needed in .claude/agents)
+# README 제거(.claude/agents에는 필요 없음)
 rm .claude/agents/README.md
 ```
 
-### Method 3: Copy to User Directory
+### 방법 3: 사용자 디렉토리에 복사
 
-For agents available in all your projects:
+모든 프로젝트에서 쓸 에이전트라면:
 
 ```bash
-# Create user agents directory
+# 사용자 agents 디렉토리 만들기
 mkdir -p ~/.claude/agents
 
-# Copy agents
+# 에이전트 복사
 cp /path/to/04-subagents/code-reviewer.md ~/.claude/agents/
 cp /path/to/04-subagents/debugger.md ~/.claude/agents/
-# ... copy others as needed
+# ... 필요한 것을 더 복사
 ```
 
-### Verification
+### 확인
 
-After installation, verify the agents are recognized by listing the directory:
+설치한 뒤 디렉토리 목록을 확인해 에이전트가 인식되는지 확인하세요:
 
 ```bash
 ls .claude/agents/
 ```
 
-You can also ask Claude which subagents are available in the current session, and it will report the built-in and custom agents it can delegate to.
+현재 세션에서 쓸 수 있는 서브에이전트를 Claude에게 물어볼 수도 있습니다. Claude가 위임할 수 있는 기본 제공 에이전트와 사용자 정의 에이전트를 알려 줍니다.
 
 ---
 
-## File Structure
+## 파일 구조
 
 ```
 project/
@@ -1268,81 +1266,81 @@ project/
 
 ---
 
-## Related Concepts
+## 관련 개념
 
-### Related Features
+### 관련 기능
 
-- **[Slash Commands](../01-slash-commands/)** - Quick user-invoked shortcuts
-- **[Memory](../02-memory/)** - Persistent cross-session context
-- **[Skills](../03-skills/)** - Reusable autonomous capabilities
-- **[MCP Protocol](../05-mcp/)** - Real-time external data access
-- **[Hooks](../06-hooks/)** - Event-driven shell command automation
-- **[Plugins](../07-plugins/)** - Bundled extension packages
+- **[슬래시 명령어](../01-slash-commands/)** - 사용자가 직접 호출하는 빠른 단축 명령
+- **[메모리](../02-memory/)** - 세션 간에 유지되는 지속 컨텍스트
+- **[스킬](../03-skills/)** - 재사용 가능한 자율 기능
+- **[MCP 프로토콜](../05-mcp/)** - 실시간 외부 데이터 접근
+- **[훅](../06-hooks/)** - 이벤트 기반 셸 명령어 자동화
+- **[플러그인](../07-plugins/)** - 묶음으로 제공되는 확장 패키지
 
-### Comparison with Other Features
+### 다른 기능과 비교
 
-| Feature | User-Invoked | Auto-Invoked | Persistent | External Access | Isolated Context |
+| 기능 | 사용자 호출 | 자동 호출 | 지속성 | 외부 접근 | 격리된 컨텍스트 |
 |---------|--------------|--------------|-----------|------------------|------------------|
-| **Slash Commands** | Yes | No | No | No | No |
-| **Subagents** | Yes | Yes | No | No | Yes |
-| **Memory** | Auto | Auto | Yes | No | No |
-| **MCP** | Auto | Yes | No | Yes | No |
-| **Skills** | Yes | Yes | No | No | No |
+| **슬래시 명령어** | 예 | 아니요 | 아니요 | 아니요 | 아니요 |
+| **서브에이전트** | 예 | 예 | 아니요 | 아니요 | 예 |
+| **메모리** | 자동 | 자동 | 예 | 아니요 | 아니요 |
+| **MCP** | 자동 | 예 | 아니요 | 예 | 아니요 |
+| **스킬** | 예 | 예 | 아니요 | 아니요 | 아니요 |
 
-### Integration Pattern
+### 통합 패턴
 
 ```mermaid
 graph TD
-    User["User Request"] --> Main["Main Agent"]
-    Main -->|Uses| Memory["Memory<br/>(Context)"]
-    Main -->|Queries| MCP["MCP<br/>(Live Data)"]
-    Main -->|Invokes| Skills["Skills<br/>(Auto Tools)"]
-    Main -->|Delegates| Subagents["Subagents<br/>(Specialists)"]
+    User["사용자 요청"] --> Main["메인 에이전트"]
+    Main -->|사용| Memory["메모리<br/>(컨텍스트)"]
+    Main -->|조회| MCP["MCP<br/>(실시간 데이터)"]
+    Main -->|호출| Skills["스킬<br/>(자동 도구)"]
+    Main -->|위임| Subagents["서브에이전트<br/>(전문가)"]
 
-    Subagents -->|Use| Memory
-    Subagents -->|Query| MCP
-    Subagents -->|Isolated| Context["Clean Context<br/>Window"]
+    Subagents -->|사용| Memory
+    Subagents -->|조회| MCP
+    Subagents -->|격리| Context["깨끗한 컨텍스트<br/>윈도우"]
 ```
 
 ---
 
-## Observability
+## 관측 가능성
 
-> **Added in v2.1.139.**
+> **v2.1.139에서 추가되었습니다.**
 
-API requests originating from a subagent carry two extra HTTP headers so traces and logs can be correlated back to the dispatching session:
+서브에이전트에서 나가는 API 요청에는 추적과 로그를 요청을 보낸 세션과 연결할 수 있도록 HTTP 헤더 두 개가 추가로 붙습니다:
 
-| Header | Description |
+| 헤더 | 설명 |
 |--------|-------------|
-| `x-claude-code-agent-id` | UUID of the subagent making the request. |
-| `x-claude-code-parent-agent-id` | UUID of the agent that dispatched this subagent (the main agent, or a higher-level subagent in a chain). |
+| `x-claude-code-agent-id` | 요청하는 서브에이전트의 UUID. |
+| `x-claude-code-parent-agent-id` | 이 서브에이전트를 보낸 에이전트의 UUID(메인 에이전트, 또는 연결된 상위 서브에이전트). |
 
-The same identifiers are exposed on `claude_code.llm_request` OpenTelemetry spans as the attributes `claude.code.agent.id` and `claude.code.agent.parent_id`. Use them to:
+같은 식별자가 `claude_code.llm_request` OpenTelemetry 스팬에도 `claude.code.agent.id`와 `claude.code.agent.parent_id` 속성으로 노출됩니다. 다음과 같은 용도로 쓰세요:
 
-- Attribute API spend to a specific subagent type rather than the parent session
-- Reconstruct a chain of agent invocations after the fact (parent_id forms a tree)
-- Alert on runaway subagents (e.g., one `agent.id` accounting for >50% of session spend)
+- API 지출을 상위 세션이 아니라 특정 서브에이전트 유형에 귀속시키기
+- 나중에 에이전트 호출 체인을 재구성하기(parent_id가 트리를 이룸)
+- 폭주하는 서브에이전트에 대해 알림 받기(예: `agent.id` 하나가 세션 지출의 50% 이상을 차지할 때)
 
-See the OpenTelemetry section in [Advanced Features → Telemetry](../09-advanced-features/README.md) for end-to-end exporter setup.
+전체 내보내기 설정은 [고급 기능 → 텔레메트리](../09-advanced-features/README.md)의 OpenTelemetry 섹션을 참고하세요.
 
-## Additional Resources
+## 추가 자료
 
-- [Official Subagents Documentation](https://code.claude.com/docs/en/sub-agents)
-- [CLI Reference](https://code.claude.com/docs/en/cli-reference) - `--agents` flag and other CLI options
-- [Plugins Guide](../07-plugins/) - For bundling agents with other features
-- [Skills Guide](../03-skills/) - For auto-invoked capabilities
-- [Memory Guide](../02-memory/) - For persistent context
-- [Hooks Guide](../06-hooks/) - For event-driven automation
+- [공식 서브에이전트 문서](https://code.claude.com/docs/ko/sub-agents)
+- [CLI 레퍼런스](https://code.claude.com/docs/ko/cli-reference) - `--agents` 플래그와 기타 CLI 옵션
+- [플러그인 가이드](../07-plugins/) - 에이전트를 다른 기능과 묶어 배포할 때
+- [스킬 가이드](../03-skills/) - 자동으로 호출되는 기능
+- [메모리 가이드](../02-memory/) - 지속 컨텍스트
+- [훅 가이드](../06-hooks/) - 이벤트 기반 자동화
 
 ---
 
-**Last Updated**: October 18, 2026
-**Claude Code Version**: 2.1.302
-**Sources**:
-- https://code.claude.com/docs/en/sub-agents
+**최종 업데이트**: 2026년 10월 18일
+**Claude Code 버전**: 2.1.302
+**출처**:
+- https://code.claude.com/docs/ko/sub-agents
 - https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
-- https://code.claude.com/docs/en/cli-reference
-- https://code.claude.com/docs/en/agent-teams
+- https://code.claude.com/docs/ko/cli-reference
+- https://code.claude.com/docs/ko/agent-teams
 - https://code.claude.com/docs/en/changelog#2-1-172
 - https://code.claude.com/docs/en/changelog
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.117
@@ -1350,13 +1348,13 @@ See the OpenTelemetry section in [Advanced Features → Telemetry](../09-advance
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.138
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.139
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.140
-- https://code.claude.com/docs/en/model-config
-- https://code.claude.com/docs/en/interactive-mode
+- https://code.claude.com/docs/ko/model-config
+- https://code.claude.com/docs/ko/interactive-mode
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.296
-- https://code.claude.com/docs/en/hooks
-- https://code.claude.com/docs/en/agent-view
-- https://code.claude.com/docs/en/sub-agents#permission-modes
-- https://code.claude.com/docs/en/sub-agents#available-tools
-- https://code.claude.com/docs/en/mcp
+- https://code.claude.com/docs/ko/hooks
+- https://code.claude.com/docs/ko/agent-view
+- https://code.claude.com/docs/ko/sub-agents#permission-modes
+- https://code.claude.com/docs/ko/sub-agents#available-tools
+- https://code.claude.com/docs/ko/mcp
 - https://code.claude.com/docs/en/changelog#2-1-302
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

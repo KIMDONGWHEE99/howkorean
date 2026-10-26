@@ -143,7 +143,7 @@ Claude Code는 도구 사용을 어떻게 승인할지 정하는 6가지 권한 
 
 특정 작업을 위해 격리된 컨텍스트를 가진 전문 AI 어시스턴트입니다.
 
-> **중첩 생성은 기본으로 켜져 있으며 깊이는 3(v2.1.219)**: 서브에이전트는 메인 대화 아래 세 단계까지 자신의 서브에이전트를 생성할 수 있습니다. 한도를 바꾸려면 `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`를 설정하고, 중첩을 끄려면 `1`로 설정하세요. (이력: v2.1.172~v2.1.216에서는 바꿀 방법 없이 기본으로 5단계까지 중첩됐고, v2.1.217에서 깊이 1의 선택 기능이 되었다가, v2.1.219에서 기본값이 3이 되었습니다.) 특정 서브에이전트가 생성할 수 있는 서브에이전트를 제한하는 `Agent(agent_type)` 문법은 [04-subagents/README.md](04-subagents/README.md#restrict-spawnable-subagents)를 참고하세요.
+> **중첩 생성은 기본으로 켜져 있으며 깊이는 3(v2.1.219)**: 서브에이전트는 메인 대화 아래 세 단계까지 자신의 서브에이전트를 생성할 수 있습니다. 한도를 바꾸려면 `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`를 설정하고, 중첩을 끄려면 `1`로 설정하세요. (이력: v2.1.172~v2.1.216에서는 바꿀 방법 없이 기본으로 5단계까지 중첩됐고, v2.1.217에서 깊이 1의 선택 기능이 되었다가, v2.1.219에서 기본값이 3이 되었습니다.) 특정 서브에이전트가 생성할 수 있는 서브에이전트를 제한하는 `Agent(agent_type)` 문법은 [04-subagents/README.md](04-subagents/README.md#생성-가능한-서브에이전트-제한)를 참고하세요.
 
 ### 기본 제공 서브에이전트
 
@@ -523,7 +523,7 @@ cp 02-memory/personal-CLAUDE.md ~/.claude/CLAUDE.md
 | **목표 점검 기준 시간** | `/goal`이 활성화된 동안 백그라운드 작업이 30분 넘게 진척이 없으면, Claude가 말없이 계속하는 대신 상태를 알려 줌. `CLAUDE_CODE_GOAL_CHECKIN_MINUTES`로 조정하고, `0`으로 설정하면 꺼짐(v2.1.234) | 활성 `/goal`과 함께 `CLAUDE_CODE_GOAL_CHECKIN_MINUTES=<n>` 설정. [슬래시 명령어](01-slash-commands/README.md) 참고 |
 | **사용 한도 자동 이어 하기** | claude.ai 사용 한도에 막혀 있던 세션은 한도가 초기화되면 Claude Code가 자동으로 이어 감(v2.1.234) | 기본으로 켜져 있음. `/config` → "Continue automatically at usage limit"에서 끌 수 있음. [고급 기능](09-advanced-features/) 참고 |
 | **`spellcheck` 설정** | `PATH`에 있는 aspell, hunspell, ispell 중 하나로 프롬프트 입력의 맞춤법 오류에 밑줄 표시. 기본값은 꺼짐(v2.1.235) | 검사기를 설치한 뒤 `~/.claude/settings.json`에 `"spellcheck": { "enabled": true }` 설정. 사용자 설정, `--settings`, 관리형 설정에서만 읽고 프로젝트 설정에서는 무시됨. [고급 기능](09-advanced-features/) 참고 |
-| **에이전트 팀 기본 모델** | `/config`의 "Default teammate model" 설정이 제거됨. 이제 생성 호출에서 따로 지정하지 않는 한 팀원은 기본으로 팀 리더의 모델을 상속(v2.1.234) | [서브에이전트 — 에이전트 팀](04-subagents/README.md#agent-teams-experimental) 참고 |
+| **에이전트 팀 기본 모델** | `/config`의 "Default teammate model" 설정이 제거됨. 이제 생성 호출에서 따로 지정하지 않는 한 팀원은 기본으로 팀 리더의 모델을 상속(v2.1.234) | [서브에이전트 — 에이전트 팀](04-subagents/README.md#에이전트-팀실험적-기능) 참고 |
 | **`/design`** | 디자인 캔버스 — 아티팩트를 바탕으로 만들고 코드가 아니라 시각적으로 다듬는, 여러 아트보드로 구성된 시각 디자인(UI 목업, 화면 흐름, 랜딩 페이지, 포스터). v2.1.265+ 필요, Pro/Max/Team/Enterprise | CLI나 데스크톱 앱에서 `/design` 실행. [슬래시 명령어](01-slash-commands/README.md) 참고 |
 | **`notify_when_idle`** | 같은 컴퓨터의 다른 세션에 다음에 유휴 상태가 될 때 알림을 한 번 보내 달라고 요청하는 세션 간 `SendMessage` 입력 — 선택 기능, 일회성, 폴링 없음(v2.1.236). 관련 변경: `ListAgents`가 세션 자신의 이름을 알려 주고 실행 중인 팀원을 나열하며, Windows에서도 세션 간 메시징을 쓸 수 있게 됨(v2.1.239) | `SendMessage`에 `notify_when_idle` 전달. [고급 기능](09-advanced-features/README.md#cross-session-messaging) 참고 |
 | **플러그인 매니페스트 필드** | `plugin.json`이 `workflows`, `channels`, `dependencies`(semver), `outputStyles`, `keywords`, `metadata`, `lspServers`, `experimental.themes` / `experimental.monitors`를 받음. CLI에 `claude plugin new`, `remove`/`rm`, `prune`/`autoremove`와 플래그 `--with`, `-f`/`--force`, `--available`, `--push`, `--dry-run`이 추가됨 | [플러그인](07-plugins/README.md) 참고 |
