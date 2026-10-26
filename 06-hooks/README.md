@@ -3,32 +3,32 @@
   <img alt="Claude How To" src="../resources/logos/claude-howto-logo.svg">
 </picture>
 
-# Hooks
+# 훅
 
-Hooks are automated scripts that execute in response to specific events during Claude Code sessions. They enable automation, validation, permission management, and custom workflows.
+훅은 Claude Code 세션 중에 특정 이벤트가 일어나면 자동으로 실행되는 스크립트입니다. 자동화, 검증, 권한 관리, 사용자 정의 워크플로우를 가능하게 합니다.
 
-## Overview
+## 개요
 
-Hooks are automated actions (shell commands, HTTP webhooks, LLM prompts, MCP tool calls, or subagent evaluations) that execute automatically when specific events occur in Claude Code. They receive JSON input and communicate results via exit codes and JSON output.
+훅은 Claude Code에서 특정 이벤트가 일어날 때 자동으로 실행되는 동작(셸 명령어, HTTP 웹훅, LLM 프롬프트, MCP 도구 호출, 서브에이전트 평가)입니다. JSON 입력을 받고, 종료 코드와 JSON 출력으로 결과를 전달합니다.
 
-**Key features:**
-- Event-driven automation
-- JSON-based input/output
-- Support for `command`, `http`, `mcp_tool`, `prompt`, and `agent` hook types
-- Pattern matching for tool-specific hooks
+**주요 특징:**
+- 이벤트 기반 자동화
+- JSON 기반 입출력
+- `command`, `http`, `mcp_tool`, `prompt`, `agent` 훅 타입 지원
+- 도구별 훅을 위한 패턴 매칭
 
-## Configuration
+## 설정
 
-Hooks are configured in settings files with a specific structure:
+훅은 정해진 구조로 설정 파일에서 구성합니다:
 
-- `~/.claude/settings.json` - User settings (all projects)
-- `.claude/settings.json` - Project settings (shareable, committed)
-- `.claude/settings.local.json` - Local project settings (not committed)
-- Managed policy - Organization-wide settings
-- Plugin `hooks/hooks.json` - Plugin-scoped hooks
-- Skill/Agent frontmatter - Component lifetime hooks
+- `~/.claude/settings.json` - 사용자 설정(모든 프로젝트)
+- `.claude/settings.json` - 프로젝트 설정(공유 가능, 커밋함)
+- `.claude/settings.local.json` - 로컬 프로젝트 설정(커밋하지 않음)
+- 관리형 정책 - 조직 전체 설정
+- 플러그인 `hooks/hooks.json` - 플러그인 범위 훅
+- 스킬/에이전트 frontmatter - 구성 요소의 수명 동안 유지되는 훅
 
-### Basic Configuration Structure
+### 기본 설정 구조
 
 ```json
 {
@@ -49,51 +49,51 @@ Hooks are configured in settings files with a specific structure:
 }
 ```
 
-**Key fields:**
+**주요 필드:**
 
-| Field | Description | Example |
+| 필드 | 설명 | 예 |
 |-------|-------------|---------|
-| `matcher` | Pattern to match tool names (case-sensitive) | `"Write"`, `"Edit\|Write"`, `"*"` |
-| `hooks` | Array of hook definitions | `[{ "type": "command", ... }]` |
-| `type` | Hook type: `"command"` (bash), `"prompt"` (LLM), `"http"` (webhook), `"mcp_tool"` (MCP tool invocation, v2.1.118+), or `"agent"` (subagent) | `"command"` |
-| `command` | Shell command to execute | `"$CLAUDE_PROJECT_DIR/.claude/hooks/format.sh"` |
-| `timeout` | Optional timeout in seconds. Defaults: 600 for command/http/mcp_tool, 30 for prompt, 60 for agent. | `30` |
-| `once` | If `true`, the hook is removed after its first successful run (failed/blocked/timed-out runs keep it). Skill frontmatter only; ignored in settings and agent frontmatter | `true` |
-| `async` | If `true`, runs in the background without blocking | `true` |
-| `asyncRewake` | If `true`, runs in the background and wakes Claude on exit code 2. Implies `async`. | `true` |
-| `shell` | Accepts `"bash"` or `"powershell"`. Defaults to `"bash"`, or to `"powershell"` on Windows when Git Bash isn't installed. | `"bash"` |
-| `statusMessage` | Custom spinner message displayed while the hook runs | `"Formatting…"` |
-| `onFailure` | What happens to the action when a command or HTTP hook fails (can't start, times out, exits with an unexpected code): `"continue"` (default) or `"block"` (v2.1.295+) | `"block"` |
+| `matcher` | 도구 이름과 일치시킬 패턴(대소문자 구분) | `"Write"`, `"Edit\|Write"`, `"*"` |
+| `hooks` | 훅 정의 배열 | `[{ "type": "command", ... }]` |
+| `type` | 훅 타입: `"command"`(bash), `"prompt"`(LLM), `"http"`(웹훅), `"mcp_tool"`(MCP 도구 호출, v2.1.118+), `"agent"`(서브에이전트) | `"command"` |
+| `command` | 실행할 셸 명령어 | `"$CLAUDE_PROJECT_DIR/.claude/hooks/format.sh"` |
+| `timeout` | 선택 사항인 시간 제한(초). 기본값: command/http/mcp_tool은 600, prompt는 30, agent는 60. | `30` |
+| `once` | `true`이면 처음으로 성공한 뒤 훅이 제거됩니다(실패, 차단, 시간 초과된 실행은 훅을 유지). 스킬 frontmatter 전용이며 설정 파일과 에이전트 frontmatter에서는 무시됩니다 | `true` |
+| `async` | `true`이면 막지 않고 백그라운드에서 실행 | `true` |
+| `asyncRewake` | `true`이면 백그라운드에서 실행하다가 종료 코드 2로 끝나면 Claude를 깨웁니다. `async`를 포함합니다. | `true` |
+| `shell` | `"bash"` 또는 `"powershell"`. 기본값은 `"bash"`이며, Git Bash가 설치되지 않은 Windows에서는 `"powershell"`. | `"bash"` |
+| `statusMessage` | 훅이 실행되는 동안 표시할 사용자 정의 스피너 메시지 | `"Formatting…"` |
+| `onFailure` | command 훅이나 HTTP 훅이 실패할 때(시작하지 못하거나, 시간이 초과되거나, 예상하지 못한 코드로 종료) 동작을 어떻게 할지: `"continue"`(기본값) 또는 `"block"`(v2.1.295+) | `"block"` |
 
-> **Note**: Some events lower the default timeout. `UserPromptSubmit` lowers the `command`, `http`, and `mcp_tool` default to 30 seconds, and `MessageDisplay` lowers it to 10 seconds. `SessionEnd` hooks share a 1.5-second budget; if your settings set a longer per-hook `timeout`, Claude Code raises that budget to match, up to 60 seconds.
+> **참고**: 일부 이벤트는 기본 시간 제한을 낮춥니다. `UserPromptSubmit`은 `command`, `http`, `mcp_tool`의 기본값을 30초로, `MessageDisplay`는 10초로 낮춥니다. `SessionEnd` 훅은 1.5초 예산을 함께 쓰며, 설정에서 훅별 `timeout`을 더 길게 지정하면 Claude Code가 최대 60초까지 그에 맞춰 예산을 늘립니다.
 
-### Matcher Patterns
+### 매처 패턴
 
-| Pattern | Description | Example |
+| 패턴 | 설명 | 예 |
 |---------|-------------|---------|
-| Exact string | Matches specific tool | `"Write"` |
-| Regex pattern | Matches multiple tools | `"Edit\|Write"` |
-| Comma-separated | Matches any listed tool (v2.1.191+) | `"Write,Edit"` |
-| Wildcard | Matches all tools | `"*"` or `""` |
-| MCP tools | Server and tool pattern | `"mcp__memory__.*"` |
+| 정확한 문자열 | 특정 도구와 일치 | `"Write"` |
+| 정규식 패턴 | 여러 도구와 일치 | `"Edit\|Write"` |
+| 쉼표 구분 | 나열된 도구 중 아무것과 일치(v2.1.191+) | `"Write,Edit"` |
+| 와일드카드 | 모든 도구와 일치 | `"*"` 또는 `""` |
+| MCP 도구 | 서버와 도구 패턴 | `"mcp__memory__.*"` |
 
-> **Matchers are matched exactly (v2.1.195+).** A hyphenated identifier (for example an MCP tool name containing a hyphen) no longer accidentally substring-matches a different tool. Comma-separated matchers like `"Write,Edit"` fire on any tool in the list — earlier builds silently never fired them.
+> **매처는 정확하게 일치시킵니다(v2.1.195+).** 하이픈이 들어간 식별자(예: 하이픈이 포함된 MCP 도구 이름)가 더 이상 실수로 다른 도구의 부분 문자열과 일치하지 않습니다. `"Write,Edit"` 같은 쉼표 구분 매처는 목록의 어느 도구에서든 실행됩니다 — 이전 빌드에서는 아무 알림 없이 한 번도 실행되지 않았습니다.
 
-**InstructionsLoaded matcher values:**
+**InstructionsLoaded 매처 값:**
 
-| Matcher Value | Description |
+| 매처 값 | 설명 |
 |---------------|-------------|
-| `session_start` | Instructions loaded at session startup |
-| `nested_traversal` | Instructions loaded during nested directory traversal |
-| `path_glob_match` | Instructions loaded via path glob pattern matching |
+| `session_start` | 세션 시작 시 로드된 지침 |
+| `nested_traversal` | 중첩 디렉토리를 탐색하면서 로드된 지침 |
+| `path_glob_match` | 경로 glob 패턴 매칭으로 로드된 지침 |
 
-### Narrowing with `if` conditions (tool-argument paths)
+### `if` 조건으로 범위 좁히기(도구 인수 경로)
 
-The `matcher` field selects a hook by **tool name** (`"Write"`, `"Edit|Write"`, `"*"`). To filter more narrowly by the tool's **arguments** — for example, to run a hook only when an edit touches `src/`, or to guard reads of secret files — add an `if` condition to an individual hook handler. This is distinct from the tool-name matcher: the `matcher` decides *which tool*, the `if` decides *which call*.
+`matcher` 필드는 **도구 이름**(`"Write"`, `"Edit|Write"`, `"*"`)으로 훅을 고릅니다. 도구의 **인수**로 더 좁게 거르려면 — 예를 들어 편집이 `src/`를 건드릴 때만 훅을 실행하거나, 비밀 파일 읽기를 막으려면 — 개별 훅 핸들러에 `if` 조건을 추가하세요. 이는 도구 이름 매처와 다릅니다: `matcher`는 *어떤 도구*인지, `if`는 *어떤 호출*인지를 정합니다.
 
-`if` uses [permission-rule syntax](https://code.claude.com/docs/en/permissions) (`ToolName(pattern)`), evaluated against the tool name **and** its arguments together. For `Read`/`Edit`/`Write`, the path pattern follows gitignore semantics, with the same anchors as permission rules: a bare name like `.env` matches at any depth, `src/**` is relative to the current directory, `/src/**` to the project root, `~/...` to your home directory, and `//...` is an absolute filesystem path.
+`if`는 [권한 규칙 문법](https://code.claude.com/docs/ko/permissions)인 `ToolName(pattern)` 형식을 쓰며, 도구 이름과 인수를 **함께** 평가합니다. `Read`/`Edit`/`Write`의 경로 패턴은 gitignore 규칙을 따르고 권한 규칙과 같은 기준점을 씁니다: `.env` 같은 이름만 쓰면 어느 깊이에서든 일치하고, `src/**`는 현재 디렉토리 기준, `/src/**`는 프로젝트 루트 기준, `~/...`는 홈 디렉토리 기준이며, `//...`는 파일 시스템의 절대 경로입니다.
 
-The `if` field sits at the **hook-handler level** — a sibling of `type` and `command`, inside the `hooks` array — not on `matcher`:
+`if` 필드는 `matcher`가 아니라 **훅 핸들러 수준**에 둡니다 — `hooks` 배열 안에서 `type`, `command`와 나란히:
 
 ```json
 {
@@ -124,17 +124,17 @@ The `if` field sits at the **hook-handler level** — a sibling of `type` and `c
 }
 ```
 
-Examples of valid `if` patterns: `Edit(src/**)` (edits under `src/`), `Read(~/.ssh/**)` (reads of any SSH key), `Read(.env)` (any `.env` at or below the current directory), `Bash(git push *)` (only `git push` subcommands).
+유효한 `if` 패턴의 예: `Edit(src/**)`(`src/` 아래의 편집), `Read(~/.ssh/**)`(모든 SSH 키 읽기), `Read(.env)`(현재 디렉토리와 그 아래의 모든 `.env`), `Bash(git push *)`(`git push` 하위 명령어만).
 
-> **v2.1.214 update**: A single-segment `dir/**` pattern in a hook `if` condition (like `Edit(src/**)`) now matches only `<cwd>/dir` — not that directory at any depth in the tree. Previously `src/**` also matched `foo/src/**`. Use `**/dir/**` if you need any-depth matching. **Important**: this narrowing applies only to hook `if:` conditions and allow-rule auto-approval — deny/ask permission rules still match `dir/**` at any depth.
+> **v2.1.214 변경 사항**: 이제 훅 `if` 조건의 한 단계짜리 `dir/**` 패턴(`Edit(src/**)` 등)은 트리의 어느 깊이에 있는 디렉토리가 아니라 `<cwd>/dir`에만 일치합니다. 이전에는 `src/**`가 `foo/src/**`에도 일치했습니다. 어느 깊이에서든 일치시키려면 `**/dir/**`를 쓰세요. **중요**: 이렇게 좁아지는 것은 훅의 `if:` 조건과 허용 규칙 자동 승인에만 해당합니다 — 거부/요청 권한 규칙은 여전히 어느 깊이에서든 `dir/**`와 일치합니다.
 
-## Hook Types
+## 훅 타입
 
-Claude Code supports five hook types:
+Claude Code는 다섯 가지 훅 타입을 지원합니다:
 
-### Command Hooks
+### 명령어 훅
 
-The default hook type. Executes a shell command and communicates via JSON stdin/stdout and exit codes.
+기본 훅 타입입니다. 셸 명령어를 실행하고 JSON stdin/stdout과 종료 코드로 소통합니다.
 
 ```json
 {
@@ -144,11 +144,11 @@ The default hook type. Executes a shell command and communicates via JSON stdin/
 }
 ```
 
-#### Exec form (`args`)
+#### exec 형식(`args`)
 
-> Added in v2.1.139.
+> v2.1.139에서 추가되었습니다.
 
-Instead of the shell-form `"command": "..."`, a command hook can spawn a binary directly via `execve()` with an `args` array. There is no shell parsing, so path placeholders never need quoting and the configuration is immune to shell-injection bugs.
+명령어 훅은 셸 형식의 `"command": "..."` 대신 `args` 배열로 `execve()`를 통해 바이너리를 직접 실행할 수 있습니다. 셸 파싱이 없으므로 경로 자리 표시자를 따옴표로 감쌀 필요가 없고, 설정이 셸 주입 버그에 영향을 받지 않습니다.
 
 ```json
 {
@@ -159,13 +159,13 @@ Instead of the shell-form `"command": "..."`, a command hook can spawn a binary 
 }
 ```
 
-`command` is always required: when `args` is set, `command` is the executable to spawn (resolved on `PATH`) and `args` is its argument vector. Omit `args` (shell form) when you need pipes, redirection, `&&` chaining, or shell expansions; use `args` when you are calling one binary with arguments.
+`command`는 항상 필요합니다: `args`를 설정하면 `command`는 실행할 실행 파일(`PATH`에서 찾음)이고 `args`는 그 인수 벡터입니다. 파이프, 리디렉션, `&&` 연결, 셸 확장이 필요하면 `args`를 생략하고(셸 형식), 바이너리 하나를 인수와 함께 호출할 때는 `args`를 쓰세요.
 
-### HTTP Hooks
+### HTTP 훅
 
-> Added in v2.1.63.
+> v2.1.63에서 추가되었습니다.
 
-Remote webhook endpoints that receive the same JSON input as command hooks. HTTP hooks POST JSON to the URL and receive a JSON response. HTTP hooks are routed through the sandbox when sandboxing is enabled. Environment variable interpolation into header values requires an explicit `allowedEnvVars` list for security.
+명령어 훅과 같은 JSON 입력을 받는 원격 웹훅 엔드포인트입니다. HTTP 훅은 URL로 JSON을 POST하고 JSON 응답을 받습니다. 샌드박싱이 켜져 있으면 HTTP 훅은 샌드박스를 거쳐 전송됩니다. 보안을 위해 헤더 값에 환경 변수를 넣으려면 명시적인 `allowedEnvVars` 목록이 필요합니다.
 
 ```json
 {
@@ -181,31 +181,31 @@ Remote webhook endpoints that receive the same JSON input as command hooks. HTTP
 }
 ```
 
-**Key properties:**
-- `"type": "http"` -- identifies this as an HTTP hook
-- `"url"` -- the webhook endpoint URL
-- Routed through sandbox when sandbox is enabled
-- Requires explicit `allowedEnvVars` list for any environment variable interpolation in `headers` values
+**주요 속성:**
+- `"type": "http"` -- HTTP 훅임을 나타냄
+- `"url"` -- 웹훅 엔드포인트 URL
+- 샌드박스가 켜져 있으면 샌드박스를 거쳐 전송
+- `headers` 값에 환경 변수를 넣으려면 명시적인 `allowedEnvVars` 목록이 필요
 
-### Prompt Hooks
+### 프롬프트 훅
 
-LLM-evaluated prompts where the hook content is a prompt that Claude evaluates. Primarily used with `Stop` and `SubagentStop` events for intelligent task completion checking.
+훅 내용이 Claude가 평가하는 프롬프트인, LLM이 평가하는 훅입니다. 주로 `Stop`과 `SubagentStop` 이벤트에서 작업 완료를 지능적으로 확인하는 데 씁니다.
 
 ```json
 {
   "type": "prompt",
-  "prompt": "Evaluate if Claude completed all requested tasks.",
+  "prompt": "Claude가 요청받은 작업을 모두 끝냈는지 평가하세요.",
   "timeout": 30
 }
 ```
 
-The LLM evaluates the prompt and returns a structured decision (see [Prompt-Based Hooks](#prompt-based-hooks) for details).
+LLM이 프롬프트를 평가하고 구조화된 결정을 반환합니다(자세한 내용은 [프롬프트 기반 훅](#프롬프트-기반-훅) 참고).
 
-### MCP Tool Hooks
+### MCP 도구 훅
 
-> Added in v2.1.118.
+> v2.1.118에서 추가되었습니다.
 
-The `mcp_tool` type invokes a configured MCP tool directly; configuration references the MCP server and tool name rather than a shell command or URL. This is useful when the validation or reaction logic already lives in an MCP server you have configured.
+`mcp_tool` 타입은 설정된 MCP 도구를 직접 호출합니다. 설정에서는 셸 명령어나 URL 대신 MCP 서버와 도구 이름을 참조합니다. 검증이나 대응 로직이 이미 설정해 둔 MCP 서버에 있을 때 유용합니다.
 
 ```json
 {
@@ -219,92 +219,92 @@ The `mcp_tool` type invokes a configured MCP tool directly; configuration refere
 }
 ```
 
-**Key properties:**
-- `"type": "mcp_tool"` -- identifies this as an MCP tool hook
-- `"server"` -- name of the configured MCP server
-- `"tool"` -- the tool name on that server to invoke
-- `"input"` -- optional arguments passed to the tool; string values support `${path}` substitution from the hook's JSON input, such as `"${tool_input.file_path}"`
+**주요 속성:**
+- `"type": "mcp_tool"` -- MCP 도구 훅임을 나타냄
+- `"server"` -- 설정된 MCP 서버의 이름
+- `"tool"` -- 그 서버에서 호출할 도구 이름
+- `"input"` -- 도구에 넘길 선택 인수. 문자열 값에서는 훅의 JSON 입력을 가져오는 `${path}` 치환을 지원합니다(예: `"${tool_input.file_path}"`)
 
-The tool's arguments come from `input` (with `${path}` substitution), not from the hook input directly. See [MCP server setup](../05-mcp/README.md) for configuring MCP servers.
+도구의 인수는 훅 입력에서 바로 오는 것이 아니라 (`${path}` 치환을 거친) `input`에서 옵니다. MCP 서버 설정은 [MCP 서버 설정](../05-mcp/README.md)을 참고하세요.
 
-### Agent Hooks
+### 에이전트 훅
 
-Subagent-based verification hooks that spawn a dedicated agent to evaluate conditions or perform complex checks. Unlike prompt hooks (single-turn LLM evaluation), agent hooks can use tools and perform multi-step reasoning.
+전용 에이전트를 생성해 조건을 평가하거나 복잡한 확인을 수행하는, 서브에이전트 기반 검증 훅입니다. (한 턴짜리 LLM 평가인) 프롬프트 훅과 달리 에이전트 훅은 도구를 쓰고 여러 단계로 추론할 수 있습니다.
 
-> **Note**: Agent hooks are experimental and may change.
+> **참고**: 에이전트 훅은 실험적 기능이며 바뀔 수 있습니다.
 
-> **Note**: Since v2.1.280, agent hooks don't run on `PermissionRequest` — their answer could never allow or deny the request. Use a command or HTTP hook that returns a decision object there (a prompt hook's `ok: false` has no effect on `PermissionRequest`).
+> **참고**: v2.1.280부터 에이전트 훅은 `PermissionRequest`에서 실행되지 않습니다 — 에이전트 훅의 답은 요청을 허용하거나 거부할 수 없었기 때문입니다. 그 이벤트에는 결정 객체를 반환하는 명령어 훅이나 HTTP 훅을 쓰세요(프롬프트 훅의 `ok: false`는 `PermissionRequest`에 아무 효과가 없습니다).
 
 ```json
 {
   "type": "agent",
-  "prompt": "Verify the code changes follow our architecture guidelines. Check the relevant design docs and compare.",
+  "prompt": "코드 변경이 우리 아키텍처 가이드라인을 따르는지 검증하세요. 관련 설계 문서를 확인하고 비교하세요.",
   "timeout": 120
 }
 ```
 
-**Key properties:**
-- `"type": "agent"` -- identifies this as an agent hook
-- `"prompt"` -- the task description for the subagent
-- The agent can use tools (Read, Grep, Bash, etc.) to perform its evaluation
-- Returns a structured decision similar to prompt hooks
+**주요 속성:**
+- `"type": "agent"` -- 에이전트 훅임을 나타냄
+- `"prompt"` -- 서브에이전트에게 줄 작업 설명
+- 에이전트는 평가를 위해 도구(Read, Grep, Bash 등)를 쓸 수 있음
+- 프롬프트 훅과 비슷한 구조화된 결정을 반환
 
-## Hook Events
+## 훅 이벤트
 
-Claude Code supports **33 hook events**:
+Claude Code는 **33가지 훅 이벤트를** 지원합니다:
 
-| Event | When Triggered | Matcher Input | Can Block | Common Use |
+| 이벤트 | 발생 시점 | 매처 입력 | 차단 가능 | 주요 용도 |
 |-------|---------------|---------------|-----------|------------|
-| **SessionStart** | Session begins/resumes/clear/compact | startup/resume/clear/compact/fork | No | Environment setup |
-| **Setup** | `--init-only`, or `--init`/`--maintenance` with `-p` (CI/script prep) | `init`/`maintenance` | No | Provision tooling, install deps |
-| **InstructionsLoaded** | After CLAUDE.md or rules file loaded | Load reason (`session_start`/`nested_traversal`/`path_glob_match`/`include`/`compact`) | No | Audit/observability logging |
-| **UserPromptSubmit** | User submits prompt | (none) | Yes | Validate prompts |
-| **UserPromptExpansion** | User-typed slash command or MCP prompt expands into a prompt | Command name | Yes | Transform or inspect expanded prompt |
-| **PreToolUse** | Before tool execution | Tool name | Yes (allow/deny/ask/defer) | Validate, modify inputs |
-| **PermissionRequest** | Permission dialog shown | Tool name | Yes | Auto-approve/deny |
-| **PermissionDenied** | Auto mode denies a tool call | Tool name | No | Logging, analytics, policy enforcement |
-| **PostToolUse** | After tool succeeds | Tool name | No | Add context, feedback |
-| **PostToolUseFailure** | Tool execution fails | Tool name | No | Error handling, logging |
-| **PostToolBatch** | After a batch of tool uses completes | (none) | Yes | Aggregate reporting, batched validation |
-| **Notification** | Notification sent | Notification type | No | Custom notifications |
-| **MessageDisplay** | While assistant message text is displayed | (none) | No | Transform or hide displayed message text (v2.1.152) |
-| **SubagentStart** | Subagent spawned | Agent type name | No | Subagent setup |
-| **SubagentStop** | Subagent finishes | Agent type name | Yes | Subagent validation |
-| **Stop** | Claude finishes responding | (none) | Yes | Task completion check |
-| **StopFailure** | API error ends turn | Error type (`rate_limit`, `overloaded`, `server_error`, …) | No | Error recovery, logging |
-| **TeammateIdle** | Agent team teammate idle | (none) | Yes | Teammate coordination |
-| **TaskCompleted** | Task marked complete | (none) | Yes | Post-task actions |
-| **TaskCreated** | Task created via TaskCreate | (none) | Yes | Task tracking, logging |
-| **ConfigChange** | Config file changes | Config source (`user_settings`/`project_settings`/`local_settings`/`policy_settings`/`skills`) | Yes (except policy) | React to config updates |
-| **CwdChanged** | Working directory changes | (none) | No | Directory-specific setup |
-| **DirectoryAdded** | New working directory registered mid-session via `/add-dir` or the SDK `register_repo_root` control request (v2.1.219) | `slash_command`/`register_repo_root` | No | Set up tooling for a newly added directory |
-| **FileChanged** | Watched file changes | Filenames to watch (e.g. `.envrc\|.env`) | No | File monitoring, rebuild |
-| **PreCompact** | Before context compaction | manual/auto | Yes | Pre-compact actions |
-| **PostCompact** | After compaction completes | (none) | No | Post-compact actions |
-| **PreModelSwitch** | Before Claude Code applies a requested model switch | Canonical name of the model being switched to (from `to_model`) | Yes | Gate or veto model changes |
-| **PostModelSwitch** | After the session's model changes, including changes Claude Code makes itself (such as restoring the model on resume) | Canonical name of the model switched to (from `to_model`) | No | Log or react to model changes |
-| **WorktreeCreate** | Worktree being created | (none) | Yes (path return) | Worktree initialization |
-| **WorktreeRemove** | Worktree being removed | (none) | Yes (non-zero exit fails removal) | Worktree cleanup |
-| **Elicitation** | MCP server requests user input | MCP server name | Yes | Input validation |
-| **ElicitationResult** | User responds to elicitation | MCP server name | Yes | Response processing |
-| **SessionEnd** | Session terminates | End reason (`clear`/`resume`/`logout`/`prompt_input_exit`/`other`) | No | Cleanup, final logging |
+| **SessionStart** | 세션 시작/재개/clear/compact | startup/resume/clear/compact/fork | 아니요 | 환경 준비 |
+| **Setup** | `--init-only`, 또는 `-p`와 함께 쓴 `--init`/`--maintenance`(CI/스크립트 준비) | `init`/`maintenance` | 아니요 | 도구 준비, 의존성 설치 |
+| **InstructionsLoaded** | CLAUDE.md나 규칙 파일이 로드된 뒤 | 로드 이유(`session_start`/`nested_traversal`/`path_glob_match`/`include`/`compact`) | 아니요 | 감사/관측용 로깅 |
+| **UserPromptSubmit** | 사용자가 프롬프트를 제출 | (없음) | 예 | 프롬프트 검증 |
+| **UserPromptExpansion** | 사용자가 입력한 슬래시 명령어나 MCP 프롬프트가 프롬프트로 확장됨 | 명령어 이름 | 예 | 확장된 프롬프트 변환이나 검사 |
+| **PreToolUse** | 도구 실행 전 | 도구 이름 | 예(allow/deny/ask/defer) | 검증, 입력 수정 |
+| **PermissionRequest** | 권한 대화 상자 표시 | 도구 이름 | 예 | 자동 승인/거부 |
+| **PermissionDenied** | 자동 모드가 도구 호출을 거부 | 도구 이름 | 아니요 | 로깅, 분석, 정책 적용 |
+| **PostToolUse** | 도구가 성공한 뒤 | 도구 이름 | 아니요 | 컨텍스트 추가, 피드백 |
+| **PostToolUseFailure** | 도구 실행 실패 | 도구 이름 | 아니요 | 오류 처리, 로깅 |
+| **PostToolBatch** | 여러 도구 사용이 한 묶음으로 끝난 뒤 | (없음) | 예 | 종합 보고, 일괄 검증 |
+| **Notification** | 알림 전송 | 알림 유형 | 아니요 | 사용자 정의 알림 |
+| **MessageDisplay** | 어시스턴트 메시지 텍스트가 표시되는 동안 | (없음) | 아니요 | 표시되는 메시지 텍스트 변환이나 숨기기(v2.1.152) |
+| **SubagentStart** | 서브에이전트 생성 | 에이전트 타입 이름 | 아니요 | 서브에이전트 준비 |
+| **SubagentStop** | 서브에이전트 종료 | 에이전트 타입 이름 | 예 | 서브에이전트 결과 검증 |
+| **Stop** | Claude가 응답을 마침 | (없음) | 예 | 작업 완료 확인 |
+| **StopFailure** | API 오류로 턴이 끝남 | 오류 유형(`rate_limit`, `overloaded`, `server_error`, …) | 아니요 | 오류 복구, 로깅 |
+| **TeammateIdle** | 에이전트 팀의 팀원이 유휴 상태 | (없음) | 예 | 팀원 조율 |
+| **TaskCompleted** | 작업이 완료로 표시됨 | (없음) | 예 | 작업 후 처리 |
+| **TaskCreated** | TaskCreate로 작업 생성 | (없음) | 예 | 작업 추적, 로깅 |
+| **ConfigChange** | 설정 파일 변경 | 설정 출처(`user_settings`/`project_settings`/`local_settings`/`policy_settings`/`skills`) | 예(정책 제외) | 설정 변경에 대응 |
+| **CwdChanged** | 작업 디렉토리 변경 | (없음) | 아니요 | 디렉토리별 준비 작업 |
+| **DirectoryAdded** | `/add-dir`이나 SDK의 `register_repo_root` 제어 요청으로 세션 도중 새 작업 디렉토리 등록(v2.1.219) | `slash_command`/`register_repo_root` | 아니요 | 새로 추가된 디렉토리용 도구 준비 |
+| **FileChanged** | 감시 중인 파일 변경 | 감시할 파일 이름(예: `.envrc\|.env`) | 아니요 | 파일 모니터링, 다시 빌드 |
+| **PreCompact** | 컨텍스트 컴팩션 전 | manual/auto | 예 | 컴팩션 전 작업 |
+| **PostCompact** | 컴팩션 완료 후 | (없음) | 아니요 | 컴팩션 후 작업 |
+| **PreModelSwitch** | 요청된 모델 전환을 Claude Code가 적용하기 전 | 전환될 모델의 정식 이름(`to_model`에서 가져옴) | 예 | 모델 변경 허용 여부 결정이나 거부 |
+| **PostModelSwitch** | 세션의 모델이 바뀐 뒤. Claude Code가 스스로 바꾸는 경우(재개할 때 모델을 복원하는 경우 등)도 포함 | 전환된 모델의 정식 이름(`to_model`에서 가져옴) | 아니요 | 모델 변경 기록이나 대응 |
+| **WorktreeCreate** | worktree 생성 중 | (없음) | 예(경로 반환) | worktree 초기화 |
+| **WorktreeRemove** | worktree 제거 중 | (없음) | 예(0이 아닌 종료 코드면 제거 실패) | worktree 정리 |
+| **Elicitation** | MCP 서버가 사용자 입력을 요청 | MCP 서버 이름 | 예 | 입력 검증 |
+| **ElicitationResult** | 사용자가 입력 요청에 응답 | MCP 서버 이름 | 예 | 응답 처리 |
+| **SessionEnd** | 세션 종료 | 종료 이유(`clear`/`resume`/`logout`/`prompt_input_exit`/`other`) | 아니요 | 정리, 마지막 로깅 |
 
-`PreModelSwitch` and `PostModelSwitch` require v2.1.251 or later. Both receive `from_model` and `to_model`; the matcher is evaluated against the canonical name derived from `to_model` (e.g. `claude-opus-5`, `.*opus.*`). Their `command`, `http`, and `mcp_tool` timeout default is lowered to 30 seconds.
+`PreModelSwitch`와 `PostModelSwitch`에는 v2.1.251 이상이 필요합니다. 둘 다 `from_model`과 `to_model`을 받으며, 매처는 `to_model`에서 가져온 정식 이름(예: `claude-opus-5`, `.*opus.*`)으로 평가됩니다. 이 이벤트에서는 `command`, `http`, `mcp_tool`의 기본 시간 제한이 30초로 낮아집니다.
 
-> **`TaskCreated` and `TaskCompleted` need the todo tools enabled (v2.1.233).** These two
-> events fire from the todo/task-tracking tools (`TaskCreate`/`Get`/`Update`/`List`,
-> `TodoWrite`), which are **available by default only on Claude 3.x models, Opus 4 through
-> 4.7, Sonnet 4 through 4.6, and Haiku 4.5**. On other models the hooks are still valid
-> configuration but simply never fire — you get no output and no error. Set
-> `CLAUDE_CODE_ENABLE_TODO_TOOLS=1` to bring the tools, and therefore the events, back.
+> **`TaskCreated`와 `TaskCompleted`에는 할 일 도구가 켜져 있어야 합니다(v2.1.233).** 이 두
+> 이벤트는 할 일/작업 추적 도구(`TaskCreate`/`Get`/`Update`/`List`,
+> `TodoWrite`)에서 발생하는데, 이 도구들은
+> **Claude 3.x 모델, Opus 4–4.7, Sonnet 4–4.6, Haiku 4.5에서만 기본으로 제공됩니다**.
+> 다른 모델에서는 훅 설정이 유효하더라도 이벤트가 전혀 발생하지 않으며, 출력도 오류도 없습니다.
+> `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`을 설정하면 도구와 함께 이벤트도 다시 켜집니다.
 
-> **PostToolUse duration (v2.1.119):** `PostToolUse` and `PostToolUseFailure` hook inputs now include `duration_ms` — see the [PostToolUse](#posttooluse) section for details.
+> **PostToolUse 실행 시간 (v2.1.119):** 이제 `PostToolUse`와 `PostToolUseFailure` 훅 입력에 `duration_ms`가 들어 있습니다 — 자세한 내용은 [PostToolUse](#posttooluse) 섹션을 참고하세요.
 
 ### PreToolUse
 
-Runs after Claude creates tool parameters and before processing. Use this to validate or modify tool inputs.
+Claude가 도구 매개변수를 만든 뒤, 처리하기 전에 실행됩니다. 도구 입력을 검증하거나 수정할 때 쓰세요.
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -323,23 +323,23 @@ Runs after Claude creates tool parameters and before processing. Use this to val
 }
 ```
 
-**Common matchers:** `Agent`, `Bash`, `Glob`, `Grep`, `Read`, `Edit`, `Write`, `WebFetch`, `WebSearch`
+**자주 쓰는 매처:** `Agent`, `Bash`, `Glob`, `Grep`, `Read`, `Edit`, `Write`, `WebFetch`, `WebSearch`
 
-**Output control:**
-- `permissionDecision`: `"allow"`, `"deny"`, `"ask"`, or `"defer"`
-  - `"allow"` skips the permission prompt (except for tools that require user interaction, and connector tools your organization set to `ask`)
-  - `"deny"` prevents the tool call
-  - `"ask"` prompts the user to confirm; the prompt names the plugin or skill the hook comes from (v2.1.301)
-  - `"defer"` exits gracefully so the tool can be resumed later; `permissionDecisionReason`, `updatedInput` and `additionalContext` are all ignored for this value
-  - Deny and ask rules are still evaluated regardless of what the hook returns. When multiple `PreToolUse` hooks disagree, precedence is `deny` > `defer` > `ask` > `allow`
-- `permissionDecisionReason`: Explanation for decision. Shown to the user (not Claude) for `"ask"`; shown to Claude for `"deny"`; for `"allow"` and `"defer"`, written to the debug log only
-- `updatedInput`: Replacement tool input (replaces the whole input object). Since v2.1.300 it is validated like Claude's own input — unknown keys are dropped, and input the tool rejects denies the call.
+**출력 제어:**
+- `permissionDecision`: `"allow"`, `"deny"`, `"ask"`, `"defer"`
+  - `"allow"`는 권한 프롬프트를 건너뜁니다(사용자 상호작용이 필요한 도구와, 조직에서 `ask`로 설정한 커넥터 도구는 예외)
+  - `"deny"`는 도구 호출을 막습니다
+  - `"ask"`는 사용자에게 확인을 요청하며, 프롬프트에 훅을 제공한 플러그인이나 스킬의 이름이 표시됩니다(v2.1.301)
+  - `"defer"`는 나중에 도구를 재개할 수 있도록 깔끔하게 종료하며, 이 값에서는 `permissionDecisionReason`, `updatedInput`, `additionalContext`가 모두 무시됩니다
+  - 훅이 무엇을 반환하든 거부 규칙과 요청 규칙은 여전히 평가됩니다. 여러 `PreToolUse` 훅의 결정이 다르면 우선순위는 `deny` > `defer` > `ask` > `allow`입니다
+- `permissionDecisionReason`: 결정에 대한 설명. `"ask"`일 때는 (Claude가 아니라) 사용자에게, `"deny"`일 때는 Claude에게 표시되며, `"allow"`와 `"defer"`일 때는 디버그 로그에만 기록됩니다
+- `updatedInput`: 대체할 도구 입력(입력 객체 전체를 대체). v2.1.300부터는 Claude 자신의 입력처럼 검증됩니다 — 알 수 없는 키는 버려지고, 도구가 거부하는 입력이면 호출이 거부됩니다.
 
 ### PostToolUse
 
-Runs immediately after tool completion. Use for verification, logging, or providing context back to Claude.
+도구가 끝난 직후에 실행됩니다. 검증, 로깅, Claude에게 컨텍스트를 돌려줄 때 쓰세요.
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -358,19 +358,19 @@ Runs immediately after tool completion. Use for verification, logging, or provid
 }
 ```
 
-**Output control:**
-- `"block"` decision prompts Claude with feedback
-- `additionalContext`: Context added for Claude
+**출력 제어:**
+- `"block"` 결정은 피드백과 함께 Claude에게 알립니다
+- `additionalContext`: Claude에게 추가할 컨텍스트
 
-**Additional input fields (v2.1.119):**
+**추가 입력 필드 (v2.1.119):**
 
-| Field | Type | Description |
+| 필드 | 타입 | 설명 |
 |-------|------|-------------|
-| `duration_ms` | number | Tool execution time in milliseconds. Excludes time spent in permission prompts and PreToolUse hook execution. Available on both `PostToolUse` and `PostToolUseFailure` hooks. |
+| `duration_ms` | number | 도구 실행 시간(밀리초). 권한 프롬프트와 PreToolUse 훅 실행에 걸린 시간은 제외됩니다. `PostToolUse`와 `PostToolUseFailure` 훅 모두에서 제공됩니다. |
 
-#### Recoverable blocks (`continueOnBlock`, v2.1.139)
+#### 복구 가능한 차단(`continueOnBlock`, v2.1.139)
 
-A command hook that returns `"decision": "block"` on `PostToolUse` adds the `reason` next to the tool result; Claude still sees the original output. `continueOnBlock` is a **prompt**-hook field (command and agent hooks have none): by default, a prompt hook that returns `ok: false` on `PostToolUse` ends the turn and shows the reason as a warning line. Set `"continueOnBlock": true` on the prompt hook to instead feed the reason back to Claude and continue the turn, so the model can read the feedback and retry or adjust.
+`PostToolUse`에서 `"decision": "block"`을 반환하는 명령어 훅은 도구 결과 옆에 `reason`을 덧붙이며, Claude는 원래 출력도 그대로 봅니다. `continueOnBlock`은 **프롬프트** 훅의 필드입니다(명령어 훅과 에이전트 훅에는 없음): 기본적으로 `PostToolUse`에서 `ok: false`를 반환하는 프롬프트 훅은 턴을 끝내고 이유를 경고 줄로 표시합니다. 프롬프트 훅에 `"continueOnBlock": true`를 설정하면 대신 이유를 Claude에게 돌려주고 턴을 계속하므로, 모델이 피드백을 읽고 다시 시도하거나 방향을 조정할 수 있습니다.
 
 ```json
 {
@@ -381,7 +381,7 @@ A command hook that returns `"decision": "block"` on `PostToolUse` adds the `rea
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Check this edit against our write policy (for example, read-only paths). Hook input: $ARGUMENTS",
+            "prompt": "이 편집이 우리 쓰기 정책(예: 읽기 전용 경로)에 맞는지 확인하세요. 훅 입력: $ARGUMENTS",
             "continueOnBlock": true
           }
         ]
@@ -391,13 +391,13 @@ A command hook that returns `"decision": "block"` on `PostToolUse` adds the `rea
 }
 ```
 
-Use this when the hook's `reason` is something Claude can act on (e.g., "this file is read-only; write somewhere else"); leave it off when a block must halt the turn entirely.
+훅의 `reason`이 Claude가 대응할 수 있는 내용일 때(예: "이 파일은 읽기 전용이니 다른 곳에 쓰세요") 쓰세요. 차단하면 턴을 완전히 멈춰야 하는 경우에는 끄세요.
 
 ### UserPromptSubmit
 
-Runs when user submits a prompt, before Claude processes it. Since v2.1.299 it runs before a skill or custom command expands, so blocking the prompt also stops that command's `!` shell lines; `UserPromptExpansion` fires after it.
+사용자가 프롬프트를 제출하면, Claude가 처리하기 전에 실행됩니다. v2.1.299부터는 스킬이나 사용자 정의 명령어가 확장되기 전에 실행되므로, 프롬프트를 차단하면 그 명령어의 `!` 셸 줄도 실행되지 않습니다. `UserPromptExpansion`은 그 뒤에 발생합니다.
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -415,18 +415,18 @@ Runs when user submits a prompt, before Claude processes it. Since v2.1.299 it r
 }
 ```
 
-**Output control:**
-- `decision`: `"block"` to prevent processing
-- `reason`: Explanation if blocked
-- `additionalContext`: Context added to prompt
+**출력 제어:**
+- `decision`: 처리를 막으려면 `"block"`
+- `reason`: 차단할 때의 설명
+- `additionalContext`: 프롬프트에 추가할 컨텍스트
 
-### Stop and SubagentStop
+### Stop과 SubagentStop
 
-Run when Claude finishes responding (Stop) or a subagent completes (SubagentStop). Supports prompt-based evaluation for intelligent task completion checking.
+Claude가 응답을 마칠 때(Stop)나 서브에이전트가 끝날 때(SubagentStop) 실행됩니다. 작업 완료를 지능적으로 확인하는 프롬프트 기반 평가를 지원합니다.
 
-**Additional input field:** Both `Stop` and `SubagentStop` hooks receive a `last_assistant_message` field in their JSON input, containing the final message from Claude or the subagent before stopping. This is useful for evaluating task completion.
+**추가 입력 필드:** `Stop`과 `SubagentStop` 훅은 모두 JSON 입력에서 `last_assistant_message` 필드를 받습니다. 멈추기 직전 Claude나 서브에이전트의 마지막 메시지가 담겨 있어 작업 완료를 평가할 때 유용합니다.
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -435,7 +435,7 @@ Run when Claude finishes responding (Stop) or a subagent completes (SubagentStop
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Evaluate if Claude completed all requested tasks.",
+            "prompt": "Claude가 요청받은 작업을 모두 끝냈는지 평가하세요.",
             "timeout": 30
           }
         ]
@@ -445,24 +445,24 @@ Run when Claude finishes responding (Stop) or a subagent completes (SubagentStop
 }
 ```
 
-> **Safety cap on consecutive blocks (v2.1.143)**: If a `Stop` hook returns `"decision": "block"` (or sets `continue: false`) **8 times in a row** for the same turn, Claude Code overrides the next block and ends the turn. Override the threshold with the env var `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP=<integer>` (set to `0` to disable the cap entirely). This prevents a buggy Stop hook from looping the turn forever.
+> **연속 차단 안전 한도 (v2.1.143)**: `Stop` 훅이 같은 턴에서 **8번 연속으로** `"decision": "block"`을 반환하면(또는 `continue: false`를 설정하면) Claude Code가 다음 차단을 무시하고 턴을 끝냅니다. 임계값은 환경 변수 `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP=<정수>`로 바꿀 수 있습니다(`0`이면 한도를 완전히 끔). 버그가 있는 Stop 훅이 턴을 끝없이 반복시키는 것을 막아 줍니다.
 
-**Return field (v2.1.163):** A `Stop` or `SubagentStop` hook can return `hookSpecificOutput.additionalContext` to give Claude feedback and **continue the turn without surfacing an error label**. Previously, influencing the model from a Stop hook was awkward; now the hook can inject context cleanly, avoiding the error-label behavior of older feedback paths (such as `"decision": "block"`).
+**반환 필드 (v2.1.163):** `Stop`이나 `SubagentStop` 훅은 `hookSpecificOutput.additionalContext`를 반환해 Claude에게 피드백을 주고 **오류 표시 없이 턴을 계속할** 수 있습니다. 이전에는 Stop 훅으로 모델에 영향을 주기가 번거로웠지만, 이제는 오래된 피드백 방식(`"decision": "block"` 등)의 오류 표시 동작 없이 컨텍스트를 깔끔하게 넣을 수 있습니다.
 
 ```json
 {
   "hookSpecificOutput": {
     "hookEventName": "Stop",
-    "additionalContext": "Reminder: run the test suite before declaring done."
+    "additionalContext": "리마인더: 완료라고 하기 전에 테스트 스위트를 실행하세요."
   }
 }
 ```
 
 ### SubagentStart
 
-Runs when a subagent begins execution. The matcher input is the agent type name, allowing hooks to target specific subagent types.
+서브에이전트가 실행을 시작할 때 실행됩니다. 매처 입력은 에이전트 타입 이름이므로 특정 서브에이전트 타입만 대상으로 삼을 수 있습니다.
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -483,13 +483,13 @@ Runs when a subagent begins execution. The matcher input is the agent type name,
 
 ### SessionStart
 
-Runs when session starts or resumes. Can persist environment variables.
+세션이 시작되거나 재개될 때 실행됩니다. 환경 변수를 유지할 수 있습니다.
 
-**Matchers:** `startup`, `resume`, `clear`, `compact`, `fork`
+**매처:** `startup`, `resume`, `clear`, `compact`, `fork`
 
-> **v2.1.214 update**: A forked session now reports source `"fork"` — previously it reported `"resume"`.
+> **v2.1.214 변경 사항**: 이제 포크된 세션은 출처를 `"fork"`로 보고합니다 — 이전에는 `"resume"`으로 보고했습니다.
 
-**Special feature:** Use `CLAUDE_ENV_FILE` to persist environment variables (also available in `CwdChanged` and `FileChanged` hooks):
+**특별 기능:** `CLAUDE_ENV_FILE`로 환경 변수를 유지할 수 있습니다(`CwdChanged`와 `FileChanged` 훅에서도 사용 가능):
 
 ```bash
 #!/bin/bash
@@ -499,31 +499,31 @@ fi
 exit 0
 ```
 
-**Session-scoped outputs (v2.1.152):** A `SessionStart` hook can return JSON to re-scan skills and set the session title:
+**세션 범위 출력 (v2.1.152):** `SessionStart` 훅은 JSON을 반환해 스킬을 다시 검색하고 세션 제목을 정할 수 있습니다:
 
 ```json
 {
   "reloadSkills": true,
   "hookSpecificOutput": {
-    "sessionTitle": "Payments migration"
+    "sessionTitle": "결제 마이그레이션"
   }
 }
 ```
 
-Top-level `reloadSkills: true` triggers a skill re-scan in the same session (the same action as the `/reload-skills` command), making skills the hook just installed available immediately. `hookSpecificOutput.sessionTitle` sets the session's display title on startup and resume.
+최상위 `reloadSkills: true`는 같은 세션에서 스킬 재검색을 일으키므로(`/reload-skills` 명령어와 같은 동작), 훅이 방금 설치한 스킬을 바로 쓸 수 있습니다. `hookSpecificOutput.sessionTitle`은 시작하거나 재개할 때 세션의 표시 제목을 정합니다.
 
 ### SessionEnd
 
-Runs when session ends to perform cleanup or final logging. Cannot block termination.
+세션이 끝날 때 정리나 마지막 로깅을 위해 실행됩니다. 종료를 막을 수는 없습니다.
 
-**Reason field values:**
-- `clear` - User cleared the session
-- `resume` - Session switched via interactive `/resume`
-- `logout` - User logged out
-- `prompt_input_exit` - User exited via prompt input
-- `other` - Other reason
+**reason 필드 값:**
+- `clear` - 사용자가 세션을 지움
+- `resume` - 대화형 `/resume`으로 세션 전환
+- `logout` - 사용자가 로그아웃함
+- `prompt_input_exit` - 사용자가 프롬프트 입력으로 종료함
+- `other` - 기타 이유
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -541,33 +541,33 @@ Runs when session ends to perform cleanup or final logging. Cannot block termina
 }
 ```
 
-### Notification Event
+### Notification 이벤트
 
-Updated matchers for notification events:
-- `permission_prompt` - Permission request notification
-- `idle_prompt` - Idle state notification
-- `auth_success` - Authentication success
-- `elicitation_dialog` - MCP server opened an elicitation form
-- `elicitation_url_dialog` - MCP server asks you to open a browser URL
-- `elicitation_complete` - URL-mode elicitation reported complete
-- `elicitation_response` - Elicitation response sent back to the server
-- `agent_needs_input` - Background agent needs input (v2.1.198)
-- `agent_completed` - Background agent finished (v2.1.198)
-- `quota_auto_resume_fired` / `quota_auto_resume_stale` / `quota_auto_resume_disabled` - Usage-limit auto-resume outcomes (v2.1.234)
+알림 이벤트에서 쓸 수 있는 매처입니다:
+- `permission_prompt` - 권한 요청 알림
+- `idle_prompt` - 유휴 상태 알림
+- `auth_success` - 인증 성공
+- `elicitation_dialog` - MCP 서버가 입력 요청 양식을 엶
+- `elicitation_url_dialog` - MCP 서버가 브라우저 URL을 열어 달라고 요청함
+- `elicitation_complete` - URL 방식의 입력 요청이 완료되었다고 보고됨
+- `elicitation_response` - 입력 요청 응답을 서버로 돌려보냄
+- `agent_needs_input` - 백그라운드 에이전트에 입력이 필요함(v2.1.198)
+- `agent_completed` - 백그라운드 에이전트가 끝남(v2.1.198)
+- `quota_auto_resume_fired` / `quota_auto_resume_stale` / `quota_auto_resume_disabled` - 사용 한도 자동 이어 하기의 결과(v2.1.234)
 
 ### PreModelSwitch
 
-Runs **before** Claude Code applies a requested model switch — for example when you run `/model`, or when a component asks for a different model. Requires v2.1.251 or later.
+요청된 모델 전환을 Claude Code가 적용하기 **전에** 실행됩니다 — 예를 들어 `/model`을 실행하거나, 어떤 구성 요소가 다른 모델을 요청할 때입니다. v2.1.251 이상이 필요합니다.
 
-**Matchers:** the canonical name of the model being switched to, derived from `to_model`. Match an exact model (`claude-opus-5`) or a family with a regex (`.*opus.*`).
+**매처:** `to_model`에서 가져온, 전환될 모델의 정식 이름. 정확한 모델(`claude-opus-5`)이나 정규식으로 모델 계열(`.*opus.*`)과 일치시킵니다.
 
-**Input fields:** in addition to the common fields, the hook receives `from_model` (the model in use before the switch) and `to_model` (the model requested).
+**입력 필드:** 공통 필드에 더해 `from_model`(전환 전에 쓰던 모델)과 `to_model`(요청된 모델)을 받습니다.
 
-**Can block:** yes. Exit code `2` blocks the switch and shows stderr as an error, so the session keeps its current model. Use this to gate or veto model changes — for example, to keep a cost-sensitive project off the most expensive model.
+**차단 가능:** 예. 종료 코드 `2`는 전환을 막고 stderr를 오류로 표시하므로 세션은 현재 모델을 유지합니다. 모델 변경을 허용할지 정하거나 거부할 때 쓰세요 — 예를 들어 비용에 민감한 프로젝트가 가장 비싼 모델을 쓰지 않게 할 수 있습니다.
 
-**Timeout:** this event lowers the `command`, `http`, and `mcp_tool` default timeout to 30 seconds.
+**시간 제한:** 이 이벤트에서는 `command`, `http`, `mcp_tool`의 기본 시간 제한이 30초로 낮아집니다.
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -588,7 +588,7 @@ Runs **before** Claude Code applies a requested model switch — for example whe
 
 ```bash
 #!/bin/bash
-# gate-model-switch.sh - refuse a switch to Opus on this project
+# gate-model-switch.sh - 이 프로젝트에서는 Opus로의 전환을 거부
 input=$(cat)
 to_model=$(echo "$input" | jq -r '.to_model')
 
@@ -602,17 +602,17 @@ exit 0
 
 ### PostModelSwitch
 
-Runs **after** the session's model has changed. It also fires for changes Claude Code makes itself — such as restoring the previously selected model when you resume a session — not only for switches you request. Requires v2.1.251 or later.
+세션의 모델이 바뀐 **뒤에** 실행됩니다. 사용자가 요청한 전환뿐 아니라 Claude Code가 스스로 바꾸는 경우 — 세션을 재개할 때 이전에 고른 모델을 복원하는 경우 등 — 에도 발생합니다. v2.1.251 이상이 필요합니다.
 
-**Matchers:** same as `PreModelSwitch` — the canonical name derived from `to_model`.
+**매처:** `PreModelSwitch`와 같음 — `to_model`에서 가져온 정식 이름.
 
-**Input fields:** `from_model` and `to_model`, alongside the common fields.
+**입력 필드:** 공통 필드와 함께 `from_model`, `to_model`.
 
-**Can block:** no. The switch has already happened; the hook can only observe and react.
+**차단 가능:** 아니요. 전환은 이미 일어났으므로 훅은 관찰하고 대응할 수만 있습니다.
 
-**Timeout:** this event lowers the `command`, `http`, and `mcp_tool` default timeout to 30 seconds.
+**시간 제한:** 이 이벤트에서는 `command`, `http`, `mcp_tool`의 기본 시간 제한이 30초로 낮아집니다.
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -632,7 +632,7 @@ Runs **after** the session's model has changed. It also fires for changes Claude
 
 ```bash
 #!/bin/bash
-# log-model-switch.sh - append every model change to a session log
+# log-model-switch.sh - 모든 모델 변경을 세션 로그에 추가
 input=$(cat)
 from=$(echo "$input" | jq -r '.from_model')
 to=$(echo "$input" | jq -r '.to_model')
@@ -641,52 +641,52 @@ echo "$(date -Iseconds) $from -> $to" >> ~/.claude/model-switches.log
 exit 0
 ```
 
-## Component-Scoped Hooks
+## 구성 요소 범위 훅
 
-Hooks can be attached to specific components (skills, agents, commands) in their frontmatter:
+훅은 특정 구성 요소(스킬, 에이전트, 명령어)의 frontmatter에 붙일 수 있습니다:
 
-**In SKILL.md, agent.md, or command.md:**
+**SKILL.md, agent.md, command.md에서:**
 
 ```yaml
 ---
 name: secure-operations
-description: Perform operations with security checks
+description: 보안 검사와 함께 작업 수행
 hooks:
   PreToolUse:
     - matcher: "Bash"
       hooks:
         - type: command
           command: "./scripts/check.sh"
-          once: true  # Skill frontmatter only: removed after first successful run
+          once: true  # 스킬 frontmatter 전용: 처음 성공한 뒤 제거됨
 ---
 ```
 
-**Supported events:** all hook events. Subagent hooks run only while the subagent is active (`Stop` → `SubagentStop`); skill hooks register when the skill is invoked and stay active for the rest of the session.
+**지원 이벤트:** 모든 훅 이벤트. 서브에이전트 훅은 서브에이전트가 활성화된 동안에만 실행되며(`Stop` → `SubagentStop`), 스킬 훅은 스킬이 호출될 때 등록되어 세션이 끝날 때까지 활성 상태로 남습니다.
 
-This allows defining hooks directly in the component that uses them, keeping related code together.
+덕분에 훅을 쓰는 구성 요소 안에 훅을 바로 정의해 관련 코드를 한곳에 모을 수 있습니다.
 
-### Hooks in Subagent Frontmatter
+### 서브에이전트 frontmatter의 훅
 
-When a `Stop` hook is defined in a subagent's frontmatter, it is automatically converted to a `SubagentStop` hook scoped to that subagent. This ensures that the stop hook only fires when that specific subagent completes, rather than when the main session stops.
+서브에이전트의 frontmatter에 `Stop` 훅을 정의하면 그 서브에이전트 범위의 `SubagentStop` 훅으로 자동 변환됩니다. 따라서 이 훅은 메인 세션이 멈출 때가 아니라 해당 서브에이전트가 끝날 때만 실행됩니다.
 
 ```yaml
 ---
 name: code-review-agent
-description: Automated code review subagent
+description: 자동 코드 리뷰 서브에이전트
 hooks:
   Stop:
     - hooks:
         - type: prompt
-          prompt: "Verify the code review is thorough and complete."
-  # The above Stop hook auto-converts to SubagentStop for this subagent
+          prompt: "코드 리뷰가 철저하고 빠짐없는지 검증하세요."
+  # 위의 Stop 훅은 이 서브에이전트에서 SubagentStop으로 자동 변환됨
 ---
 ```
 
-**Workspace trust required (v2.1.218):** Frontmatter hooks in a **project** subagent now require workspace trust acceptance for the folder the agent file came from before they run. Before v2.1.218, these hooks could run from folders you hadn't trusted. See the [subagents documentation](https://code.claude.com/docs/en/sub-agents#hooks-in-subagent-frontmatter) for which scopes are exempt.
+**작업 공간 신뢰 필요 (v2.1.218):** 이제 **프로젝트** 서브에이전트의 frontmatter 훅은 에이전트 파일이 있는 폴더의 작업 공간 신뢰를 수락해야 실행됩니다. v2.1.218 이전에는 신뢰하지 않은 폴더에서도 이 훅이 실행될 수 있었습니다. 어떤 범위가 예외인지는 [서브에이전트 문서](https://code.claude.com/docs/ko/sub-agents#hooks-in-subagent-frontmatter)를 참고하세요.
 
-## PermissionRequest Event
+## PermissionRequest 이벤트
 
-Handles permission requests with custom output format:
+사용자 정의 출력 형식으로 권한 요청을 처리합니다:
 
 ```json
 {
@@ -695,18 +695,18 @@ Handles permission requests with custom output format:
     "decision": {
       "behavior": "allow|deny",
       "updatedInput": {},
-      "message": "Custom message",
+      "message": "사용자 정의 메시지",
       "interrupt": false
     }
   }
 }
 ```
 
-## Hook Input and Output
+## 훅 입력과 출력
 
-### JSON Input (via stdin)
+### JSON 입력(stdin으로)
 
-All hooks receive JSON input via stdin:
+모든 훅은 stdin으로 JSON 입력을 받습니다:
 
 ```json
 {
@@ -728,40 +728,40 @@ All hooks receive JSON input via stdin:
 }
 ```
 
-**Common fields:**
+**공통 필드:**
 
-| Field | Description |
+| 필드 | 설명 |
 |-------|-------------|
-| `session_id` | Unique session identifier |
-| `transcript_path` | Path to the conversation transcript file |
-| `cwd` | Current working directory |
-| `prompt_id` | UUID of the prompt being processed; correlates with the OpenTelemetry `prompt.id` attribute (v2.1.196) |
-| `hook_event_name` | Name of the event that triggered the hook |
-| `agent_id` | Identifier of the agent running this hook |
-| `agent_type` | Agent name (for example, `"Explore"` or `"security-reviewer"`); present only when the session uses `--agent` or the hook fires inside a subagent |
-| `worktree` | Path to the git worktree, if the agent is running in one |
-| `effort.level` | (v2.1.133+) Active effort level: `low`, `medium`, `high`, `xhigh`, or `max` |
+| `session_id` | 고유한 세션 식별자 |
+| `transcript_path` | 대화 기록 파일의 경로 |
+| `cwd` | 현재 작업 디렉토리 |
+| `prompt_id` | 처리 중인 프롬프트의 UUID. OpenTelemetry의 `prompt.id` 속성과 대응합니다(v2.1.196) |
+| `hook_event_name` | 훅을 일으킨 이벤트의 이름 |
+| `agent_id` | 이 훅을 실행하는 에이전트의 식별자 |
+| `agent_type` | 에이전트 이름(예: `"Explore"`, `"security-reviewer"`). 세션이 `--agent`를 쓰거나 서브에이전트 안에서 훅이 실행될 때만 있음 |
+| `worktree` | 에이전트가 git worktree에서 실행 중이면 그 worktree의 경로 |
+| `effort.level` | (v2.1.133+) 현재 노력 수준: `low`, `medium`, `high`, `xhigh`, `max` |
 
-### Exit Codes
+### 종료 코드
 
-| Exit Code | Meaning | Behavior |
+| 종료 코드 | 의미 | 동작 |
 |-----------|---------|----------|
-| **0** | Success | Continue, parse JSON stdout |
-| **2** | Blocking error | Block operation, stderr shown as error |
-| **Other** | Non-blocking error | Continue; a `<hook name> hook error` notice in the transcript shows the first line of stderr |
+| **0** | 성공 | 계속 진행하고 stdout의 JSON을 파싱 |
+| **2** | 차단 오류 | 작업을 막고 stderr를 오류로 표시 |
+| **그 밖의 값** | 차단하지 않는 오류 | 계속 진행. 대화 기록에 stderr 첫 줄을 담은 `<hook name> hook error` 알림이 표시됨 |
 
-### JSON Output (stdout, exit code 0)
+### JSON 출력(stdout, 종료 코드 0)
 
 ```json
 {
   "continue": true,
-  "stopReason": "Optional message if stopping",
+  "stopReason": "중단할 때 표시할 메시지(선택)",
   "suppressOutput": false,
-  "systemMessage": "Optional warning message",
+  "systemMessage": "경고 메시지(선택)",
   "hookSpecificOutput": {
     "hookEventName": "PreToolUse",
     "permissionDecision": "allow",
-    "permissionDecisionReason": "File is in allowed directory",
+    "permissionDecisionReason": "허용된 디렉토리에 있는 파일",
     "updatedInput": {
       "file_path": "/modified/path.js"
     }
@@ -769,7 +769,7 @@ All hooks receive JSON input via stdin:
 }
 ```
 
-> **Scope (v2.1.121+):** `hookSpecificOutput.updatedToolOutput` is now honored for **all** tools, not just MCP tools. A `PostToolUse` hook on `Bash`, `Edit`, `Read`, etc. can rewrite the tool's output before Claude sees it — useful for redacting secrets, normalizing diffs, or filtering noisy command output. The value must match the tool's output shape — `Bash` returns an object with `stdout`, `stderr`, `interrupted`, and `isImage`; for built-in tools a value that doesn't match is ignored and the original output is used. Example (strip ANSI color codes from a `Bash` output):
+> **범위 (v2.1.121+):** 이제 `hookSpecificOutput.updatedToolOutput`은 MCP 도구만이 아니라 **모든** 도구에 적용됩니다. `Bash`, `Edit`, `Read` 등에 대한 `PostToolUse` 훅이 Claude가 보기 전에 도구의 출력을 다시 쓸 수 있습니다 — 비밀 정보를 가리거나, diff를 정규화하거나, 시끄러운 명령어 출력을 걸러 낼 때 유용합니다. 값은 도구 출력의 형태와 맞아야 합니다 — `Bash`는 `stdout`, `stderr`, `interrupted`, `isImage`를 가진 객체를 반환하며, 기본 제공 도구에서 형태가 맞지 않는 값은 무시되고 원래 출력이 쓰입니다. 예(`Bash` 출력에서 ANSI 색상 코드 제거):
 >
 > ```json
 > {
@@ -785,19 +785,19 @@ All hooks receive JSON input via stdin:
 > }
 > ```
 
-> **`retry` (PermissionDenied)**: Use JSON `hookSpecificOutput.retry: true` to tell the model it may retry the denied tool call.
+> **`retry` (PermissionDenied)**: JSON의 `hookSpecificOutput.retry: true`로 거부된 도구 호출을 다시 시도해도 된다고 모델에게 알릴 수 있습니다.
 
-> **Deprecated `PreToolUse` decision form**: For `PreToolUse`, the top-level `decision` and `reason` fields are **deprecated** — use `hookSpecificOutput.permissionDecision` (`allow` / `deny` / `ask` / `defer`) and `permissionDecisionReason` instead. Precedence among decisions is `deny` > `defer` > `ask` > `allow`. Note also that `suppressOutput` is accepted but **has no effect**.
+> **지원 중단된 `PreToolUse` 결정 형식**: `PreToolUse`에서 최상위 `decision`과 `reason` 필드는 **지원 중단되었습니다** — 대신 `hookSpecificOutput.permissionDecision`(`allow` / `deny` / `ask` / `defer`)과 `permissionDecisionReason`을 쓰세요. 결정 사이의 우선순위는 `deny` > `defer` > `ask` > `allow`입니다. 또한 `suppressOutput`은 받아들여지지만 **아무 효과가 없습니다**.
 
 #### `terminalSequence` (v2.1.141)
 
-Hooks can emit raw OSC (operating system command) escape sequences by setting `terminalSequence` in the JSON output. The host writes the sequence to its controlling terminal when the hook returns — useful for desktop notifications, window-title updates, and terminal bells without requiring a TTY of your own.
+훅은 JSON 출력에 `terminalSequence`를 설정해 OSC(운영 체제 명령) 이스케이프 시퀀스를 그대로 내보낼 수 있습니다. 훅이 반환되면 호스트가 이 시퀀스를 자신을 제어하는 터미널에 씁니다 — 따로 TTY가 없어도 데스크톱 알림, 창 제목 변경, 터미널 벨에 활용할 수 있습니다.
 
-| Field | Type | Description |
+| 필드 | 타입 | 설명 |
 |-------|------|-------------|
-| `terminalSequence` | string | Raw escape sequence (typically OSC 9 / OSC 0 / OSC 777). Written to the host terminal verbatim. |
+| `terminalSequence` | string | 원시 이스케이프 시퀀스(보통 OSC 9 / OSC 0 / OSC 777). 호스트 터미널에 그대로 씁니다. |
 
-Example — fire an OSC 9 desktop notification when a long task completes. Write ESC and BEL as JSON escapes (`\u001b`, `\u0007`) or build the value with `printf` and `jq`; raw control bytes inside a JSON string fail to parse:
+예 — 오래 걸리는 작업이 끝나면 OSC 9 데스크톱 알림 보내기. ESC와 BEL은 JSON 이스케이프(`\u001b`, `\u0007`)로 쓰거나 `printf`와 `jq`로 값을 만드세요. JSON 문자열 안에 원시 제어 바이트가 들어가면 파싱에 실패합니다:
 
 ```json
 {
@@ -805,25 +805,25 @@ Example — fire an OSC 9 desktop notification when a long task completes. Write
 }
 ```
 
-Configure it on a `Stop` hook so the notification fires when Claude finishes a turn. Sequence support is terminal-dependent; iTerm2, Windows Terminal, and WezTerm honor OSC 9, while Kitty uses OSC 99.
+Claude가 턴을 마칠 때 알림이 가도록 `Stop` 훅에 설정하세요. 시퀀스 지원 여부는 터미널마다 다릅니다. iTerm2, Windows Terminal, WezTerm은 OSC 9를 지원하고, Kitty는 OSC 99를 씁니다.
 
-## Environment Variables
+## 환경 변수
 
-| Variable | Availability | Description |
+| 변수 | 사용 가능한 곳 | 설명 |
 |----------|-------------|-------------|
-| `CLAUDE_PROJECT_DIR` | All hooks | Absolute path to project root |
-| `CLAUDE_ENV_FILE` | SessionStart, CwdChanged, FileChanged | File path for persisting env vars |
-| `CLAUDE_CODE_REMOTE` | All hooks | `"true"` if running in remote environments |
-| `${CLAUDE_PLUGIN_ROOT}` | Plugin hooks | Path to plugin directory |
-| `${CLAUDE_PLUGIN_DATA}` | Plugin hooks | Path to plugin data directory |
-| `CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS` | SessionEnd hooks | Configurable timeout in milliseconds for SessionEnd hooks (overrides default) |
-| `CLAUDE_CODE_SESSION_ID` | Bash tool subprocesses (v2.1.132+) | Session UUID; matches the `session_id` field in hook input JSON. Use to correlate bash logs with hook telemetry. |
-| `CLAUDE_EFFORT` | Bash tool subprocesses (v2.1.133+) | Active effort level (`low`/`medium`/`high`/`xhigh`/`max`); matches `effort.level` in hook input JSON. |
-| `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` | Process-wide (v2.1.143+) | Max consecutive Stop-hook blocks before Claude Code overrides the next block and ends the turn (default `8`). Set to `0` to disable the cap. |
+| `CLAUDE_PROJECT_DIR` | 모든 훅 | 프로젝트 루트의 절대 경로 |
+| `CLAUDE_ENV_FILE` | SessionStart, CwdChanged, FileChanged | 환경 변수를 유지할 파일 경로 |
+| `CLAUDE_CODE_REMOTE` | 모든 훅 | 원격 환경에서 실행 중이면 `"true"` |
+| `${CLAUDE_PLUGIN_ROOT}` | 플러그인 훅 | 플러그인 디렉토리 경로 |
+| `${CLAUDE_PLUGIN_DATA}` | 플러그인 훅 | 플러그인 데이터 디렉토리 경로 |
+| `CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS` | SessionEnd 훅 | SessionEnd 훅의 시간 제한(밀리초, 기본값 재정의) |
+| `CLAUDE_CODE_SESSION_ID` | Bash 도구 하위 프로세스(v2.1.132+) | 세션 UUID. 훅 입력 JSON의 `session_id` 필드와 같습니다. bash 로그와 훅 텔레메트리를 연결할 때 쓰세요. |
+| `CLAUDE_EFFORT` | Bash 도구 하위 프로세스(v2.1.133+) | 현재 노력 수준(`low`/`medium`/`high`/`xhigh`/`max`). 훅 입력 JSON의 `effort.level`과 같습니다. |
+| `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` | 프로세스 전체(v2.1.143+) | Claude Code가 다음 차단을 무시하고 턴을 끝내기 전까지 허용되는 Stop 훅의 최대 연속 차단 횟수(기본값 `8`). `0`이면 한도를 끕니다. |
 
-## Prompt-Based Hooks
+## 프롬프트 기반 훅
 
-For `Stop` and `SubagentStop` events, you can use LLM-based evaluation:
+`Stop`과 `SubagentStop` 이벤트에서는 LLM 기반 평가를 쓸 수 있습니다:
 
 ```json
 {
@@ -833,7 +833,7 @@ For `Stop` and `SubagentStop` events, you can use LLM-based evaluation:
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Review if all tasks are complete. Return your decision.",
+            "prompt": "모든 작업이 끝났는지 검토하고 결정을 반환하세요.",
             "timeout": 30
           }
         ]
@@ -843,21 +843,21 @@ For `Stop` and `SubagentStop` events, you can use LLM-based evaluation:
 }
 ```
 
-**LLM Response Schema:**
+**LLM 응답 스키마:**
 ```json
 {
   "ok": false,
-  "reason": "Tests were not run after the last edit"
+  "reason": "마지막 편집 이후 테스트를 실행하지 않았음"
 }
 ```
 
-`ok: true` allows the action; `reason` is required when `ok` is `false`.
+`ok: true`는 동작을 허용하며, `ok`가 `false`이면 `reason`이 필수입니다.
 
-## Examples
+## 예제
 
-### Example 1: Bash Command Validator (PreToolUse)
+### 예제 1: Bash 명령어 검증기(PreToolUse)
 
-**File:** `.claude/hooks/validate-bash.py`
+**파일:** `.claude/hooks/validate-bash.py`
 
 ```python
 #!/usr/bin/env python3
@@ -882,7 +882,7 @@ def main():
     for pattern, message in BLOCKED_PATTERNS:
         if re.search(pattern, command):
             print(message, file=sys.stderr)
-            sys.exit(2)  # Exit 2 = blocking error
+            sys.exit(2)  # 종료 코드 2 = 차단 오류
 
     sys.exit(0)
 
@@ -890,7 +890,7 @@ if __name__ == "__main__":
     main()
 ```
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -909,9 +909,9 @@ if __name__ == "__main__":
 }
 ```
 
-### Example 2: Security Scanner (PostToolUse)
+### 예제 2: 보안 스캐너(PostToolUse)
 
-**File:** `.claude/hooks/security-scan.py`
+**파일:** `.claude/hooks/security-scan.py`
 
 ```python
 #!/usr/bin/env python3
@@ -955,14 +955,14 @@ if __name__ == "__main__":
     main()
 ```
 
-### Example 3: Auto-Format Code (PostToolUse)
+### 예제 3: 코드 자동 포맷(PostToolUse)
 
-**File:** `.claude/hooks/format-code.sh`
+**파일:** `.claude/hooks/format-code.sh`
 
 ```bash
 #!/bin/bash
 
-# Read JSON from stdin
+# stdin에서 JSON 읽기
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | python3 -c "import sys, json; print(json.load(sys.stdin).get('tool_name', ''))")
 FILE_PATH=$(echo "$INPUT" | python3 -c "import sys, json; print(json.load(sys.stdin).get('tool_input', {}).get('file_path', ''))")
@@ -971,7 +971,7 @@ if [ "$TOOL_NAME" != "Write" ] && [ "$TOOL_NAME" != "Edit" ]; then
     exit 0
 fi
 
-# Format based on file extension
+# 파일 확장자에 따라 포맷
 case "$FILE_PATH" in
     *.js|*.jsx|*.ts|*.tsx|*.json)
         command -v prettier &>/dev/null && prettier --write "$FILE_PATH" 2>/dev/null
@@ -987,9 +987,9 @@ esac
 exit 0
 ```
 
-### Example 4: Prompt Validator (UserPromptSubmit)
+### 예제 4: 프롬프트 검증기(UserPromptSubmit)
 
-**File:** `.claude/hooks/validate-prompt.py`
+**파일:** `.claude/hooks/validate-prompt.py`
 
 ```python
 #!/usr/bin/env python3
@@ -1021,7 +1021,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### Example 5: Intelligent Stop Hook (Prompt-Based)
+### 예제 5: 지능형 Stop 훅(프롬프트 기반)
 
 ```json
 {
@@ -1031,7 +1031,7 @@ if __name__ == "__main__":
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Review if Claude completed all requested tasks. Check: 1) Were all files created/modified? 2) Were there unresolved errors? If incomplete, explain what's missing.",
+            "prompt": "Claude가 요청받은 작업을 모두 끝냈는지 검토하세요. 확인할 것: 1) 모든 파일을 만들거나 수정했는가? 2) 해결되지 않은 오류가 있는가? 끝나지 않았다면 무엇이 빠졌는지 설명하세요.",
             "timeout": 30
           }
         ]
@@ -1041,45 +1041,45 @@ if __name__ == "__main__":
 }
 ```
 
-### Example 6: Context Usage Tracker (Hook Pairs)
+### 예제 6: 컨텍스트 사용량 추적기(훅 쌍)
 
-Track token consumption per request using `UserPromptSubmit` (pre-message) and `Stop` (post-response) hooks together.
+`UserPromptSubmit`(메시지 전)과 `Stop`(응답 후) 훅을 함께 써서 요청마다 토큰 소비량을 추적합니다.
 
-**File:** `.claude/hooks/context-tracker.py`
+**파일:** `.claude/hooks/context-tracker.py`
 
 ```python
 #!/usr/bin/env python3
 """
-Context Usage Tracker - Tracks token consumption per request.
+컨텍스트 사용량 추적기 - 요청마다 토큰 소비량을 추적합니다.
 
-Uses UserPromptSubmit as "pre-message" hook and Stop as "post-response" hook
-to calculate the delta in token usage for each request.
+UserPromptSubmit을 "메시지 전" 훅으로, Stop을 "응답 후" 훅으로 써서
+요청마다 토큰 사용량의 차이를 계산합니다.
 
-Token Counting Methods:
-1. Character estimation (default): ~4 chars per token, no dependencies
-2. tiktoken (optional): More accurate (~90-95%), requires: pip install tiktoken
+토큰 계산 방법:
+1. 글자 수 추정(기본값): 토큰당 약 4글자, 의존성 없음
+2. tiktoken(선택): 더 정확함(약 90-95%), 필요: pip install tiktoken
 """
 import json
 import os
 import sys
 import tempfile
 
-# Configuration
-CONTEXT_LIMIT = 1000000  # 1M on Opus 5, Sonnet 5, Opus 4.8, Sonnet 4.6; 200000 on Haiku 4.5 (adjust for your model)
-USE_TIKTOKEN = False    # Set True if tiktoken is installed for better accuracy
+# 설정
+CONTEXT_LIMIT = 1000000  # Opus 5, Sonnet 5, Opus 4.8, Sonnet 4.6은 1M, Haiku 4.5는 200000(사용하는 모델에 맞게 조정)
+USE_TIKTOKEN = False    # 더 정확하게 계산하려면 tiktoken을 설치한 뒤 True로 설정
 
 
 def get_state_file(session_id: str) -> str:
-    """Get temp file path for storing pre-message token count, isolated by session."""
+    """메시지 전 토큰 수를 저장할, 세션별로 분리된 임시 파일 경로를 가져옵니다."""
     return os.path.join(tempfile.gettempdir(), f"claude-context-{session_id}.json")
 
 
 def count_tokens(text: str) -> int:
     """
-    Count tokens in text.
+    텍스트의 토큰 수를 셉니다.
 
-    Uses tiktoken with p50k_base encoding if available (~90-95% accuracy),
-    otherwise falls back to character estimation (~80-90% accuracy).
+    tiktoken이 있으면 p50k_base 인코딩을 쓰고(약 90-95% 정확도),
+    없으면 글자 수 추정으로 대신합니다(약 80-90% 정확도).
     """
     if USE_TIKTOKEN:
         try:
@@ -1087,14 +1087,14 @@ def count_tokens(text: str) -> int:
             enc = tiktoken.get_encoding("p50k_base")
             return len(enc.encode(text))
         except ImportError:
-            pass  # Fall back to estimation
+            pass  # 추정 방식으로 대체
 
-    # Character-based estimation: ~4 characters per token for English
+    # 글자 수 기반 추정: 영어는 토큰당 약 4글자
     return len(text) // 4
 
 
 def read_transcript(transcript_path: str) -> str:
-    """Read and concatenate all content from transcript file."""
+    """대화 기록 파일의 내용을 모두 읽어 하나로 합칩니다."""
     if not transcript_path or not os.path.exists(transcript_path):
         return ""
 
@@ -1103,7 +1103,7 @@ def read_transcript(transcript_path: str) -> str:
         for line in f:
             try:
                 entry = json.loads(line.strip())
-                # Extract text content from various message formats
+                # 여러 메시지 형식에서 텍스트 내용 추출
                 if "message" in entry:
                     msg = entry["message"]
                     if isinstance(msg.get("content"), str):
@@ -1119,28 +1119,28 @@ def read_transcript(transcript_path: str) -> str:
 
 
 def handle_user_prompt_submit(data: dict) -> None:
-    """Pre-message hook: Save current token count before request."""
+    """메시지 전 훅: 요청 전에 현재 토큰 수를 저장합니다."""
     session_id = data.get("session_id", "unknown")
     transcript_path = data.get("transcript_path", "")
 
     transcript_content = read_transcript(transcript_path)
     current_tokens = count_tokens(transcript_content)
 
-    # Save to temp file for later comparison
+    # 나중에 비교하도록 임시 파일에 저장
     state_file = get_state_file(session_id)
     with open(state_file, "w") as f:
         json.dump({"pre_tokens": current_tokens}, f)
 
 
 def handle_stop(data: dict) -> None:
-    """Post-response hook: Calculate and report token delta."""
+    """응답 후 훅: 토큰 차이를 계산하고 보고합니다."""
     session_id = data.get("session_id", "unknown")
     transcript_path = data.get("transcript_path", "")
 
     transcript_content = read_transcript(transcript_path)
     current_tokens = count_tokens(transcript_content)
 
-    # Load pre-message count
+    # 메시지 전 토큰 수 불러오기
     state_file = get_state_file(session_id)
     pre_tokens = 0
     if os.path.exists(state_file):
@@ -1151,12 +1151,12 @@ def handle_stop(data: dict) -> None:
         except (json.JSONDecodeError, IOError):
             pass
 
-    # Calculate delta
+    # 차이 계산
     delta_tokens = current_tokens - pre_tokens
     remaining = CONTEXT_LIMIT - current_tokens
     percentage = (current_tokens / CONTEXT_LIMIT) * 100
 
-    # Report usage
+    # 사용량 보고
     method = "tiktoken" if USE_TIKTOKEN else "estimated"
     print(f"Context ({method}): ~{current_tokens:,} tokens ({percentage:.1f}% used, ~{remaining:,} remaining)", file=sys.stderr)
     if delta_tokens > 0:
@@ -1179,7 +1179,7 @@ if __name__ == "__main__":
     main()
 ```
 
-**Configuration:**
+**설정:**
 ```json
 {
   "hooks": {
@@ -1207,77 +1207,77 @@ if __name__ == "__main__":
 }
 ```
 
-**How it works:**
-1. `UserPromptSubmit` fires before your prompt is processed - saves current token count
-2. `Stop` fires after Claude responds - calculates delta and reports usage
-3. Each session is isolated via `session_id` in the temp filename
+**동작 방식:**
+1. `UserPromptSubmit`은 프롬프트가 처리되기 전에 실행되어 현재 토큰 수를 저장합니다
+2. `Stop`은 Claude가 응답한 뒤 실행되어 차이를 계산하고 사용량을 보고합니다
+3. 임시 파일 이름의 `session_id`로 세션마다 분리됩니다
 
-**Token Counting Methods:**
+**토큰 계산 방법:**
 
-| Method | Accuracy | Dependencies | Speed |
+| 방법 | 정확도 | 의존성 | 속도 |
 |--------|----------|--------------|-------|
-| Character estimation | ~80-90% | None | <1ms |
-| tiktoken (p50k_base) | ~90-95% | `pip install tiktoken` | <10ms |
+| 글자 수 추정 | 약 80-90% | 없음 | 1ms 미만 |
+| tiktoken (p50k_base) | 약 90-95% | `pip install tiktoken` | 10ms 미만 |
 
-> **Note:** Anthropic hasn't released an official offline tokenizer. Both methods are approximations. The transcript includes user prompts, Claude's responses, and tool outputs; since v2.1.300 it also records each API request's system prompt, tools, and parameters.
+> **참고:** Anthropic은 공식 오프라인 토크나이저를 공개하지 않았습니다. 두 방법 모두 근삿값입니다. 대화 기록에는 사용자 프롬프트, Claude의 응답, 도구 출력이 들어 있으며, v2.1.300부터는 각 API 요청의 시스템 프롬프트, 도구, 매개변수도 기록됩니다.
 
-### Example 7: Seed Auto-Mode Permissions (One-Time Setup Script)
+### 예제 7: 자동 모드 권한 미리 채우기(일회성 설정 스크립트)
 
-A one-time setup script that seeds `~/.claude/settings.json` with safe permission rules equivalent to Claude Code's auto-mode baseline — 37 by default, up to 63 with every category flag enabled — without any hook, without remembering future choices. Run it once; safe to re-run (skips rules already present).
+Claude Code의 자동 모드 기본 허용 범위에 해당하는 안전한 권한 규칙 — 기본 37개, 모든 분류 플래그를 켜면 최대 63개 — 을 `~/.claude/settings.json`에 미리 채워 넣는 일회성 설정 스크립트입니다. 훅을 쓰지 않으며 앞으로의 선택을 기억하지도 않습니다. 한 번만 실행하면 되고, 다시 실행해도 안전합니다(이미 있는 규칙은 건너뜀).
 
-**File:** `09-advanced-features/setup-auto-mode-permissions.py`
+**파일:** `09-advanced-features/setup-auto-mode-permissions.py`
 
 ```bash
-# Preview what would be added
+# 추가될 내용 미리 보기
 python3 09-advanced-features/setup-auto-mode-permissions.py --dry-run
 
-# Apply
+# 적용
 python3 09-advanced-features/setup-auto-mode-permissions.py
 ```
 
-**What gets added:**
+**추가되는 내용:**
 
-| Category | Examples |
+| 분류 | 예 |
 |----------|---------|
-| Built-in tools | `Read(*)`, `Grep(*)`, `Agent(*)`, `WebSearch(*)` |
-| Optional edits (--include-edits) | `Edit(*)` |
-| Git read | `Bash(git status:*)`, `Bash(git log:*)`, `Bash(git diff:*)` |
-| Git write (local) | `Bash(git add:*)`, `Bash(git commit:*)`, `Bash(git checkout:*)` |
-| Package managers | `Bash(npm ci:*)`, `Bash(npm install:*)`, `Bash(pip install:*)`, `Bash(pip3 install:*)` |
-| Build & test | `Bash(make:*)`, `Bash(pytest:*)`, `Bash(go test:*)` |
-| Common shell | `Bash(ls:*)`, `Bash(cat:*)`, `Bash(find:*)` |
+| 기본 제공 도구 | `Read(*)`, `Grep(*)`, `Agent(*)`, `WebSearch(*)` |
+| 선택적 편집(--include-edits) | `Edit(*)` |
+| Git 읽기 | `Bash(git status:*)`, `Bash(git log:*)`, `Bash(git diff:*)` |
+| Git 쓰기(로컬) | `Bash(git add:*)`, `Bash(git commit:*)`, `Bash(git checkout:*)` |
+| 패키지 관리자 | `Bash(npm ci:*)`, `Bash(npm install:*)`, `Bash(pip install:*)`, `Bash(pip3 install:*)` |
+| 빌드와 테스트 | `Bash(make:*)`, `Bash(pytest:*)`, `Bash(go test:*)` |
+| 자주 쓰는 셸 명령어 | `Bash(ls:*)`, `Bash(cat:*)`, `Bash(find:*)` |
 | GitHub CLI | `Bash(gh pr view:*)`, `Bash(gh pr create:*)`, `Bash(gh issue list:*)` |
 
-**What is intentionally excluded** (never added by this script):
-- `rm -rf`, `sudo`, force push, `git reset --hard`
+**일부러 제외한 것**(이 스크립트는 절대 추가하지 않음):
+- `rm -rf`, `sudo`, 강제 푸시, `git reset --hard`
 - `DROP TABLE`, `kubectl delete`, `terraform destroy`
-- `npm publish`, `curl | bash`, production deploys
+- `npm publish`, `curl | bash`, 프로덕션 배포
 
-### Example 8: Learning Progress Logger (SessionEnd)
+### 예제 8: 학습 진도 기록기(SessionEnd)
 
-Log which modules you studied at the end of each Claude Code session. Progress is stored
-in `~/.claude-howto-progress.json` — outside the repo, so it survives `git pull` without
-being overwritten.
+Claude Code 세션이 끝날 때마다 어떤 모듈을 공부했는지 기록합니다. 진도는
+저장소 밖의 `~/.claude-howto-progress.json`에 저장되므로 `git pull`을 해도
+덮어써지지 않습니다.
 
-**Why `SessionEnd` and not `Stop`?**
-`Stop` fires after *every* Claude response. `SessionEnd` fires once when the session
-terminates — exactly what you want for an end-of-session diary entry.
+**왜 `Stop`이 아니라 `SessionEnd`인가요?**
+`Stop`은 Claude가 응답할 *때마다* 실행됩니다. `SessionEnd`는 세션이 끝날 때
+한 번만 실행되므로 — 세션 마무리 일지에 딱 맞습니다.
 
-**Why no interactive prompt?**
-Hooks run without a controlling terminal, so `/dev/tty` is unavailable and a hook can't
-prompt you. Pass the modules (and optional notes) as environment variables when you
-launch Claude Code, e.g. `CLAUDE_HOWTO_MODULES=06,07 claude`.
+**왜 대화형 입력을 받지 않나요?**
+훅은 제어 터미널 없이 실행되므로 `/dev/tty`를 쓸 수 없고, 훅이 사용자에게
+입력을 요청할 수 없습니다. Claude Code를 실행할 때 모듈(과 선택적인 메모)을 환경 변수로 넘기세요.
+예: `CLAUDE_HOWTO_MODULES=06,07 claude`
 
-**File:** `06-hooks/session-end.sh`
+**파일:** `06-hooks/session-end.sh`
 
 ```bash
 #!/usr/bin/env bash
-# SessionEnd hook: records the modules worked on, then appends a session record
-# to ~/.claude-howto-progress.json for persistent learning progress tracking.
+# SessionEnd 훅: 작업한 모듈을 기록하고, 학습 진도를 계속 추적할 수 있도록
+# ~/.claude-howto-progress.json에 세션 기록을 추가합니다.
 
 PROGRESS_FILE="$HOME/.claude-howto-progress.json"
 
-# Guard: only run inside this repo
+# 보호 조건: 이 저장소 안에서만 실행
 if [[ "$CLAUDE_PROJECT_DIR" != *"claude-howto"* ]] && [[ "$PWD" != *"claude-howto"* ]]; then
   exit 0
 fi
@@ -1289,9 +1289,9 @@ fi
 DATE=$(date +"%Y-%m-%d")
 TIME=$(date +"%H:%M")
 
-# Modules worked on, e.g. launch with: CLAUDE_HOWTO_MODULES=06,07 claude
-# 01=Slash  02=Memory  03=Skills  04=Subagents  05=MCP
-# 06=Hooks  07=Plugins 08=Checkpoints 09=Advanced 10=CLI
+# 작업한 모듈. 예: CLAUDE_HOWTO_MODULES=06,07 claude 로 실행
+# 01=슬래시 명령어  02=메모리  03=스킬  04=서브에이전트  05=MCP
+# 06=훅  07=플러그인  08=체크포인트  09=고급 기능  10=CLI
 INPUT="${CLAUDE_HOWTO_MODULES:-}"
 
 if [ -z "$INPUT" ] || [ "$INPUT" = "skip" ]; then
@@ -1314,11 +1314,11 @@ MODULES_JSON=$(echo "$INPUT" | tr ',' '\n' | tr -d ' ' | while read -r m; do
   esac
 done | paste -sd ',' -)
 
-# Optional notes, e.g. CLAUDE_HOWTO_NOTES="tried the pre-commit example"
+# 선택적인 메모. 예: CLAUDE_HOWTO_NOTES="pre-commit 예제를 써 봄"
 NOTES="${CLAUDE_HOWTO_NOTES:-}"
 
-# Pass NOTES as a separate argument so Python handles JSON escaping —
-# avoids broken JSON when notes contain quotes or backslashes.
+# NOTES를 별도 인수로 넘겨 JSON 이스케이프를 Python이 처리하게 함 —
+# 메모에 따옴표나 백슬래시가 있어도 JSON이 깨지지 않음.
 python3 - "$PROGRESS_FILE" "$DATE" "$TIME" "$MODULES_JSON" "$NOTES" <<'PYEOF'
 import sys, json
 
@@ -1343,7 +1343,7 @@ PYEOF
 echo " Saved to $PROGRESS_FILE"
 ```
 
-**Install** — copy the script into the project's hook directory so the path in `settings.json` resolves:
+**설치** — `settings.json`의 경로가 맞도록 스크립트를 프로젝트의 훅 디렉토리에 복사하세요:
 
 ```bash
 mkdir -p .claude/hooks
@@ -1351,7 +1351,7 @@ cp 06-hooks/session-end.sh .claude/hooks/
 chmod +x .claude/hooks/session-end.sh
 ```
 
-**Configuration** (in `.claude/settings.json`):
+**설정**(`.claude/settings.json`에서):
 
 ```json
 {
@@ -1371,9 +1371,9 @@ chmod +x .claude/hooks/session-end.sh
 }
 ```
 
-SessionEnd hooks have a 1.5-second default budget. Setting a per-hook `"timeout"` (in seconds) raises the budget to match, up to 60 seconds; a hook without its own `timeout` is canceled after 1.5 seconds.
+SessionEnd 훅의 기본 예산은 1.5초입니다. 훅별 `"timeout"`(초)을 설정하면 최대 60초까지 그에 맞춰 예산이 늘어나며, 자체 `timeout`이 없는 훅은 1.5초 뒤에 취소됩니다.
 
-**Output — `~/.claude-howto-progress.json`:**
+**출력 — `~/.claude-howto-progress.json`:**
 
 ```json
 {
@@ -1382,39 +1382,39 @@ SessionEnd hooks have a 1.5-second default budget. Setting a per-hook `"timeout"
       "date": "2026-04-18",
       "time": "14:32",
       "modules": ["06-hooks", "07-plugins"],
-      "notes": "Installed first hook, tried pre-commit example"
+      "notes": "첫 훅을 설치하고 pre-commit 예제를 써 봄"
     }
   ]
 }
 ```
 
-**Key patterns demonstrated:**
+**보여 주는 핵심 패턴:**
 
-| Pattern | Why it matters |
+| 패턴 | 중요한 이유 |
 |---------|----------------|
-| `SessionEnd` event | Fires once on exit — not after every response like `Stop` |
-| `INPUT="${CLAUDE_HOWTO_MODULES:-}"` | Hooks have no terminal (`/dev/tty` is unavailable), so input comes from env vars |
-| `"timeout": 10` | SessionEnd hooks are canceled after 1.5 s unless they set their own `timeout` |
-| `$CLAUDE_PROJECT_DIR` | Portable path — never hardcode `/Users/yourname/...` |
-| Guard clause at top | Prevents the hook running in unrelated projects if installed globally |
-| Store outside the repo | `~/` path survives `git pull` without overwriting your data |
+| `SessionEnd` 이벤트 | `Stop`처럼 응답마다가 아니라 종료할 때 한 번만 실행 |
+| `INPUT="${CLAUDE_HOWTO_MODULES:-}"` | 훅에는 터미널이 없으므로(`/dev/tty` 사용 불가) 입력을 환경 변수로 받음 |
+| `"timeout": 10` | SessionEnd 훅은 자체 `timeout`을 설정하지 않으면 1.5초 뒤에 취소됨 |
+| `$CLAUDE_PROJECT_DIR` | 이식 가능한 경로 — `/Users/yourname/...`을 하드코딩하지 않음 |
+| 맨 위의 보호 조건 | 전역으로 설치해도 관계없는 프로젝트에서는 훅이 실행되지 않게 막음 |
+| 저장소 밖에 저장 | `~/` 경로는 `git pull` 후에도 데이터가 덮어써지지 않음 |
 
-**Companion: visual progress tracker**
+**함께 쓰기: 시각적 진도 추적기**
 
-For a full checkbox-based UI covering all 10 modules, open the included tracker in your browser:
+10개 모듈 전체를 체크박스로 관리하는 UI가 필요하면, 포함된 추적기를 브라우저에서 여세요:
 
 ```bash
 open local-progress/index.html
 ```
 
-Progress is stored in browser `localStorage` (never written to disk inside the repo).
-Use the **Export** button to save a snapshot as JSON, and **Import** to restore it.
+진도는 브라우저의 `localStorage`에 저장됩니다(저장소 안의 디스크에는 절대 쓰지 않음).
+**Export**(내보내기) 버튼으로 스냅샷을 JSON으로 저장하고, **Import**(가져오기)로 복원하세요.
 
-## Plugin Hooks
+## 플러그인 훅
 
-Plugins can include hooks in their `hooks/hooks.json` file:
+플러그인은 `hooks/hooks.json` 파일에 훅을 포함할 수 있습니다:
 
-**File:** `plugins/hooks/hooks.json`
+**파일:** `plugins/hooks/hooks.json`
 
 ```json
 {
@@ -1434,15 +1434,15 @@ Plugins can include hooks in their `hooks/hooks.json` file:
 }
 ```
 
-**Environment Variables in Plugin Hooks:**
-- `${CLAUDE_PLUGIN_ROOT}` - Path to the plugin directory
-- `${CLAUDE_PLUGIN_DATA}` - Path to the plugin data directory
+**플러그인 훅의 환경 변수:**
+- `${CLAUDE_PLUGIN_ROOT}` - 플러그인 디렉토리 경로
+- `${CLAUDE_PLUGIN_DATA}` - 플러그인 데이터 디렉토리 경로
 
-This allows plugins to include custom validation and automation hooks.
+덕분에 플러그인에 사용자 정의 검증과 자동화 훅을 넣을 수 있습니다.
 
-## MCP Tool Hooks
+## MCP 도구 훅
 
-MCP tools follow the pattern `mcp__<server>__<tool>`:
+MCP 도구는 `mcp__<server>__<tool>` 패턴을 따릅니다:
 
 ```json
 {
@@ -1462,62 +1462,62 @@ MCP tools follow the pattern `mcp__<server>__<tool>`:
 }
 ```
 
-## Security Considerations
+## 보안 고려 사항
 
-### Disclaimer
+### 면책 조항
 
-**USE AT YOUR OWN RISK**: Hooks execute arbitrary shell commands. You are solely responsible for:
-- Commands you configure
-- File access/modification permissions
-- Potential data loss or system damage
-- Testing hooks in safe environments before production use
+**사용에 따른 책임은 사용자에게 있습니다**: 훅은 임의의 셸 명령어를 실행합니다. 다음에 대한 책임은 전적으로 사용자에게 있습니다:
+- 설정한 명령어
+- 파일 접근/수정 권한
+- 데이터 손실이나 시스템 손상 가능성
+- 프로덕션에서 쓰기 전에 안전한 환경에서 훅 테스트
 
-### Security Notes
+### 보안 참고 사항
 
-- **Workspace trust required:** The `statusLine` and `fileSuggestion` hook output commands now require workspace trust acceptance before they take effect.
-- **Status-line terminal size (v2.1.153):** Status-line command scripts now receive `COLUMNS` and `LINES` environment variables, so a script can adapt its output to the terminal width/height (e.g. `[ "$COLUMNS" -lt 80 ] && short_output`).
-- **HTTP hooks and environment variables:** HTTP hooks require an explicit `allowedEnvVars` list to use environment variable interpolation in header values. This prevents accidental leakage of sensitive environment variables to remote endpoints.
-- **Managed settings hierarchy:** The `disableAllHooks` setting now respects the managed settings hierarchy, meaning organization-level settings can enforce hook disablement that individual users cannot override.
-- **PowerShell auto-approve (v2.1.119):** PowerShell tool commands can be auto-approved in permission mode, matching Bash. This brings parity for Windows users running Claude Code with PowerShell-backed shell tools.
-- **Bash bare env-var auto-approve closed (v2.1.145):** Before v2.1.145, a Bash command of the form `FOO=bar somecommand` (a bare variable assignment inline with a non-allowlisted command) could be auto-approved when only `FOO=bar` by itself was on the allowlist. v2.1.145 closes this — such commands now hit the permission prompt. Scripts relying on the implicit allow will start prompting; re-allow them explicitly via a `Bash(...)` permission rule that covers the full command, not just the variable assignment.
+- **작업 공간 신뢰 필요:** 이제 `statusLine`과 `fileSuggestion` 훅 출력 명령어는 작업 공간 신뢰를 수락해야 적용됩니다.
+- **상태 표시줄의 터미널 크기 (v2.1.153):** 이제 상태 표시줄 명령어 스크립트가 `COLUMNS`와 `LINES` 환경 변수를 받으므로, 터미널의 너비/높이에 맞춰 출력을 조정할 수 있습니다(예: `[ "$COLUMNS" -lt 80 ] && short_output`).
+- **HTTP 훅과 환경 변수:** HTTP 훅이 헤더 값에 환경 변수를 넣으려면 명시적인 `allowedEnvVars` 목록이 필요합니다. 민감한 환경 변수가 원격 엔드포인트로 실수로 유출되는 것을 막습니다.
+- **관리형 설정 계층:** 이제 `disableAllHooks` 설정은 관리형 설정 계층을 따르므로, 조직 수준 설정으로 개인 사용자가 재정의할 수 없는 훅 비활성화를 강제할 수 있습니다.
+- **PowerShell 자동 승인 (v2.1.119):** Bash와 마찬가지로 PowerShell 도구 명령어도 권한 모드에서 자동 승인될 수 있습니다. PowerShell 기반 셸 도구로 Claude Code를 쓰는 Windows 사용자도 같은 경험을 하게 됩니다.
+- **Bash의 단독 환경 변수 자동 승인 허점 수정 (v2.1.145):** v2.1.145 이전에는 `FOO=bar somecommand` 형태의 Bash 명령어(허용 목록에 없는 명령어 앞에 변수 할당을 붙인 형태)가, 허용 목록에 `FOO=bar`만 있어도 자동 승인될 수 있었습니다. v2.1.145에서 이 허점이 막혀 이런 명령어는 이제 권한 프롬프트를 거칩니다. 암묵적인 허용에 기대던 스크립트는 프롬프트를 띄우기 시작하므로, 변수 할당만이 아니라 명령어 전체를 포함하는 `Bash(...)` 권한 규칙으로 명시적으로 다시 허용하세요.
 
-### Best Practices
+### 모범 사례
 
-| Do | Don't |
+| 권장 | 비권장 |
 |-----|-------|
-| Validate and sanitize all inputs | Trust input data blindly |
-| Quote shell variables: `"$VAR"` | Use unquoted: `$VAR` |
-| Block path traversal (`..`) | Allow arbitrary paths |
-| Use absolute paths with `$CLAUDE_PROJECT_DIR` | Hardcode paths |
-| Skip sensitive files (`.env`, `.git/`, keys) | Process all files |
-| Test hooks in isolation first | Deploy untested hooks |
-| Use explicit `allowedEnvVars` for HTTP hooks | Expose all env vars to webhooks |
+| 모든 입력을 검증하고 정제하기 | 입력 데이터를 무작정 믿기 |
+| 셸 변수를 따옴표로 감싸기: `"$VAR"` | 따옴표 없이 쓰기: `$VAR` |
+| 경로 탐색(`..`) 차단하기 | 임의의 경로 허용하기 |
+| `$CLAUDE_PROJECT_DIR`로 절대 경로 쓰기 | 경로 하드코딩하기 |
+| 민감한 파일(`.env`, `.git/`, 키) 건너뛰기 | 모든 파일 처리하기 |
+| 먼저 훅을 따로 테스트하기 | 테스트하지 않은 훅 배포하기 |
+| HTTP 훅에는 명시적인 `allowedEnvVars` 쓰기 | 웹훅에 모든 환경 변수 노출하기 |
 
-## Debugging
+## 디버깅
 
-### Enable Debug Mode
+### 디버그 모드 켜기
 
-Run Claude with debug flag for detailed hook logs:
+자세한 훅 로그를 보려면 디버그 플래그와 함께 Claude를 실행하세요:
 
 ```bash
 claude --debug
 ```
 
-### Verbose Mode
+### 상세 모드
 
-Use `Ctrl+O` in Claude Code to enable verbose mode and see hook execution progress.
+Claude Code에서 `Ctrl+O`를 누르면 상세 모드가 켜져 훅 실행 과정을 볼 수 있습니다.
 
-### Test Hooks Independently
+### 훅을 독립적으로 테스트
 
 ```bash
-# Test with sample JSON input
+# 샘플 JSON 입력으로 테스트
 echo '{"tool_name": "Bash", "tool_input": {"command": "ls -la"}}' | python3 .claude/hooks/validate-bash.py
 
-# Check exit code
+# 종료 코드 확인
 echo $?
 ```
 
-## Complete Configuration Example
+## 전체 설정 예
 
 ```json
 {
@@ -1577,7 +1577,7 @@ echo $?
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Verify all tasks are complete before stopping.",
+            "prompt": "멈추기 전에 모든 작업이 끝났는지 검증하세요.",
             "timeout": 30
           }
         ]
@@ -1587,83 +1587,83 @@ echo $?
 }
 ```
 
-## Hook Execution Details
+## 훅 실행 세부 사항
 
-| Aspect | Behavior |
+| 측면 | 동작 |
 |--------|----------|
-| **Timeout** | 600 seconds default for command/http/mcp_tool (30 for prompt, 60 for agent); configurable per hook |
-| **Parallelization** | All matching hooks run in parallel; since v2.1.302, at most 12 prompt or agent hooks of one event run at a time and the rest wait their turn. |
-| **Deduplication** | Identical hook commands deduplicated |
-| **Environment** | Runs in current directory with Claude Code's environment |
+| **시간 제한** | command/http/mcp_tool은 기본 600초(prompt는 30초, agent는 60초). 훅마다 설정 가능 |
+| **병렬 실행** | 일치하는 훅은 모두 병렬로 실행됩니다. v2.1.302부터는 한 이벤트의 prompt 훅이나 agent 훅이 한 번에 최대 12개까지 실행되고 나머지는 차례를 기다립니다. |
+| **중복 제거** | 똑같은 훅 명령어는 중복 제거됨 |
+| **환경** | Claude Code의 환경으로 현재 디렉토리에서 실행 |
 
-## Troubleshooting
+## 문제 해결
 
-### Hook Not Executing
-- Verify JSON configuration syntax is correct
-- Check matcher pattern matches the tool name
-- Ensure script exists and is executable: `chmod +x script.sh`
-- Run `claude --debug` to see hook execution logs
-- Verify hook reads JSON from stdin (not command args)
+### 훅이 실행되지 않을 때
+- JSON 설정 문법이 올바른지 확인
+- 매처 패턴이 도구 이름과 일치하는지 확인
+- 스크립트가 있고 실행 가능한지 확인: `chmod +x script.sh`
+- `claude --debug`를 실행해 훅 실행 로그 확인
+- 훅이 (명령어 인수가 아니라) stdin에서 JSON을 읽는지 확인
 
-### Hook Blocks Unexpectedly
-- Test hook with sample JSON: `echo '{"tool_name": "Write", ...}' | ./hook.py`
-- Check exit code: should be 0 for allow, 2 for block
-- Check stderr output (shown on exit code 2)
+### 훅이 예상치 않게 차단할 때
+- 샘플 JSON으로 훅 테스트: `echo '{"tool_name": "Write", ...}' | ./hook.py`
+- 종료 코드 확인: 허용이면 0, 차단이면 2여야 함
+- stderr 출력 확인(종료 코드 2일 때 표시됨)
 
-### JSON Parsing Errors
-- Always read from stdin, not command arguments
-- Use proper JSON parsing (not string manipulation)
-- Handle missing fields gracefully
+### JSON 파싱 오류
+- 명령어 인수가 아니라 항상 stdin에서 읽기
+- (문자열 조작이 아니라) 제대로 된 JSON 파싱 쓰기
+- 없는 필드를 부드럽게 처리하기
 
-## Installation
+## 설치
 
-### Step 1: Create Hooks Directory
+### 1단계: 훅 디렉토리 만들기
 ```bash
 mkdir -p ~/.claude/hooks
 ```
 
-### Step 2: Copy Example Hooks
+### 2단계: 예제 훅 복사
 ```bash
 cp 06-hooks/*.sh ~/.claude/hooks/
 chmod +x ~/.claude/hooks/*.sh
 ```
 
-### Step 3: Configure in Settings
-Edit `~/.claude/settings.json` or `.claude/settings.json` with the hook configuration shown above.
+### 3단계: 설정 파일에서 구성
+위에서 보여 준 훅 설정으로 `~/.claude/settings.json`이나 `.claude/settings.json`을 편집하세요.
 
-## Related Concepts
+## 관련 개념
 
-- **[Checkpoints and Rewind](../08-checkpoints/)** - Save and restore conversation state
-- **[Slash Commands](../01-slash-commands/)** - Create custom slash commands
-- **[Skills](../03-skills/)** - Reusable autonomous capabilities
-- **[Subagents](../04-subagents/)** - Delegated task execution
-- **[Plugins](../07-plugins/)** - Bundled extension packages
-- **[Advanced Features](../09-advanced-features/)** - Explore advanced Claude Code capabilities
+- **[체크포인트와 되감기](../08-checkpoints/)** - 대화 상태 저장과 복원
+- **[슬래시 명령어](../01-slash-commands/)** - 사용자 정의 슬래시 명령어 만들기
+- **[스킬](../03-skills/)** - 재사용 가능한 자율 기능
+- **[서브에이전트](../04-subagents/)** - 작업 위임 실행
+- **[플러그인](../07-plugins/)** - 묶음으로 제공되는 확장 패키지
+- **[고급 기능](../09-advanced-features/)** - Claude Code의 고급 기능 살펴보기
 
-## Additional Resources
+## 추가 자료
 
-- **[Official Hooks Documentation](https://code.claude.com/docs/en/hooks)** - Complete hooks reference
-- **[CLI Reference](https://code.claude.com/docs/en/cli-reference)** - Command-line interface documentation
-- **[Memory Guide](../02-memory/)** - Persistent context configuration
+- **[공식 훅 문서](https://code.claude.com/docs/ko/hooks)** - 훅 전체 레퍼런스
+- **[CLI 레퍼런스](https://code.claude.com/docs/ko/cli-reference)** - 명령줄 인터페이스 문서
+- **[메모리 가이드](../02-memory/)** - 지속 컨텍스트 설정
 
 ---
 
-**Last Updated**: October 18, 2026
-**Claude Code Version**: 2.1.302
-**Sources**:
-- https://code.claude.com/docs/en/hooks
+**최종 업데이트**: 2026년 10월 18일
+**Claude Code 버전**: 2.1.302
+**출처**:
+- https://code.claude.com/docs/ko/hooks
 - https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
-- https://code.claude.com/docs/en/sub-agents
-- https://code.claude.com/docs/en/permissions
+- https://code.claude.com/docs/ko/sub-agents
+- https://code.claude.com/docs/ko/permissions
 - https://code.claude.com/docs/en/tools-reference#task-tool-availability
 - https://code.claude.com/docs/en/plugins/manifest-reference#quoting-and-path-separators
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.295
-- https://code.claude.com/docs/en/hooks#pretooluse
-- https://code.claude.com/docs/en/hooks#pretooluse-decision-control
-- https://code.claude.com/docs/en/hooks#hook-lifecycle
-- https://code.claude.com/docs/en/hooks#userpromptsubmit-input
+- https://code.claude.com/docs/ko/hooks#pretooluse
+- https://code.claude.com/docs/ko/hooks#pretooluse-decision-control
+- https://code.claude.com/docs/ko/hooks#hook-lifecycle
+- https://code.claude.com/docs/ko/hooks#userpromptsubmit-input
 - https://code.claude.com/docs/en/changelog#2-1-299
 - https://code.claude.com/docs/en/changelog#2-1-300
 - https://code.claude.com/docs/en/changelog#2-1-301
 - https://code.claude.com/docs/en/changelog#2-1-302
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

@@ -486,7 +486,7 @@ chmod +x ~/.claude/hooks/*.sh
 **훅 이벤트**(33가지, 4개 분류) — 훅이 실행되는 시점:
 - **도구 훅**: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PostToolBatch`, `PermissionRequest`, `PermissionDenied`
 - **세션 훅**: `SessionStart`, `Setup`, `SessionEnd`, `Stop`, `StopFailure`, `SubagentStart`, `SubagentStop`
-- **작업 훅**: `UserPromptSubmit`, `UserPromptExpansion`, `MessageDisplay`, `TaskCompleted`, `TaskCreated`, `TeammateIdle` — `TaskCompleted`와 `TaskCreated`는 할 일(todo) 도구가 켜져 있을 때만 발생합니다. 할 일 도구는 Claude 3.x 모델, Opus 4~4.7, Sonnet 4~4.6, Haiku 4.5에서만 기본으로 제공됩니다(`CLAUDE_CODE_ENABLE_TODO_TOOLS=1`로 다시 켤 수 있음)
+- **작업 훅**: `UserPromptSubmit`, `UserPromptExpansion`, `MessageDisplay`, `TaskCompleted`, `TaskCreated`, `TeammateIdle` — `TaskCompleted`와 `TaskCreated`는 할 일(todo) 도구가 켜져 있을 때만 발생합니다. 할 일 도구는 Claude 3.x 모델, Opus 4–4.7, Sonnet 4–4.6, Haiku 4.5에서만 기본으로 제공됩니다(`CLAUDE_CODE_ENABLE_TODO_TOOLS=1`로 다시 켤 수 있음)
 - **라이프사이클 훅**: `ConfigChange`, `CwdChanged`, `DirectoryAdded`, `FileChanged`, `PreCompact`, `PostCompact`, `PreModelSwitch`, `PostModelSwitch`, `WorktreeCreate`, `WorktreeRemove`, `Notification`, `InstructionsLoaded`, `Elicitation`, `ElicitationResult`
 
 </details>

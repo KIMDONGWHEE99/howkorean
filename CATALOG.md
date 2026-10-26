@@ -379,8 +379,8 @@ Claude Code 이벤트가 발생하면 셸 명령어를 실행하는 이벤트 �
 | `Stop` | Claude 응답 완료 | 응답이 끝났을 때 | 정리, 보고 |
 | `StopFailure` | API 오류로 턴 종료 | API 오류 발생 | 오류 복구, 로깅 |
 | `TeammateIdle` | 팀원 에이전트 유휴 | 에이전트 팀 조율 | 작업 분배 |
-| `TaskCompleted` | 작업 완료 표시(할 일 도구가 켜져 있을 때만 발생 — [훅](06-hooks/README.md#hook-events) 참고) | 작업 완료 | 작업 후 처리 |
-| `TaskCreated` | TaskCreate로 작업 생성(할 일 도구가 켜져 있을 때만 발생 — [훅](06-hooks/README.md#hook-events) 참고) | 새 작업 생성 | 작업 추적, 로깅 |
+| `TaskCompleted` | 작업 완료 표시(할 일 도구가 켜져 있을 때만 발생 — [훅](06-hooks/README.md#훅-이벤트) 참고) | 작업 완료 | 작업 후 처리 |
+| `TaskCreated` | TaskCreate로 작업 생성(할 일 도구가 켜져 있을 때만 발생 — [훅](06-hooks/README.md#훅-이벤트) 참고) | 새 작업 생성 | 작업 추적, 로깅 |
 | `ConfigChange` | 설정 갱신 | 설정이 바뀔 때 | 설정 변경에 대응 |
 | `CwdChanged` | 작업 디렉토리 변경 | 디렉토리가 바뀔 때 | 디렉토리별 준비 작업 |
 | `DirectoryAdded` | 세션 도중 새 작업 디렉토리 등록 | `/add-dir`이나 SDK `register_repo_root` | 새 디렉토리용 도구 준비 |

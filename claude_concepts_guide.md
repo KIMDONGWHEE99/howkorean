@@ -1131,8 +1131,8 @@ Claude Code는 5가지 훅 타입(command, http, mcp_tool, prompt, agent)에 걸
 | **Stop** | Claude 응답 완료 | 요약 생성, 정리 작업 |
 | **StopFailure** | API 오류로 턴 종료 | 오류 복구, 로깅 |
 | **TeammateIdle** | 에이전트 팀의 팀원 유휴 | 작업 분배, 조율 |
-| **TaskCompleted** | 작업 완료 표시. 할 일 도구가 켜져 있을 때만 발생하며, 할 일 도구는 Claude 3.x 모델, Opus 4~4.7, Sonnet 4~4.6, Haiku 4.5에서만 기본으로 제공됩니다. `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`로 다시 켤 수 있음(v2.1.233) | 작업 후 처리 |
-| **TaskCreated** | TaskCreate로 작업 생성. 할 일 도구가 켜져 있을 때만 발생하며, 할 일 도구는 Claude 3.x 모델, Opus 4~4.7, Sonnet 4~4.6, Haiku 4.5에서만 기본으로 제공됩니다. `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`로 다시 켤 수 있음(v2.1.233) | 작업 추적, 로깅 |
+| **TaskCompleted** | 작업 완료 표시. 할 일 도구가 켜져 있을 때만 발생하며, 할 일 도구는 Claude 3.x 모델, Opus 4–4.7, Sonnet 4–4.6, Haiku 4.5에서만 기본으로 제공됩니다. `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`로 다시 켤 수 있음(v2.1.233) | 작업 후 처리 |
+| **TaskCreated** | TaskCreate로 작업 생성. 할 일 도구가 켜져 있을 때만 발생하며, 할 일 도구는 Claude 3.x 모델, Opus 4–4.7, Sonnet 4–4.6, Haiku 4.5에서만 기본으로 제공됩니다. `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`로 다시 켤 수 있음(v2.1.233) | 작업 추적, 로깅 |
 | **ConfigChange** | 설정 파일 변경 | 검증, 전파 |
 | **CwdChanged** | 작업 디렉토리 변경 | 디렉토리별 준비 작업 |
 | **DirectoryAdded** | `/add-dir`이나 SDK의 `register_repo_root` 제어 요청으로 세션 도중 새 작업 디렉토리 등록 | 새로 추가된 디렉토리용 도구 준비 |
