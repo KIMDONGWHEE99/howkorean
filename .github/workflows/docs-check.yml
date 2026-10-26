@@ -1,0 +1,133 @@
+name: Documentation Checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.md'
+      - '.github/workflows/docs-check.yml'
+      - '.github/markdown-link-check-config.json'
+      - '.markdownlint.json'
+      - 'scripts/check_*.py'
+      - 'scripts/vendor_assets.py'
+      - 'scripts/pele_renderer.py'
+      - 'scripts/pele_render.mjs'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.md'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - '.github/workflows/docs-check.yml'
+      - '.github/markdown-link-check-config.json'
+      - '.markdownlint.json'
+      - 'scripts/check_*.py'
+      - 'scripts/vendor_assets.py'
+      - 'scripts/pele_renderer.py'
+      - 'scripts/pele_render.mjs'
+
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  markdown-lint:
+    name: Markdown Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+
+      - name: Run Markdown Linter
+        run: markdownlint '**/*.md' --ignore node_modules --ignore .venv --config .markdownlint.json
+
+  link-check:
+    name: Check Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run link check
+        run: python scripts/check_links.py
+        env:
+          LINK_CHECK_STRICT: "1"
+
+  mermaid:
+    name: Mermaid Syntax (Pele)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Pele needs Node.js >= 20; the pinned bundle is downloaded once and
+      # sha256-verified on every run (see scripts/vendor_assets.py).
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Cache Pele bundle
+        uses: actions/cache@v4
+        with:
+          path: scripts/.vendor-cache/pele
+          key: pele-${{ hashFiles('scripts/vendor_assets.py') }}
+
+      # Strict: fails if Pele cannot run or no diagram is found, so a broken
+      # toolchain can never pass as a skipped check.
+      - name: Validate Mermaid diagrams
+        run: python scripts/check_mermaid.py --strict
+        env:
+          PELE_REQUIRED: "1"
+
+  cross-references:
+    name: Cross-reference Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Validate cross-references
+        run: python scripts/check_cross_references.py
+
+  summary:
+    name: Summary
+    needs: [markdown-lint, link-check, mermaid, cross-references]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check Job Results
+        run: |
+          if [ "${{ needs.markdown-lint.result }}" = "failure" ] || \
+             [ "${{ needs.link-check.result }}" = "failure" ] || \
+             [ "${{ needs.mermaid.result }}" = "failure" ] || \
+             [ "${{ needs.cross-references.result }}" = "failure" ]; then
+            echo "❌ Some documentation checks failed"
+            exit 1
+          else
+            echo "✅ All documentation checks passed!"
+          fi
