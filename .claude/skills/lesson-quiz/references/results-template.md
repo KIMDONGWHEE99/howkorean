@@ -1,55 +1,55 @@
-# Results Report Template
+# 결과 보고서 템플릿
 
-The output format for Step 5 ("Score and Present Results"). Fill the bracketed placeholders; keep the headings and table columns as shown.
+5단계("채점과 결과 제시")의 출력 형식입니다. 대괄호 자리 표시자를 채우고, 제목과 표의 열은 아래 그대로 유지하세요.
 
 ```markdown
-## Lesson Quiz Results: [Lesson Name]
+## 레슨 퀴즈 결과: [레슨 이름]
 
-**Score: N/10** — [Grade label]
-**Quiz timing**: [Before / During / After] the lesson
-**Question breakdown**: N conceptual correct, N practical correct
+**점수: N/10** — [등급]
+**퀴즈 시점**: 레슨 [전 / 중 / 후]
+**문항별 분석**: 개념 N개 정답, 실무 N개 정답
 
-### Per-Question Results
+### 문항별 결과
 
-| # | Category | Question (short) | Your Answer | Result |
+| # | 분류 | 질문(요약) | 내 답 | 결과 |
 |---|----------|-----------------|-------------|--------|
-| 1 | Conceptual | [abbreviated question] | [their answer] | [Correct / Incorrect] |
-| 2 | Practical | ... | ... | ... |
+| 1 | 개념 | [줄인 질문] | [사용자의 답] | [정답 / 오답] |
+| 2 | 실무 | ... | ... | ... |
 | ... | ... | ... | ... | ... |
 
-### Incorrect Answers — Review These
+### 틀린 문항 — 복습하세요
 
-[For each incorrect answer, show:]
+[틀린 문항마다 다음을 보여 주세요:]
 
-**Q[N]: [Full question text]**
-- Your answer: [what they chose]
-- Correct answer: [correct option]
-- Explanation: [why it's correct]
-- Review: [specific section of the lesson README to re-read]
+**Q[N]: [질문 전체]**
+- 내 답: [사용자가 고른 것]
+- 정답: [정답 보기]
+- 해설: [그 답이 맞는 이유]
+- 복습: [다시 읽을 레슨 README의 구체적인 섹션]
 
-### [Timing-specific message]
+### [시점별 메시지]
 
-[If pre-test]:
-**Pre-test score: N/10.** This gives you a baseline! Focus your study on the topics you missed. After completing the lesson, retake the quiz to measure your improvement.
+[사전 테스트라면]:
+**사전 테스트 점수: N/10.** 출발점이 생겼습니다! 틀린 주제에 집중해 공부하세요. 레슨을 마친 뒤 퀴즈를 다시 보면 얼마나 나아졌는지 잴 수 있습니다.
 
-[If during]:
-**Progress check: N/10.** [If 7 or above: Great progress — keep going! If 5-6: Review the incorrect topics before continuing. If 0-4: Consider re-reading from the beginning.]
+[레슨 중이라면]:
+**진도 확인: N/10.** [7점 이상: 잘하고 있어요 — 계속 나아가세요! 5-6점: 계속하기 전에 틀린 주제를 복습하세요. 0-4점: 처음부터 다시 읽는 것을 고려하세요.]
 
-[If after]:
-**Mastery check: N/10.** [If 9-10: You've mastered this lesson! Move on to the next. If 7-8: Almost there — review the missed topics and retake. If <7: Spend more time with the lesson, especially the sections marked above.]
+[레슨 후라면]:
+**숙달 확인: N/10.** [9-10점: 이 레슨을 숙달했습니다! 다음 레슨으로 넘어가세요. 7-8점: 거의 다 왔어요 — 틀린 주제를 복습하고 다시 보세요. 7점 미만: 위에 표시한 섹션을 중심으로 레슨에 시간을 더 들이세요.]
 
-### Recommended Next Steps
+### 추천 다음 단계
 
-[Based on score and timing:]
-- [If mastered]: Proceed to the next lesson in the roadmap: [next lesson link]
-- [If proficient]: Review these specific sections, then retake: [list sections]
-- [If developing or below]: Re-read the full lesson: [lesson link]. Focus on: [list weak categories]
-- [Offer]: "Would you like to retake this quiz, try a different lesson, or get help with a specific topic?"
+[점수와 시점에 따라:]
+- [숙달이라면]: 로드맵의 다음 레슨으로 넘어가세요: [다음 레슨 링크]
+- [능숙이라면]: 다음 섹션을 복습한 뒤 다시 보세요: [섹션 목록]
+- [발전 중 이하라면]: 레슨 전체를 다시 읽으세요: [레슨 링크]. 집중할 부분: [약한 분류 목록]
+- [제안]: "이 퀴즈를 다시 볼까요, 다른 레슨을 볼까요, 아니면 특정 주제에 대한 도움을 받을까요?"
 ```
 
 ---
 
-**Last Updated**: September 2, 2026
-**Claude Code Version**: 2.1.257
-**Sources**:
-- https://code.claude.com/docs/en/overview
+**최종 업데이트**: 2026년 9월 2일
+**Claude Code 버전**: 2.1.257
+**출처**:
+- https://code.claude.com/docs/ko/overview

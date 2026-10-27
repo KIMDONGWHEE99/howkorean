@@ -1,197 +1,198 @@
 ---
 name: lesson-quiz
-description: "Test a learner on a single Claude Code tutorial lesson (01-10) with 10 questions, scoring answers and flagging weak spots. Use before, during, or after a lesson. Don't use for whole-tutorial assessment or explaining a topic instead of testing it."
+description: "Claude Code 튜토리얼 레슨(01-10) 하나에 대해 10문항으로 학습자를 테스트하고, 답을 채점해 약한 부분을 짚어 줍니다. 레슨 전, 중, 후에 사용합니다. 튜토리얼 전체 평가나, 테스트 대신 주제를 설명하는 데에는 쓰지 않습니다."
 effort: high
 metadata:
   version: 1.6.2
   author: Luong NGUYEN
 ---
 
-# Lesson Quiz
+# 레슨 퀴즈
 
-Interactive quiz that tests understanding of a specific Claude Code lesson with 10 questions, provides per-question feedback, and identifies areas to review.
+특정 Claude Code 레슨에 대한 이해도를 10문항으로 테스트하고, 문항별 피드백을 주며, 복습할 부분을 알려 주는 대화형 퀴즈입니다.
 
-## Prerequisites
+## 사전 요구 사항
 
-This skill requires:
+이 스킬에는 다음이 필요합니다:
 
-- The tutorial repo checked out, so the lesson directories `01-slash-commands/` … `10-cli/` and each `README.md` are readable.
-- `references/question-bank.md` present in this skill (the source of all questions).
+- 튜토리얼 저장소를 체크아웃해 두어 레슨 디렉토리 `01-slash-commands/` … `10-cli/`와 각 `README.md`를 읽을 수 있을 것
+- 이 스킬 안에 `references/question-bank.md`가 있을 것(모든 문항의 출처)
 
-Before starting, confirm the target lesson's `README.md` exists. If it is missing, do not fabricate questions — warn the user and ask them to check the repository structure (see Error Handling).
+시작하기 전에 대상 레슨의 `README.md`가 있는지 확인하세요. 없으면 문항을 지어내지 말고 사용자에게 경고한 뒤 저장소 구조를 확인해 달라고 요청하세요(오류 처리 참고).
 
-**Guardrails:**
+**안전장치:**
 
-- **Never invent questions or answers.** Ask only questions drawn from `references/question-bank.md` for the selected lesson; if the bank lacks entries for a lesson, say so rather than making them up.
-- **Score accurately.** Track which shuffled position holds the correct answer for every question and validate each response against it — never guess a score.
-- **Confirm timing before scoring.** The pre/during/after choice changes how results are framed; do not skip it.
+- **문항이나 답을 지어내지 마세요.** 선택한 레슨에 대해 `references/question-bank.md`에 있는 문항만 내세요. 문제 은행에 그 레슨의 항목이 없으면 지어내지 말고 그렇다고 말하세요.
+- **정확하게 채점하세요.** 문항마다 섞은 보기 중 몇 번째에 정답이 있는지 추적하고 그 위치와 비교해 각 답을 채점하세요 — 점수를 짐작하지 마세요.
+- **채점 전에 시점을 확인하세요.** 레슨 전/중/후 선택에 따라 결과를 보여 주는 방식이 달라지므로 건너뛰지 마세요.
 
-## Instructions
+## 지침
 
-### Step 1: Determine the Lesson
+### 1단계: 레슨 정하기
 
-If the user provided a lesson as an argument (e.g., `/lesson-quiz hooks` or `/lesson-quiz 03`), map it to the lesson directory:
+사용자가 인수로 레슨을 지정했다면(예: `/lesson-quiz hooks`나 `/lesson-quiz 03`) 레슨 디렉토리에 대응시키세요:
 
-**Lesson mapping:**
-- `01`, `slash-commands`, `commands` → 01-slash-commands
-- `02`, `memory` → 02-memory
-- `03`, `skills` → 03-skills
-- `04`, `subagents`, `agents` → 04-subagents
+**레슨 대응표:**
+- `01`, `slash-commands`, `commands`, `슬래시 명령어` → 01-slash-commands
+- `02`, `memory`, `메모리` → 02-memory
+- `03`, `skills`, `스킬` → 03-skills
+- `04`, `subagents`, `agents`, `서브에이전트` → 04-subagents
 - `05`, `mcp` → 05-mcp
-- `06`, `hooks` → 06-hooks
-- `07`, `plugins` → 07-plugins
-- `08`, `checkpoints`, `checkpoint` → 08-checkpoints
-- `09`, `advanced`, `advanced-features` → 09-advanced-features
+- `06`, `hooks`, `훅` → 06-hooks
+- `07`, `plugins`, `플러그인` → 07-plugins
+- `08`, `checkpoints`, `checkpoint`, `체크포인트` → 08-checkpoints
+- `09`, `advanced`, `advanced-features`, `고급 기능` → 09-advanced-features
 - `10`, `cli` → 10-cli
 
-If no argument was provided, present a selection prompt using AskUserQuestion:
+인수가 없다면 AskUserQuestion으로 선택지를 보여 주세요:
 
-**Question 1** (header: "Lesson"):
-"Which lesson do you want to quiz on?"
-Options:
-1. "Slash Commands (01)" — Custom commands, skills, frontmatter, arguments
-2. "Memory (02)" — CLAUDE.md, memory hierarchy, rules, auto memory
-3. "Skills (03)" — Progressive disclosure, auto-invocation, SKILL.md
-4. "Subagents (04)" — Task delegation, agent config, isolation
+**질문 1**(header: "레슨"):
+"어느 레슨으로 퀴즈를 볼까요?"
+선택지:
+1. "슬래시 명령어 (01)" — 사용자 지정 명령어, 스킬, 프런트매터, 인수
+2. "메모리 (02)" — CLAUDE.md, 메모리 계층, 규칙, 자동 메모리
+3. "스킬 (03)" — 점진적 공개, 자동 호출, SKILL.md
+4. "서브에이전트 (04)" — 작업 위임, 에이전트 설정, 격리
 
-**Question 2** (header: "Lesson"):
-"Which lesson do you want to quiz on? (continued)"
-Options:
-1. "MCP (05)" — External integration, transport, servers, tool search
-2. "Hooks (06)" — Event automation, PreToolUse, exit codes, JSON I/O
-3. "Plugins (07)" — Bundled solutions, marketplace, plugin.json
-4. "More lessons..." — Checkpoints, Advanced Features, CLI
+**질문 2**(header: "레슨"):
+"어느 레슨으로 퀴즈를 볼까요? (계속)"
+선택지:
+1. "MCP (05)" — 외부 통합, 전송 방식, 서버, 도구 검색
+2. "훅 (06)" — 이벤트 자동화, PreToolUse, 종료 코드, JSON 입출력
+3. "플러그인 (07)" — 묶음 솔루션, 마켓플레이스, plugin.json
+4. "다른 레슨..." — 체크포인트, 고급 기능, CLI
 
-If "More lessons..." is selected, present:
+"다른 레슨..."을 고르면 다음을 보여 주세요:
 
-**Question 3** (header: "Lesson"):
-"Select your lesson:"
-Options:
-1. "Checkpoints (08)" — Rewind, restore, safe experimentation
-2. "Advanced Features (09)" — Planning, permissions, print mode, thinking
-3. "CLI Reference (10)" — Flags, output formats, scripting, piping
+**질문 3**(header: "레슨"):
+"레슨을 고르세요:"
+선택지:
+1. "체크포인트 (08)" — 되감기, 복원, 안전한 실험
+2. "고급 기능 (09)" — 계획, 권한, print 모드, 사고
+3. "CLI 레퍼런스 (10)" — 플래그, 출력 형식, 스크립팅, 파이핑
 
-### Step 2: Read the Lesson Content
+### 2단계: 레슨 내용 읽기
 
-Read the lesson README.md file to refresh context:
-- Read file: `<lesson-directory>/README.md`
+맥락을 되살리도록 레슨의 README.md 파일을 읽으세요:
+- 읽을 파일: `<lesson-directory>/README.md`
 
-Then use the question bank from `references/question-bank.md` for that lesson (10 pre-written questions with answers and explanations). To stay within the context budget, read only the one selected lesson's README — not all ten.
+그런 다음 `references/question-bank.md`에서 그 레슨의 문제(답과 해설을 갖춘 미리 작성된 10문항)를 쓰세요. 컨텍스트 예산을 지키도록, 열 개 레슨 전부가 아니라 선택한 레슨 하나의 README만 읽으세요.
 
-### Step 3: Present the Quiz
+### 3단계: 퀴즈 시작
 
-Ask the user about quiz timing context:
+퀴즈를 보는 시점을 사용자에게 물으세요:
 
-Use AskUserQuestion (header: "Timing"):
-"When are you taking this quiz relative to the lesson?"
-Options:
-1. "Before (pre-test)" — I haven't read the lesson yet, testing my prior knowledge
-2. "During (progress check)" — I'm partway through the lesson
-3. "After (mastery check)" — I've completed the lesson and want to verify understanding
+AskUserQuestion 사용(header: "시점"):
+"레슨과 비교해 언제 이 퀴즈를 보고 있나요?"
+선택지:
+1. "레슨 전(사전 테스트)" — 아직 레슨을 읽지 않았고, 이미 아는 것을 테스트하고 싶음
+2. "레슨 중(진도 확인)" — 레슨을 일부 읽는 중
+3. "레슨 후(숙달 확인)" — 레슨을 마쳤고 이해했는지 확인하고 싶음
 
-This context affects how the results are framed (see Step 5).
+이 맥락에 따라 결과를 보여 주는 방식이 달라집니다(5단계 참고).
 
-### Step 4: Present Questions in Rounds
+### 4단계: 라운드별로 문항 제시
 
-Present 10 questions from the question bank in rounds of 2 questions each (5 rounds total). Each question uses AskUserQuestion with the question text and 3-4 answer options.
+문제 은행의 10문항을 라운드마다 2문항씩 제시하세요(총 5라운드). 각 문항은 질문과 보기 3-4개를 담아 AskUserQuestion으로 냅니다.
 
-**IMPORTANT**: Use AskUserQuestion with max 4 options per question, 2 questions per round.
+**중요**: AskUserQuestion은 문항당 보기를 최대 4개, 라운드당 2문항으로 쓰세요.
 
-For each round, present 2 questions. After the user answers each round, immediately show per-question feedback: whether each answer was correct or incorrect, and if incorrect, show the correct answer and a brief explanation. Then proceed to the next round. After all 5 rounds, proceed to final scoring.
+라운드마다 2문항을 제시하세요. 사용자가 라운드의 답을 하면 바로 문항별 피드백을 보여 주세요: 각 답이 맞았는지 틀렸는지, 틀렸다면 정답과 짧은 해설. 그런 다음 다음 라운드로 넘어가세요. 5라운드를 모두 마치면 최종 채점으로 넘어가세요.
 
-**Question format per round:**
+**라운드별 문항 형식:**
 
-Each question from the question bank has:
-- `question`: The question text
-- `options`: 3-4 answer choices (one correct, labeled in the bank)
-- `correct`: The correct answer label
-- `explanation`: Why the answer is correct
-- `category`: "conceptual" or "practical"
+문제 은행의 각 문항에는 다음이 있습니다:
+- **질문**: 질문 텍스트
+- **보기**: 답 선택지 3-4개(문제 은행에 정답이 표시되어 있음)
+- **정답**: 정답 보기의 기호
+- **해설**: 그 답이 맞는 이유
+- **분류**: "개념" 또는 "실무"
+- **복습**: 다시 읽을 레슨 README의 위치
 
-**CRITICAL — Shuffle answer options**: For each question, you MUST randomize the order of the answer options before presenting them via AskUserQuestion. Do NOT present them in the order they appear in the question bank (A, B, C, D), and do NOT place the correct answer first. Use a different random permutation for each question. Track which shuffled position contains the correct answer so you can score accurately.
+**매우 중요 — 보기 순서 섞기**: 문항마다 AskUserQuestion으로 보여 주기 전에 보기 순서를 **반드시** 무작위로 섞으세요. 문제 은행에 나온 순서(A, B, C, D) 그대로 보여 주지 말고, 정답을 맨 앞에 두지도 마세요. 문항마다 다른 무작위 순서를 쓰세요. 정확하게 채점할 수 있도록 섞은 뒤 정답이 몇 번째에 있는지 추적하세요.
 
-Example: If the question bank lists options A (correct), B, C, D — you might present them as: C, A, D, B. The correct answer is now in position 2.
+예: 문제 은행에 보기가 A(정답), B, C, D 순서로 있다면 C, A, D, B 순서로 보여 줄 수 있습니다. 그러면 정답은 2번째에 있습니다.
 
-Present each question using AskUserQuestion. Record the user's answer for each.
+각 문항을 AskUserQuestion으로 제시하고 사용자의 답을 하나하나 기록하세요.
 
-### Step 5: Score and Present Results
+### 5단계: 채점과 결과 제시
 
-After all rounds, calculate the score and present results.
+모든 라운드를 마치면 점수를 계산해 결과를 보여 주세요.
 
-**Scoring:**
-- Each correct answer = 1 point
-- Total possible = 10 points
+**채점:**
+- 정답 하나당 1점
+- 만점 10점
 
-**Grade scale:**
-- 9-10: Mastered — Excellent understanding
-- 7-8: Proficient — Good grasp, minor gaps
-- 5-6: Developing — Fundamentals understood, needs review
-- 3-4: Beginning — Significant gaps, review recommended
-- 0-2: Not yet — Start from the beginning of this lesson
+**등급:**
+- 9-10: 숙달 — 아주 잘 이해함
+- 7-8: 능숙 — 잘 이해했고 빈틈이 조금 있음
+- 5-6: 발전 중 — 기초는 이해했지만 복습이 필요함
+- 3-4: 입문 — 빈틈이 커서 복습을 권장함
+- 0-2: 아직 — 이 레슨을 처음부터 다시 시작하세요
 
-**Output format:** Follow the report template in `references/results-template.md`. It defines the score line, the per-question results table, the "Incorrect Answers — Review These" block, the timing-specific message (pre-test / during / after), and the "Recommended Next Steps" section. Fill its bracketed placeholders with this run's data.
+**출력 형식:** `references/results-template.md`의 보고서 템플릿을 따르세요. 점수 줄, 문항별 결과 표, "틀린 문항 — 복습하세요" 블록, 시점별 메시지(사전 테스트 / 진도 확인 / 숙달 확인), "추천 다음 단계" 섹션이 정해져 있습니다. 대괄호 자리 표시자를 이번 실행의 데이터로 채우세요.
 
-### Step 6: Offer Follow-up
+### 6단계: 후속 조치 제안
 
-After presenting results, use AskUserQuestion:
+결과를 보여 준 뒤 AskUserQuestion을 쓰세요:
 
-"What would you like to do next?"
-Options:
-1. "Retake this quiz" — Try the same lesson quiz again
-2. "Quiz another lesson" — Switch to a different lesson
-3. "Explain a topic I missed" — Get a detailed explanation of an incorrect answer
-4. "Done" — End the quiz session
+"다음으로 무엇을 할까요?"
+선택지:
+1. "퀴즈 다시 보기" — 같은 레슨 퀴즈에 다시 도전
+2. "다른 레슨 퀴즈" — 다른 레슨으로 바꾸기
+3. "틀린 주제 설명 듣기" — 틀린 답에 대해 자세한 설명 듣기
+4. "끝내기" — 퀴즈 세션 끝내기
 
-If **Retake**: Go back to Step 4 (skip timing question, use same timing).
-If **Quiz another lesson**: Go back to Step 1.
-If **Explain a topic**: Ask which question number, then read the relevant section from the lesson README.md and explain it with examples.
+**다시 보기**: 4단계로 돌아가세요(시점 질문은 건너뛰고 같은 시점을 씀).
+**다른 레슨 퀴즈**: 1단계로 돌아가세요.
+**주제 설명**: 몇 번 문항인지 물은 뒤, 레슨 README.md에서 관련 섹션을 읽고 예시와 함께 설명하세요.
 
-## Acceptance Criteria
+## 완료 기준
 
-A completed quiz run must satisfy all of these — verify each before presenting final results:
+퀴즈를 마치려면 다음을 모두 만족해야 합니다 — 최종 결과를 보여 주기 전에 하나씩 확인하세요:
 
-- Exactly one lesson (01-10) was resolved before any question was asked.
-- The timing context (before / during / after) was captured via AskUserQuestion.
-- 10 questions from `references/question-bank.md` for that lesson were presented, in 5 rounds of 2, with answer options shuffled per question.
-- Every answer was scored against the tracked correct-position, producing an integer score in the range 0-10.
-- **Expected output**: a `## Lesson Quiz Results` report containing the score line (`Score: N/10` with a grade label), the per-question results table, an "Incorrect Answers — Review These" block for each miss, and a timing-specific message.
-- The follow-up prompt (retake / another lesson / explain / done) was offered.
+- 문항을 내기 전에 레슨(01-10)을 정확히 하나로 정했다.
+- 시점(전 / 중 / 후)을 AskUserQuestion으로 확인했다.
+- 그 레슨에 대해 `references/question-bank.md`의 10문항을 2문항씩 5라운드로 냈고, 문항마다 보기 순서를 섞었다.
+- 모든 답을 추적한 정답 위치와 비교해 채점했고, 0-10 범위의 정수 점수가 나왔다.
+- **기대 출력**: 점수 줄(등급과 함께 `점수: N/10`), 문항별 결과 표, 틀린 문항마다의 "틀린 문항 — 복습하세요" 블록, 시점별 메시지를 담은 `## 레슨 퀴즈 결과` 보고서.
+- 후속 조치(다시 보기 / 다른 레슨 / 설명 / 끝내기)를 제안했다.
 
-Example: for a 7/10 "after" run on Hooks, the report asserts `Score: 7/10 — Proficient`, lists all 10 rows in the results table, and expands the 3 incorrect questions with correct answer, explanation, and a review pointer.
+예: 훅 레슨을 "레슨 후"에 보고 7/10을 받았다면, 보고서에는 `점수: 7/10 — 능숙`이 나오고, 결과 표에 10행이 모두 있으며, 틀린 3문항은 정답, 해설, 복습 위치와 함께 펼쳐 보여 줍니다.
 
-## Edge Cases & Error Handling
+## 예외 상황과 오류 처리
 
-### Invalid lesson argument
-If the argument doesn't match any lesson, show the valid lesson list and ask the user to pick one.
+### 잘못된 레슨 인수
+인수가 어느 레슨과도 맞지 않으면 올바른 레슨 목록을 보여 주고 하나를 고르게 하세요.
 
-### User wants to quit mid-quiz
-If the user indicates they want to stop during any round, present partial results for the questions answered so far (score out of the number attempted, not out of 10).
+### 퀴즈 도중에 그만두고 싶어 할 때
+사용자가 어느 라운드에서든 그만두고 싶다고 하면, 그때까지 답한 문항의 부분 결과를 보여 주세요(10점 만점이 아니라 푼 문항 수 기준으로).
 
-### Lesson README not found
-If the README.md file doesn't exist at the expected path, inform the user and suggest checking the repository structure. Do not proceed with fabricated content.
+### 레슨 README를 찾을 수 없을 때
+예상 경로에 README.md 파일이 없으면 사용자에게 알리고 저장소 구조를 확인하라고 제안하세요. 지어낸 내용으로 진행하지 마세요.
 
-### Question bank missing entries for a lesson
-If `references/question-bank.md` has no questions for the resolved lesson, tell the user and stop — never invent questions to fill the gap.
+### 문제 은행에 레슨 항목이 없을 때
+`references/question-bank.md`에 정한 레슨의 문항이 없으면 사용자에게 알리고 멈추세요 — 빈자리를 채우려고 문항을 지어내지 마세요.
 
-## Validation
+## 검증
 
-### Triggering test suite
+### 트리거 테스트 모음
 
-**Should trigger:**
-- "quiz me on hooks"
-- "lesson quiz"
-- "test my knowledge of lesson 3"
-- "practice quiz for MCP"
-- "do I understand skills"
-- "quiz me on slash commands"
+**트리거되어야 함:**
+- "훅 퀴즈 내 줘"
+- "레슨 퀴즈"
+- "레슨 3 이해도를 테스트해 줘"
+- "MCP 연습 퀴즈"
+- "내가 스킬을 제대로 이해했을까"
+- "슬래시 명령어 퀴즈 내 줘"
 - "lesson-quiz 06"
-- "test me on checkpoints"
-- "how well do I know the CLI"
-- "quiz me before I start the memory lesson"
+- "체크포인트 테스트해 줘"
+- "내가 CLI를 얼마나 아는지 확인해 줘"
+- "메모리 레슨 시작 전에 퀴즈 내 줘"
 
-**Should NOT trigger:**
-- "assess my overall level" (use /self-assessment)
-- "explain hooks to me"
-- "create a hook"
-- "what is MCP"
-- "review my code"
+**트리거되면 안 됨:**
+- "내 전체 수준을 평가해 줘"(/self-assessment 사용)
+- "훅을 설명해 줘"
+- "훅을 만들어 줘"
+- "MCP가 뭐야"
+- "내 코드를 리뷰해 줘"

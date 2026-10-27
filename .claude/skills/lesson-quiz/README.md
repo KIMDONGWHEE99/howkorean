@@ -1,69 +1,69 @@
-# Lesson Quiz
+# 레슨 퀴즈
 
-> Interactive quiz that tests your understanding of a specific Claude Code lesson with 10 questions, per-question feedback, and targeted review guidance.
+> 특정 Claude Code 레슨에 대한 이해도를 10문항으로 테스트하고, 문항별 피드백과 복습할 곳을 알려 주는 대화형 퀴즈입니다.
 
-## Highlights
+## 주요 특징
 
-- 10 questions per lesson mixing conceptual understanding and practical application
-- Covers all 10 lessons (01-Slash Commands through 10-CLI)
-- Three timing modes: pre-test, progress check, or mastery verification
-- Per-question feedback with correct answers and explanations
-- Targeted review recommendations pointing to specific lesson sections
-- 100-question bank across all lessons in `references/question-bank.md`
+- 레슨마다 개념 이해와 실무 적용을 섞은 10문항
+- 레슨 10개 전체를 다룸(01-슬래시 명령어부터 10-CLI까지)
+- 세 가지 시점 모드: 사전 테스트, 진도 확인, 숙달 확인
+- 정답과 해설을 담은 문항별 피드백
+- 레슨의 특정 섹션을 가리키는 맞춤 복습 안내
+- `references/question-bank.md`에 레슨 전체에 걸친 100문항의 문제 은행
 
-## When to Use
+## 언제 쓰나
 
-| Say this... | Skill will... |
+| 이렇게 말하면... | 스킬이... |
 |---|---|
-| "quiz me on hooks" | Run a 10-question quiz on Lesson 06: Hooks |
-| "lesson quiz 03" | Test your knowledge of Lesson 03: Skills |
-| "do I understand MCP" | Assess your understanding of Lesson 05: MCP |
-| "practice quiz" | Let you pick a lesson, then quiz you |
+| "훅 퀴즈 내 줘" | 레슨 06: 훅에 대한 10문항 퀴즈를 진행합니다 |
+| "레슨 퀴즈 03" | 레슨 03: 스킬에 대한 지식을 테스트합니다 |
+| "내가 MCP를 이해했을까" | 레슨 05: MCP에 대한 이해도를 평가합니다 |
+| "연습 퀴즈" | 레슨을 고르게 한 뒤 퀴즈를 냅니다 |
 
-## How It Works
+## 동작 방식
 
 ```mermaid
 graph TD
-    A["Select lesson"] --> B["Choose timing: pre/during/after"]
-    B --> C["Answer 10 questions in 5 rounds"]
-    C --> D["Score and review feedback"]
+    A["레슨 선택"] --> B["시점 선택: 전/중/후"]
+    B --> C["5라운드에 걸쳐 10문항 답하기"]
+    C --> D["채점과 복습 피드백"]
     style A fill:#4CAF50,color:#fff
     style D fill:#2196F3,color:#fff
 ```
 
-## Usage
+## 사용법
 
 ```
 /lesson-quiz [lesson-name-or-number]
 ```
 
-Examples:
+예:
 ```
 /lesson-quiz hooks
 /lesson-quiz 03
 /lesson-quiz advanced-features
-/lesson-quiz           # (prompts for lesson selection)
+/lesson-quiz           # (레슨을 고르라고 묻습니다)
 ```
 
-## Output
+## 출력
 
-### Score Report
-- Total score out of 10 with grade (Mastered / Proficient / Developing / Beginning)
-- Breakdown by question category (conceptual vs. practical)
+### 점수 보고서
+- 등급(숙달 / 능숙 / 발전 중 / 입문)과 함께 10점 만점의 총점
+- 문항 분류별 분석(개념과 실무)
 
-### Per-Question Feedback
-For each incorrect answer:
-- What you answered vs. the correct answer
-- Explanation of why the correct answer is right
-- Specific section of the lesson to review
+### 문항별 피드백
+틀린 문항마다:
+- 내가 고른 답과 정답
+- 그 답이 맞는 이유에 대한 해설
+- 복습할 레슨의 구체적인 섹션
 
-### Timing-Aware Guidance
-- **Pre-test**: Establishes baseline, highlights areas to focus on while studying
-- **During**: Identifies what you've grasped and what to revisit
-- **After**: Confirms mastery or pinpoints remaining gaps
+### 시점에 맞춘 안내
+- **사전 테스트**: 출발점을 정하고, 공부할 때 집중할 부분을 짚어 줍니다
+- **레슨 중**: 이해한 것과 다시 볼 것을 구분해 줍니다
+- **레슨 후**: 숙달했는지 확인하거나 남은 빈틈을 정확히 짚어 줍니다
 
-## Resources
+## 리소스
 
-| Path | Description |
+| 경로 | 설명 |
 |---|---|
-| `references/question-bank.md` | 100 pre-written questions (10 per lesson) with answers, explanations, and review pointers |
+| `references/question-bank.md` | 답, 해설, 복습 위치를 갖춘 미리 작성된 100문항(레슨당 10문항) |
