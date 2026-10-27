@@ -3,13 +3,13 @@ import ast
 
 
 class APIDocExtractor(ast.NodeVisitor):
-    """Extract API documentation from Python source code."""
+    """Python 소스 코드에서 API 문서를 추출합니다."""
 
     def __init__(self):
         self.endpoints = []
 
     def visit_FunctionDef(self, node):
-        """Extract function documentation."""
+        """함수 문서를 추출합니다."""
         if node.name.startswith("get_") or node.name.startswith("post_"):
             doc = ast.get_docstring(node)
             endpoint = {
@@ -22,14 +22,14 @@ class APIDocExtractor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _extract_return_type(self, node):
-        """Extract return type from function annotation."""
+        """함수 어노테이션에서 반환 타입을 추출합니다."""
         if node.returns:
             return ast.unparse(node.returns)
         return "Any"
 
 
 def generate_markdown_docs(endpoints: list[dict]) -> str:
-    """Generate markdown documentation from endpoints."""
+    """엔드포인트 정보로 마크다운 문서를 생성합니다."""
     docs = "# API Documentation\n\n"
 
     for endpoint in endpoints:

@@ -1,87 +1,87 @@
 ---
 name: code-review-specialist
-description: Comprehensive code review with security, performance, and quality analysis. Use when users ask to review code, analyze code quality, evaluate pull requests, or mention code review, security analysis, or performance optimization.
+description: 보안, 성능, 품질 분석을 아우르는 종합 코드 리뷰를 합니다. 사용자가 코드 리뷰, 코드 품질 분석, 풀 리퀘스트 평가를 요청하거나 코드 리뷰, 보안 분석, 성능 최적화를 언급할 때 사용합니다.
 ---
 
-# Code Review Skill
+# 코드 리뷰 스킬
 
-This skill provides comprehensive code review capabilities focusing on:
+이 스킬은 다음에 초점을 맞춘 종합 코드 리뷰 기능을 제공합니다:
 
-1. **Security Analysis**
-   - Authentication/authorization issues
-   - Data exposure risks
-   - Injection vulnerabilities
-   - Cryptographic weaknesses
-   - Sensitive data logging
+1. **보안 분석**
+   - 인증/인가 문제
+   - 데이터 노출 위험
+   - 인젝션 취약점
+   - 암호화 약점
+   - 민감한 데이터 로깅
 
-2. **Performance Review**
-   - Algorithm efficiency (Big O analysis)
-   - Memory optimization
-   - Database query optimization
-   - Caching opportunities
-   - Concurrency issues
+2. **성능 리뷰**
+   - 알고리즘 효율성(Big O 분석)
+   - 메모리 최적화
+   - 데이터베이스 쿼리 최적화
+   - 캐싱 기회
+   - 동시성 문제
 
-3. **Code Quality**
-   - SOLID principles
-   - Design patterns
-   - Naming conventions
-   - Documentation
-   - Test coverage
+3. **코드 품질**
+   - SOLID 원칙
+   - 디자인 패턴
+   - 이름 규칙
+   - 문서화
+   - 테스트 커버리지
 
-4. **Maintainability**
-   - Code readability
-   - Function size (should be < 50 lines)
-   - Cyclomatic complexity
-   - Dependency management
-   - Type safety
+4. **유지 보수성**
+   - 코드 가독성
+   - 함수 크기(50줄 미만이어야 함)
+   - 순환 복잡도
+   - 의존성 관리
+   - 타입 안전성
 
-## Reference Files
+## 참고 파일
 
-This skill includes supporting files that you should read when performing reviews:
+이 스킬에는 리뷰할 때 읽어야 할 보조 파일이 들어 있습니다:
 
-- **`templates/review-checklist.md`** — Structured checklist covering security, performance, quality, and testing. Read this file and use it as a guide to ensure no category is missed during review.
-- **`templates/finding-template.md`** — Standard template for documenting individual findings with severity, location, code examples, and impact analysis. Read this file and use its format when reporting issues.
-- **`scripts/analyze-metrics.py`** — Python script that calculates code metrics (function count, class count, average line length, complexity score). Run this on the file under review to gather quantitative data.
-- **`scripts/compare-complexity.py`** — Python script that compares cyclomatic and cognitive complexity between two versions of a file. Run this with the before and after versions when reviewing refactoring changes.
+- **`templates/review-checklist.md`** — 보안, 성능, 품질, 테스트를 다루는 구조화된 체크리스트입니다. 이 파일을 읽고 리뷰 중에 빠뜨리는 범주가 없도록 길잡이로 쓰세요.
+- **`templates/finding-template.md`** — 발견 사항 하나하나를 심각도, 위치, 코드 예시, 영향 분석과 함께 기록하는 표준 템플릿입니다. 이 파일을 읽고 문제를 보고할 때 이 형식을 쓰세요.
+- **`scripts/analyze-metrics.py`** — 코드 지표(함수 수, 클래스 수, 평균 줄 길이, 복잡도 점수)를 계산하는 Python 스크립트입니다. 리뷰 중인 파일에 실행해 정량 데이터를 모으세요.
+- **`scripts/compare-complexity.py`** — 파일의 두 버전 사이에서 순환 복잡도와 인지 복잡도를 비교하는 Python 스크립트입니다. 리팩토링 변경을 리뷰할 때 변경 전후 버전으로 실행하세요.
 
-## Review Template
+## 리뷰 템플릿
 
-For each piece of code reviewed, provide:
+리뷰한 코드마다 다음을 제공하세요:
 
-### Summary
-- Overall quality assessment (1-5)
-- Key findings count
-- Recommended priority areas
+### 요약
+- 전체 품질 평가(1-5)
+- 주요 발견 사항 수
+- 우선 개선 권장 영역
 
-### Critical Issues (if any)
-- **Issue**: Clear description
-- **Location**: File and line number
-- **Impact**: Why this matters
-- **Severity**: Critical/High/Medium
-- **Fix**: Code example
+### 심각한 문제(있는 경우)
+- **문제**: 명확한 설명
+- **위치**: 파일과 줄 번호
+- **영향**: 왜 중요한지
+- **심각도**: Critical/High/Medium
+- **수정**: 코드 예시
 
-### Findings by Category
+### 범주별 발견 사항
 
-#### Security (if issues found)
-List security vulnerabilities with examples
+#### 보안(문제가 있는 경우)
+보안 취약점을 예시와 함께 나열
 
-#### Performance (if issues found)
-List performance problems with complexity analysis
+#### 성능(문제가 있는 경우)
+성능 문제를 복잡도 분석과 함께 나열
 
-#### Quality (if issues found)
-List code quality issues with refactoring suggestions
+#### 품질(문제가 있는 경우)
+코드 품질 문제를 리팩토링 제안과 함께 나열
 
-#### Maintainability (if issues found)
-List maintainability problems with improvements
+#### 유지 보수성(문제가 있는 경우)
+유지 보수성 문제를 개선 방안과 함께 나열
 
-## Version History
+## 버전 기록
 
-- v1.0.0 (2024-12-10): Initial release with security, performance, quality, and maintainability analysis
+- v1.0.0 (2024-12-10): 보안, 성능, 품질, 유지 보수성 분석을 갖춘 첫 릴리스
 
 ---
 
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/skills
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/skills
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

@@ -1,78 +1,78 @@
 ---
 name: claude-md
-description: Create or update CLAUDE.md files following best practices for optimal AI agent onboarding
+description: AI 에이전트가 프로젝트에 가장 잘 적응하도록 모범 사례에 따라 CLAUDE.md 파일을 만들거나 갱신합니다
 ---
 
-## User Input
+## 사용자 입력
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** consider the user input before proceeding (if not empty). User may specify:
-- `create` - Create new CLAUDE.md from scratch
-- `update` - Improve existing CLAUDE.md
-- `audit` - Analyze and report on current CLAUDE.md quality
-- A specific path to create/update (e.g., `src/api/CLAUDE.md` for directory-specific instructions)
+진행하기 전에 사용자 입력이 비어 있지 않다면 **반드시** 고려하세요. 사용자는 다음을 지정할 수 있습니다:
+- `create` - 새 CLAUDE.md를 처음부터 만들기
+- `update` - 기존 CLAUDE.md 개선하기
+- `audit` - 현재 CLAUDE.md의 품질을 분석해 보고하기
+- 만들거나 갱신할 특정 경로(예: 디렉토리별 지시 사항이라면 `src/api/CLAUDE.md`)
 
-## Core Principles
+## 핵심 원칙
 
-**LLMs are stateless**: CLAUDE.md is the main project file loaded into every conversation (alongside auto memory and unscoped rules). It serves as the primary onboarding document for AI agents into your codebase.
+**LLM은 상태가 없습니다**: CLAUDE.md는 모든 대화에 로드되는 메인 프로젝트 파일입니다(자동 메모리, 범위가 지정되지 않은 규칙과 함께). AI 에이전트가 코드베이스에 적응하는 데 쓰는 가장 중요한 온보딩 문서입니다.
 
-### The Golden Rules
+### 황금률
 
-1. **Less is More**: Frontier LLMs can follow ~150-200 instructions. Claude Code's system prompt already uses ~50. Keep your CLAUDE.md focused and concise.
+1. **적을수록 좋다**: 최신 LLM은 약 150-200개의 지시를 따를 수 있습니다. Claude Code의 시스템 프롬프트가 이미 약 50개를 씁니다. CLAUDE.md는 핵심만 간결하게 유지하세요.
 
-2. **Universal Applicability**: Only include information relevant to EVERY session. Task-specific instructions belong in separate files.
+2. **보편적 적용**: **모든** 세션에 필요한 정보만 넣으세요. 특정 작업에만 필요한 지시 사항은 별도 파일에 둡니다.
 
-3. **Don't Use Claude as a Linter**: Style guidelines bloat context and degrade instruction-following. Use deterministic tools (prettier, eslint, etc.) instead.
+3. **Claude를 린터로 쓰지 말 것**: 스타일 가이드라인은 컨텍스트를 부풀리고 지시를 따르는 능력을 떨어뜨립니다. 대신 결정적인 도구(prettier, eslint 등)를 쓰세요.
 
-4. **Never Auto-Generate**: CLAUDE.md is the highest leverage point of the AI harness. Craft it manually with careful consideration.
+4. **자동 생성 금지**: CLAUDE.md는 AI 하네스에서 가장 영향력이 큰 지점입니다. 신중하게 고민하며 직접 작성하세요.
 
-## Execution Flow
+## 실행 흐름
 
-### 1. Project Analysis
+### 1. 프로젝트 분석
 
-First, analyze the current project state:
+먼저 현재 프로젝트 상태를 분석하세요:
 
-1. Check for existing CLAUDE.md files:
-   - Root level: `./CLAUDE.md` or `.claude/CLAUDE.md`
-   - Directory-specific: `**/CLAUDE.md`
-   - Global user config: `~/.claude/CLAUDE.md`
+1. 기존 CLAUDE.md 파일 확인:
+   - 루트 수준: `./CLAUDE.md` 또는 `.claude/CLAUDE.md`
+   - 디렉토리별: `**/CLAUDE.md`
+   - 전역 사용자 설정: `~/.claude/CLAUDE.md`
 
-2. Identify the project structure:
-   - Technology stack (languages, frameworks)
-   - Project type (monorepo, single app, library)
-   - Development tools (package manager, build system, test runner)
+2. 프로젝트 구조 파악:
+   - 기술 스택(언어, 프레임워크)
+   - 프로젝트 유형(모노레포, 단일 앱, 라이브러리)
+   - 개발 도구(패키지 관리자, 빌드 시스템, 테스트 실행기)
 
-3. Review existing documentation:
+3. 기존 문서 검토:
    - README.md
    - CONTRIBUTING.md
-   - package.json, pyproject.toml, Cargo.toml, etc.
+   - package.json, pyproject.toml, Cargo.toml 등
 
-### 2. Content Strategy (WHAT, WHY, HOW)
+### 2. 콘텐츠 전략(WHAT, WHY, HOW)
 
-Structure CLAUDE.md around three dimensions:
+CLAUDE.md는 세 가지 차원을 중심으로 구성하세요:
 
-#### WHAT - Technology & Structure
-- Technology stack overview
-- Project organization (especially important for monorepos)
-- Key directories and their purposes
+#### WHAT - 기술과 구조
+- 기술 스택 개요
+- 프로젝트 구성(모노레포에서는 특히 중요)
+- 주요 디렉토리와 그 목적
 
-#### WHY - Purpose & Context
-- What the project does
-- Why certain architectural decisions were made
-- What each major component is responsible for
+#### WHY - 목적과 맥락
+- 프로젝트가 하는 일
+- 특정 아키텍처 결정을 내린 이유
+- 주요 컴포넌트마다 맡은 역할
 
-#### HOW - Workflow & Conventions
-- Development workflow (bun vs node, pip vs uv, etc.)
-- Testing procedures and commands
-- Verification and build methods
-- Critical "gotchas" or non-obvious requirements
+#### HOW - 워크플로우와 규칙
+- 개발 워크플로우(bun과 node, pip과 uv 중 무엇을 쓰는지 등)
+- 테스트 절차와 명령어
+- 검증과 빌드 방법
+- 놓치기 쉬운 중요한 "함정"이나 명확하지 않은 요구 사항
 
-### 3. Progressive Disclosure Strategy
+### 3. 점진적 공개 전략
 
-For larger projects, recommend creating an `agent_docs/` folder:
+규모가 큰 프로젝트에는 `agent_docs/` 폴더를 만들도록 권장하세요:
 
 ```
 agent_docs/
@@ -82,146 +82,146 @@ agent_docs/
   |- architecture_decisions.md
 ```
 
-In CLAUDE.md, reference these files with instructions like:
+CLAUDE.md에서는 다음과 같은 지시로 이 파일들을 참조하세요:
 ```markdown
-For detailed build instructions, refer to `agent_docs/building_the_project.md`
+자세한 빌드 방법은 `agent_docs/building_the_project.md`를 참고하세요
 ```
 
-**Important**: Use `file:line` references instead of code snippets to avoid outdated context.
+**중요**: 컨텍스트가 낡지 않도록 코드 조각 대신 `file:line` 참조를 쓰세요.
 
-### 4. Quality Constraints
+### 4. 품질 제약
 
-When creating or updating CLAUDE.md:
+CLAUDE.md를 만들거나 갱신할 때:
 
-1. **Target Length**: Keep it under 200 lines; shorter is better
-2. **No Style Rules**: Remove any linting/formatting instructions
-3. **No Task-Specific Instructions**: Move to separate files
-4. **No Code Snippets**: Use file references instead
-5. **No Redundant Information**: Don't repeat what's in package.json or README
+1. **목표 길이**: 200줄 미만으로 유지하고, 짧을수록 좋음
+2. **스타일 규칙 금지**: 린팅/포매팅 지시는 모두 제거
+3. **특정 작업용 지시 금지**: 별도 파일로 옮기기
+4. **코드 조각 금지**: 대신 파일 참조 사용
+5. **중복 정보 금지**: package.json이나 README에 있는 내용을 반복하지 않기
 
-### 5. Essential Sections
+### 5. 필수 섹션
 
-A well-structured CLAUDE.md should include:
+잘 구성된 CLAUDE.md에는 다음이 들어 있어야 합니다:
 
 ```markdown
-# Project Name
+# 프로젝트 이름
 
-Brief one-line description.
+한 줄짜리 간단한 설명.
 
-## Tech Stack
-- Primary language and version
-- Key frameworks/libraries
-- Database/storage (if any)
+## 기술 스택
+- 주 언어와 버전
+- 주요 프레임워크/라이브러리
+- 데이터베이스/저장소(있는 경우)
 
-## Project Structure
-[Only for monorepos or complex structures]
-- `apps/` - Application entry points
-- `packages/` - Shared libraries
+## 프로젝트 구조
+[모노레포나 복잡한 구조인 경우에만]
+- `apps/` - 애플리케이션 진입점
+- `packages/` - 공유 라이브러리
 
-## Development Commands
-- Install: `command`
-- Test: `command`
-- Build: `command`
+## 개발 명령어
+- 설치: `command`
+- 테스트: `command`
+- 빌드: `command`
 
-## Critical Conventions
-[Only non-obvious, high-impact conventions]
-- Convention 1 with brief explanation
-- Convention 2 with brief explanation
+## 핵심 규칙
+[알기 어렵고 영향이 큰 규칙만]
+- 규칙 1과 간단한 설명
+- 규칙 2와 간단한 설명
 
-## Known Issues / Gotchas
-[Things that consistently trip up developers]
-- Issue 1
-- Issue 2
+## 알려진 문제 / 주의점
+[개발자가 자주 걸려 넘어지는 것들]
+- 문제 1
+- 문제 2
 ```
 
-### 6. Anti-Patterns to Avoid
+### 6. 피해야 할 안티패턴
 
-**DO NOT include:**
-- Code style guidelines (use linters)
-- Documentation on how to use Claude
-- Long explanations of obvious patterns
-- Copy-pasted code examples
-- Generic best practices ("write clean code")
-- Instructions for specific tasks
-- Auto-generated content
-- Extensive TODO lists
+**넣지 말 것:**
+- 코드 스타일 가이드라인(린터 사용)
+- Claude 사용법에 관한 문서
+- 뻔한 패턴에 대한 긴 설명
+- 복사해 붙여 넣은 코드 예제
+- 일반적인 모범 사례("깔끔한 코드를 쓰세요")
+- 특정 작업용 지시 사항
+- 자동 생성된 내용
+- 긴 TODO 목록
 
-### 7. Validation Checklist
+### 7. 검증 체크리스트
 
-Before finalizing, verify:
+마무리하기 전에 확인하세요:
 
-- [ ] Kept under 200 lines; shorter is better
-- [ ] Every line applies to ALL sessions
-- [ ] No style/formatting rules
-- [ ] No code snippets (use file references)
-- [ ] Commands are verified to work
-- [ ] Progressive disclosure used for complex projects
-- [ ] Critical gotchas are documented
-- [ ] No redundancy with README.md
+- [ ] 200줄 미만으로 유지했고, 짧을수록 좋음
+- [ ] 모든 줄이 **모든** 세션에 적용됨
+- [ ] 스타일/포매팅 규칙 없음
+- [ ] 코드 조각 없음(파일 참조 사용)
+- [ ] 명령어가 동작하는지 확인함
+- [ ] 복잡한 프로젝트에는 점진적 공개를 사용함
+- [ ] 중요한 함정을 문서화함
+- [ ] README.md와 중복되지 않음
 
-## Output Format
+## 출력 형식
 
-### For `create` or default:
+### `create` 또는 기본값일 때:
 
-1. Analyze the project
-2. Draft a CLAUDE.md following the structure above
-3. Present the draft for review
-4. Write to the appropriate location after approval
+1. 프로젝트 분석
+2. 위 구조에 따라 CLAUDE.md 초안 작성
+3. 검토용으로 초안 제시
+4. 승인을 받은 뒤 알맞은 위치에 작성
 
-### For `update`:
+### `update`일 때:
 
-1. Read existing CLAUDE.md
-2. Audit against best practices
-3. Identify:
-   - Content to remove (style rules, code snippets, task-specific)
-   - Content to condense
-   - Missing essential information
-4. Present changes for review
-5. Apply changes after approval
+1. 기존 CLAUDE.md 읽기
+2. 모범 사례에 비추어 점검
+3. 다음을 찾아내기:
+   - 제거할 내용(스타일 규칙, 코드 조각, 특정 작업용 내용)
+   - 줄일 내용
+   - 빠진 필수 정보
+4. 검토용으로 변경 사항 제시
+5. 승인을 받은 뒤 변경 사항 적용
 
-### For `audit`:
+### `audit`일 때:
 
-1. Read existing CLAUDE.md
-2. Generate a report with:
-   - Current line count vs target
-   - Percentage of universally-applicable content
-   - List of anti-patterns found
-   - Recommendations for improvement
-3. Do NOT modify the file, only report
+1. 기존 CLAUDE.md 읽기
+2. 다음을 담은 보고서 생성:
+   - 현재 줄 수와 목표 비교
+   - 보편적으로 적용되는 내용의 비율
+   - 발견한 안티패턴 목록
+   - 개선 권장 사항
+3. 파일은 수정하지 말고 보고만 하기
 
-## AGENTS.md Handling
+## AGENTS.md 처리
 
-If the user requests AGENTS.md creation/update:
+사용자가 AGENTS.md를 만들거나 갱신해 달라고 요청하면:
 
-**Since v2.1.277, Claude Code reads `AGENTS.md` directly as project instructions** — but only when the working directory and every directory above it contain no `CLAUDE.md`, `.claude/CLAUDE.md`, or `CLAUDE.local.md`. `~/.claude/CLAUDE.md`, managed CLAUDE.md, and `.claude/rules/` do not count for that check and keep loading alongside. Which files are read is controlled by **Project instructions** in `/config`: `claude-md-or-agents-md` (default), `claude-md-and-agents-md`, `claude-md`, or `managed-only`. Where direct reading is unavailable — versions before v2.1.277 (before v2.1.281 on Bedrock/Vertex/Foundry, LLM gateways, or with telemetry disabled), or the first session after upgrading — fall back to importing it from CLAUDE.md with `@AGENTS.md`, or symlinking `CLAUDE.md` to it.
+**v2.1.277부터 Claude Code는 `AGENTS.md`를 프로젝트 지시 사항으로 직접 읽습니다** — 단, 작업 디렉토리와 그 위의 모든 디렉토리에 `CLAUDE.md`, `.claude/CLAUDE.md`, `CLAUDE.local.md`가 없을 때만입니다. `~/.claude/CLAUDE.md`, 관리형 CLAUDE.md, `.claude/rules/`는 이 확인에 포함되지 않으며 계속 함께 로드됩니다. 어떤 파일을 읽을지는 `/config`의 **Project instructions**(프로젝트 지시 사항)로 정합니다: `claude-md-or-agents-md`(기본값), `claude-md-and-agents-md`, `claude-md`, `managed-only`. 직접 읽기를 쓸 수 없는 경우 — v2.1.277 이전 버전(Bedrock/Vertex/Foundry, LLM 게이트웨이, 텔레메트리를 끈 환경에서는 v2.1.281 이전), 또는 업그레이드 후 첫 세션 — 에는 CLAUDE.md에서 `@AGENTS.md`로 가져오거나 `CLAUDE.md`를 이 파일로 연결하는 심볼릭 링크를 만드는 방법을 쓰세요.
 
-AGENTS.md is a cross-tool project-context file — the same *category* of document as CLAUDE.md, not an agent-definition format. It exists so several coding agents can share one set of project conventions:
-- Build, test, and lint commands
-- Code style and architectural conventions
-- Repository layout and where things live
+AGENTS.md는 여러 도구가 함께 쓰는 프로젝트 컨텍스트 파일입니다 — 에이전트 정의 형식이 아니라 CLAUDE.md와 같은 *종류*의 문서입니다. 여러 코딩 에이전트가 프로젝트 규칙 한 벌을 공유하도록 하기 위해 존재합니다:
+- 빌드, 테스트, 린트 명령어
+- 코드 스타일과 아키텍처 규칙
+- 저장소 구성과 각 항목의 위치
 
-Subagents are defined separately, in `.claude/agents/*.md` — not in AGENTS.md.
+서브에이전트는 AGENTS.md가 아니라 `.claude/agents/*.md`에서 따로 정의합니다.
 
-Apply similar principles:
-- Keep focused and concise
-- Use progressive disclosure
-- Reference external docs instead of embedding content
+비슷한 원칙을 적용하세요:
+- 핵심만 간결하게 유지
+- 점진적 공개 사용
+- 내용을 직접 넣는 대신 외부 문서 참조
 
-## Notes
+## 참고 사항
 
-- Always verify commands work before including them
-- When in doubt, leave it out - less is more
-- The system reminder tells Claude that CLAUDE.md "may or may not be relevant" - the more noise, the more it gets ignored
-- Monorepos benefit most from clear WHAT/WHY/HOW structure
-- Directory-specific CLAUDE.md files should be even more focused
+- 명령어를 넣기 전에 항상 동작하는지 확인하기
+- 확신이 없으면 빼기 - 적을수록 좋음
+- 시스템 리마인더는 Claude에게 CLAUDE.md가 "관련이 있을 수도, 없을 수도 있다"고 알립니다 - 잡음이 많을수록 더 무시됩니다
+- 명확한 WHAT/WHY/HOW 구조로 가장 큰 효과를 보는 것은 모노레포입니다
+- 디렉토리별 CLAUDE.md 파일은 범위를 더욱 좁혀야 합니다
 
 ---
 
-**Last Updated**: October 18, 2026
-**Claude Code Version**: 2.1.302
-**Sources**:
-- https://code.claude.com/docs/en/skills
-- https://code.claude.com/docs/en/memory#agents-md
-- https://code.claude.com/docs/en/memory#when-agents-md-support-is-unavailable
-- https://code.claude.com/docs/en/memory
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 10월 18일
+**Claude Code 버전**: 2.1.302
+**출처**:
+- https://code.claude.com/docs/ko/skills
+- https://code.claude.com/docs/ko/memory#agents-md
+- https://code.claude.com/docs/ko/memory#when-agents-md-support-is-unavailable
+- https://code.claude.com/docs/ko/memory
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

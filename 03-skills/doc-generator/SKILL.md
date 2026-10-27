@@ -1,38 +1,38 @@
 ---
 name: doc-generator
-description: Generate comprehensive, accurate API documentation from source code. Use when creating or updating API documentation, generating OpenAPI specs, or when users mention API docs, endpoints, or documentation.
+description: 소스 코드에서 정확하고 종합적인 API 문서를 생성합니다. API 문서를 만들거나 갱신할 때, OpenAPI 명세를 생성할 때, 또는 사용자가 API 문서, 엔드포인트, 문서화를 언급할 때 사용합니다.
 ---
 
-# API Documentation Generator Skill
+# API 문서 생성기 스킬
 
-## Generates
+## 생성하는 것
 
-- OpenAPI/Swagger specifications
-- API endpoint documentation
-- SDK usage examples
-- Integration guides
-- Error code references
-- Authentication guides
+- OpenAPI/Swagger 명세
+- API 엔드포인트 문서
+- SDK 사용 예제
+- 통합 가이드
+- 오류 코드 레퍼런스
+- 인증 가이드
 
-## Documentation Structure
+## 문서 구조
 
-### For Each Endpoint
+### 엔드포인트마다
 
 ````markdown
 ## GET /api/v1/users/:id
 
-### Description
-Brief explanation of what this endpoint does
+### 설명
+이 엔드포인트가 하는 일을 간단히 설명
 
-### Parameters
+### 매개변수
 
-| Name | Type | Required | Description |
+| 이름 | 타입 | 필수 | 설명 |
 |------|------|----------|-------------|
-| id | string | Yes | User ID |
+| id | string | 예 | 사용자 ID |
 
-### Response
+### 응답
 
-**200 Success**
+**200 성공**
 ```json
 {
   "id": "usr_123",
@@ -42,15 +42,15 @@ Brief explanation of what this endpoint does
 }
 ```
 
-**404 Not Found**
+**404 찾을 수 없음**
 ```json
 {
   "error": "USER_NOT_FOUND",
-  "message": "User does not exist"
+  "message": "사용자가 존재하지 않습니다"
 }
 ```
 
-### Examples
+### 예제
 
 **cURL**
 ```bash
@@ -77,8 +77,8 @@ user = response.json()
 
 ---
 
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/skills
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/skills
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

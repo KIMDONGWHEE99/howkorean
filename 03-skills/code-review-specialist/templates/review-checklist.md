@@ -1,55 +1,55 @@
-# Code Review Checklist
+# 코드 리뷰 체크리스트
 
-## Security Checklist
-- [ ] No hardcoded credentials or secrets
-- [ ] Input validation on all user inputs
-- [ ] SQL injection prevention (parameterized queries)
-- [ ] CSRF protection on state-changing operations
-- [ ] XSS prevention with proper escaping
-- [ ] Authentication checks on protected endpoints
-- [ ] Authorization checks on resources
-- [ ] Secure password hashing (bcrypt, argon2)
-- [ ] No sensitive data in logs
-- [ ] HTTPS enforced
+## 보안 체크리스트
+- [ ] 하드코딩된 자격 증명이나 비밀 정보 없음
+- [ ] 모든 사용자 입력 검증
+- [ ] SQL 인젝션 방지(매개변수화된 쿼리)
+- [ ] 상태를 바꾸는 작업에 CSRF 보호
+- [ ] 적절한 이스케이프로 XSS 방지
+- [ ] 보호된 엔드포인트에 인증 검사
+- [ ] 리소스에 인가 검사
+- [ ] 안전한 비밀번호 해싱(bcrypt, argon2)
+- [ ] 로그에 민감한 데이터 없음
+- [ ] HTTPS 강제
 
-## Performance Checklist
-- [ ] No N+1 queries
-- [ ] Appropriate use of indexes
-- [ ] Caching implemented where beneficial
-- [ ] No blocking operations on main thread
-- [ ] Async/await used correctly
-- [ ] Large datasets paginated
-- [ ] Database connections pooled
-- [ ] Regular expressions optimized
-- [ ] No unnecessary object creation
-- [ ] Memory leaks prevented
+## 성능 체크리스트
+- [ ] N+1 쿼리 없음
+- [ ] 인덱스를 적절히 사용
+- [ ] 효과가 있는 곳에 캐싱 구현
+- [ ] 메인 스레드에 블로킹 작업 없음
+- [ ] async/await를 올바르게 사용
+- [ ] 큰 데이터 세트는 페이지 나누기
+- [ ] 데이터베이스 커넥션 풀링
+- [ ] 정규식 최적화
+- [ ] 불필요한 객체 생성 없음
+- [ ] 메모리 누수 방지
 
-## Quality Checklist
-- [ ] Functions < 50 lines
-- [ ] Clear variable naming
-- [ ] No duplicate code
-- [ ] Proper error handling
-- [ ] Comments explain WHY, not WHAT
-- [ ] No console.logs in production
-- [ ] Type checking (TypeScript/JSDoc)
-- [ ] SOLID principles followed
-- [ ] Design patterns applied correctly
-- [ ] Self-documenting code
+## 품질 체크리스트
+- [ ] 함수는 50줄 미만
+- [ ] 명확한 변수 이름
+- [ ] 중복 코드 없음
+- [ ] 적절한 오류 처리
+- [ ] 주석은 무엇(WHAT)이 아니라 왜(WHY)를 설명
+- [ ] 프로덕션 코드에 console.log 없음
+- [ ] 타입 검사(TypeScript/JSDoc)
+- [ ] SOLID 원칙 준수
+- [ ] 디자인 패턴을 올바르게 적용
+- [ ] 코드 자체로 설명이 되는 코드
 
-## Testing Checklist
-- [ ] Unit tests written
-- [ ] Edge cases covered
-- [ ] Error scenarios tested
-- [ ] Integration tests present
-- [ ] Coverage > 80%
-- [ ] No flaky tests
-- [ ] Mock external dependencies
-- [ ] Clear test names
+## 테스트 체크리스트
+- [ ] 단위 테스트 작성
+- [ ] 엣지 케이스 커버
+- [ ] 오류 시나리오 테스트
+- [ ] 통합 테스트 있음
+- [ ] 커버리지 80% 초과
+- [ ] 불안정한(flaky) 테스트 없음
+- [ ] 외부 의존성은 모킹
+- [ ] 명확한 테스트 이름
 
 ---
 
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/skills
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/skills
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

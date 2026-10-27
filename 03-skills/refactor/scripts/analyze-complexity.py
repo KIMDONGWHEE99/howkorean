@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-Code Complexity Analyzer
+코드 복잡도 분석기
 
-Analyzes code complexity metrics for Python, JavaScript, and TypeScript files.
-Helps measure the impact of refactoring by comparing before/after metrics.
+Python, JavaScript, TypeScript 파일의 코드 복잡도 지표를 분석합니다.
+변경 전후 지표를 비교해 리팩토링의 효과를 측정하는 데 도움이 됩니다.
 
-Usage:
+사용법:
     python analyze-complexity.py <file>
-    python analyze-complexity.py <before_file> <after_file>  # Compare mode
-    python analyze-complexity.py --dir <directory>           # Analyze directory
+    python analyze-complexity.py <before_file> <after_file>  # 비교 모드
+    python analyze-complexity.py --dir <directory>           # 디렉토리 분석
 
-Metrics:
-    - Cyclomatic Complexity: Decision points in code
-    - Cognitive Complexity: How hard is it to understand
-    - Maintainability Index: Overall maintainability score (0-100)
-    - Lines of Code: Total lines
-    - Function Count: Number of functions/methods
-    - Average Function Length: Lines per function
+지표:
+    - 순환 복잡도(Cyclomatic Complexity): 코드의 결정 지점
+    - 인지 복잡도(Cognitive Complexity): 코드를 이해하기가 얼마나 어려운지
+    - 유지 보수성 지수(Maintainability Index): 전체 유지 보수성 점수(0-100)
+    - 코드 줄 수(Lines of Code): 전체 줄 수
+    - 함수 수(Function Count): 함수/메서드 개수
+    - 평균 함수 길이(Average Function Length): 함수당 줄 수
 """
 
 import argparse
@@ -30,7 +30,7 @@ from typing import Dict, List, Optional
 
 @dataclass
 class FunctionMetrics:
-    """Metrics for a single function."""
+    """함수 하나의 지표."""
     name: str
     start_line: int
     end_line: int
@@ -42,7 +42,7 @@ class FunctionMetrics:
 
 @dataclass
 class FileMetrics:
-    """Metrics for a file."""
+    """파일 하나의 지표."""
     filename: str
     lines_of_code: int
     blank_lines: int
@@ -58,9 +58,9 @@ class FileMetrics:
 
 
 class ComplexityAnalyzer:
-    """Analyze code complexity for multiple languages."""
+    """여러 언어의 코드 복잡도를 분석합니다."""
 
-    # Patterns for different languages
+    # 언어별 패턴
     PATTERNS = {
         'python': {
             'function': r'^\s*def\s+(\w+)\s*\(',
@@ -105,7 +105,7 @@ class ComplexityAnalyzer:
         self.lines = self.code.split('\n')
 
     def _detect_language(self) -> str:
-        """Detect programming language from file extension."""
+        """파일 확장자로 프로그래밍 언어를 감지합니다."""
         ext = os.path.splitext(self.filepath)[1].lower()
         ext_map = {
             '.py': 'python',
@@ -118,14 +118,14 @@ class ComplexityAnalyzer:
 
     def calculate_cyclomatic_complexity(self, code: Optional[str] = None) -> int:
         """
-        Calculate cyclomatic complexity using McCabe's method.
-        CC = E - N + 2P where E=edges, N=nodes, P=connected components
-        Simplified: Count decision points + 1
+        McCabe 방법으로 순환 복잡도를 계산합니다.
+        CC = E - N + 2P (E=간선, N=노드, P=연결 요소)
+        단순화: 결정 지점 수 + 1
         """
         if code is None:
             code = self.code
 
-        complexity = 1  # Base complexity
+        complexity = 1  # 기본 복잡도
 
         for pattern in self.patterns['decision']:
             matches = re.findall(pattern, code)
@@ -135,9 +135,9 @@ class ComplexityAnalyzer:
 
     def calculate_cognitive_complexity(self, code: Optional[str] = None) -> int:
         """
-        Calculate cognitive complexity.
-        Measures how hard it is to understand the code.
-        Accounts for nesting depth and control flow breaks.
+        인지 복잡도를 계산합니다.
+        코드를 이해하기가 얼마나 어려운지 측정합니다.
+        중첩 깊이와 제어 흐름의 끊김을 반영합니다.
         """
         if code is None:
             code = self.code
@@ -150,66 +150,66 @@ class ComplexityAnalyzer:
         for line in lines:
             stripped = line.strip()
 
-            # Track function boundaries
+            # 함수 경계 추적
             if re.search(self.patterns['function'], line):
                 in_function = True
                 nesting_depth = 0
 
-            # Increment for control flow structures
+            # 제어 흐름 구조마다 증가
             if re.search(r'\b(if|for|while|switch)\b', stripped):
                 nesting_depth += 1
-                cognitive += nesting_depth  # Nested structures cost more
+                cognitive += nesting_depth  # 중첩된 구조일수록 비용이 큼
 
             elif re.search(r'\b(elif|else if|else|catch|finally)\b', stripped):
-                cognitive += nesting_depth  # Same level as parent
+                cognitive += nesting_depth  # 부모와 같은 수준
 
-            # Track nesting through braces/indentation
+            # 중괄호/들여쓰기로 중첩 추적
             if self.language in ['javascript', 'typescript']:
                 nesting_depth += stripped.count('{') - stripped.count('}')
                 nesting_depth = max(0, nesting_depth)
 
-            # Bonus for breaks in linear flow
+            # 직선 흐름이 끊기면 가산점
             if re.search(r'\b(break|continue|return|throw)\b', stripped):
                 if nesting_depth > 1:
                     cognitive += 1
 
-            # Bonus for recursion
-            # (simplified: just look for function calling itself)
+            # 재귀에 가산점
+            # (단순화: 함수가 자기 자신을 호출하는지만 확인)
 
         return cognitive
 
     def calculate_maintainability_index(self) -> float:
         """
-        Calculate Maintainability Index (0-100).
-        Based on Halstead Volume, Cyclomatic Complexity, and Lines of Code.
+        유지 보수성 지수(0-100)를 계산합니다.
+        Halstead Volume, 순환 복잡도, 코드 줄 수를 바탕으로 합니다.
 
         MI = max(0, (171 - 5.2*ln(V) - 0.23*CC - 16.2*ln(LOC)) * 100/171)
 
-        Interpretation:
-        - 85-100: Highly maintainable
-        - 65-84: Moderately maintainable
-        - 50-64: Difficult to maintain
-        - 0-49: Very difficult to maintain
+        해석:
+        - 85-100: 유지 보수하기 매우 쉬움
+        - 65-84: 유지 보수하기 적당함
+        - 50-64: 유지 보수하기 어려움
+        - 0-49: 유지 보수하기 매우 어려움
         """
         import math
 
         loc = len([l for l in self.lines if l.strip()])
         cc = self.calculate_cyclomatic_complexity()
 
-        # Simplified Halstead Volume approximation
-        # Count unique operators and operands
+        # 단순화한 Halstead Volume 근삿값
+        # 고유한 연산자와 피연산자 세기
         operators = len(re.findall(r'[+\-*/%=<>!&|^~]', self.code))
         operands = len(re.findall(r'\b\w+\b', self.code))
         volume = (operators + operands) * math.log2(max(1, operators + operands))
 
-        # Calculate MI
+        # MI 계산
         mi = 171 - 5.2 * math.log(max(1, volume)) - 0.23 * cc - 16.2 * math.log(max(1, loc))
         mi = max(0, min(100, mi * 100 / 171))
 
         return round(mi, 2)
 
     def count_lines(self) -> Dict[str, int]:
-        """Count different types of lines."""
+        """종류별 줄 수를 셉니다."""
         total = len(self.lines)
         blank = 0
         comment = 0
@@ -218,7 +218,7 @@ class ComplexityAnalyzer:
         for line in self.lines:
             stripped = line.strip()
 
-            # Check for multiline comments
+            # 여러 줄 주석 확인
             if re.search(self.patterns['multiline_comment_start'], stripped):
                 in_multiline_comment = True
             if re.search(self.patterns['multiline_comment_end'], stripped):
@@ -241,17 +241,17 @@ class ComplexityAnalyzer:
         }
 
     def find_functions(self) -> List[FunctionMetrics]:
-        """Find all functions and calculate their individual metrics."""
+        """모든 함수를 찾아 각각의 지표를 계산합니다."""
         functions = []
         current_function = None
         function_start = 0
         brace_depth = 0
 
         for i, line in enumerate(self.lines):
-            # Check for function definition
+            # 함수 정의인지 확인
             match = re.search(self.patterns['function'], line)
             if match:
-                # Save previous function if exists
+                # 이전 함수가 있으면 저장
                 if current_function:
                     func_code = '\n'.join(self.lines[function_start:i])
                     functions.append(self._create_function_metrics(
@@ -262,11 +262,11 @@ class ComplexityAnalyzer:
                 function_start = i
                 brace_depth = 0
 
-            # Track braces for JS/TS
+            # JS/TS는 중괄호 추적
             if self.language in ['javascript', 'typescript']:
                 brace_depth += line.count('{') - line.count('}')
 
-        # Don't forget the last function
+        # 마지막 함수도 잊지 말기
         if current_function:
             func_code = '\n'.join(self.lines[function_start:])
             functions.append(self._create_function_metrics(
@@ -276,10 +276,10 @@ class ComplexityAnalyzer:
         return functions
 
     def _create_function_metrics(self, name: str, start: int, end: int, code: str) -> FunctionMetrics:
-        """Create metrics for a single function."""
+        """함수 하나의 지표를 만듭니다."""
         lines = end - start + 1
 
-        # Count parameters (simplified)
+        # 매개변수 세기(단순화)
         param_match = re.search(r'\(([^)]*)\)', code.split('\n')[0])
         param_count = 0
         if param_match and param_match.group(1).strip():
@@ -296,14 +296,14 @@ class ComplexityAnalyzer:
         )
 
     def analyze(self) -> FileMetrics:
-        """Perform complete analysis of the file."""
+        """파일 전체를 분석합니다."""
         line_counts = self.count_lines()
         functions = self.find_functions()
 
-        # Count classes
+        # 클래스 세기
         class_count = len(re.findall(self.patterns['class'], self.code))
 
-        # Calculate averages
+        # 평균 계산
         func_lengths = [f.lines for f in functions] if functions else [0]
         avg_func_length = sum(func_lengths) / len(func_lengths)
         max_func_length = max(func_lengths)
@@ -325,7 +325,7 @@ class ComplexityAnalyzer:
 
 
 def print_metrics(metrics: FileMetrics, verbose: bool = False) -> None:
-    """Print metrics in a readable format."""
+    """지표를 읽기 쉬운 형식으로 출력합니다."""
     print("=" * 60)
     print(f"CODE COMPLEXITY ANALYSIS: {metrics.filename}")
     print("=" * 60)
@@ -344,7 +344,7 @@ def print_metrics(metrics: FileMetrics, verbose: bool = False) -> None:
     print(f"  Cognitive Complexity:   {metrics.cognitive_complexity}")
     print(f"  Maintainability Index:  {metrics.maintainability_index}")
 
-    # Interpret maintainability
+    # 유지 보수성 해석
     mi = metrics.maintainability_index
     if mi >= 85:
         mi_label = "Highly maintainable ✅"
@@ -374,7 +374,7 @@ def print_metrics(metrics: FileMetrics, verbose: bool = False) -> None:
 
 
 def print_comparison(before: FileMetrics, after: FileMetrics) -> None:
-    """Print comparison between two analyses."""
+    """두 분석 결과의 비교를 출력합니다."""
     print("=" * 70)
     print("CODE COMPLEXITY COMPARISON")
     print("=" * 70)
@@ -407,7 +407,7 @@ def print_comparison(before: FileMetrics, after: FileMetrics) -> None:
 
     print("\n" + "=" * 70)
 
-    # Overall assessment
+    # 전체 평가
     print("\n🎯 ASSESSMENT")
     print("-" * 40)
 
@@ -440,7 +440,7 @@ def print_comparison(before: FileMetrics, after: FileMetrics) -> None:
 
 
 def analyze_directory(directory: str, verbose: bool = False) -> None:
-    """Analyze all supported files in a directory."""
+    """디렉토리 안의 지원되는 파일을 모두 분석합니다."""
     supported_extensions = ['.py', '.js', '.jsx', '.ts', '.tsx']
     files = []
 

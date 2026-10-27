@@ -4,19 +4,19 @@ import sys
 
 
 def analyze_code_metrics(code):
-    """Analyze code for common metrics."""
+    """코드의 일반적인 지표를 분석합니다."""
 
-    # Count functions
+    # 함수 수 세기
     functions = len(re.findall(r"^def\s+\w+", code, re.MULTILINE))
 
-    # Count classes
+    # 클래스 수 세기
     classes = len(re.findall(r"^class\s+\w+", code, re.MULTILINE))
 
-    # Average line length
+    # 평균 줄 길이
     lines = code.split("\n")
     avg_length = sum(len(l) for l in lines) / len(lines) if lines else 0
 
-    # Estimate complexity
+    # 복잡도 추정
     complexity = len(re.findall(r"\b(if|elif|else|for|while|and|or)\b", code))
 
     return {

@@ -1,75 +1,75 @@
-# [Blog Post Title]
+# [블로그 글 제목]
 
-*[Subtitle or tagline - optional]*
+*[부제나 한 줄 소개 - 선택 사항]*
 
-**[Author Name]** | [Date]
-
----
-
-[Opening hook - grab attention immediately]
-
-[Context and background - why this matters]
-
-[Thesis statement - what this post will cover]
+**[작성자 이름]** | [날짜]
 
 ---
 
-## [Section 1 Title]
+[도입부 훅 - 처음부터 관심 끌기]
 
-[Section content with clear, engaging prose]
+[맥락과 배경 - 이 주제가 왜 중요한지]
 
-[Include evidence, examples, or data to support points]
-
-> "Relevant quote from research" - Source
-
-[Transition to next section]
+[핵심 주장 - 이 글에서 다룰 내용]
 
 ---
 
-## [Section 2 Title]
+## [섹션 1 제목]
 
-[Continue with main content]
+[명확하고 흥미로운 문장으로 쓴 섹션 내용]
 
-**Key takeaway:** [Highlight important points in bold or callout boxes]
+[요점을 뒷받침하는 근거, 예시, 데이터 포함]
 
-[More supporting content]
+> "조사에서 찾은 관련 인용문" - 출처
 
----
-
-## [Section 3 Title]
-
-[Additional sections as needed]
-
-### Subsection (if needed)
-
-[Subsection content]
+[다음 섹션으로 넘어가는 연결 문장]
 
 ---
 
-## Conclusion
+## [섹션 2 제목]
 
-[Summarize the key points covered]
+[본문 계속]
 
-[Reinforce the main takeaway]
+**핵심 메시지:** [중요한 요점은 굵게 쓰거나 강조 상자로 표시]
 
-[Call to action or thought-provoking final statement]
-
----
-
-## References
-
-1. [Source Title](#)
-2. [Source Title](#)
-3. [Source Title](#)
+[뒷받침하는 내용 추가]
 
 ---
 
-*[Optional: Author bio or related posts suggestion]*
+## [섹션 3 제목]
+
+[필요한 만큼 섹션 추가]
+
+### 하위 섹션(필요한 경우)
+
+[하위 섹션 내용]
 
 ---
 
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/skills
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+## 결론
+
+[다룬 핵심 요점 요약]
+
+[핵심 메시지 다시 강조]
+
+[행동 유도 또는 생각할 거리를 던지는 마무리 문장]
+
+---
+
+## 참고 문헌
+
+1. [출처 제목](#)
+2. [출처 제목](#)
+3. [출처 제목](#)
+
+---
+
+*[선택: 작성자 소개나 관련 글 추천]*
+
+---
+
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/skills
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

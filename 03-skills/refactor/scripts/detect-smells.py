@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-Code Smell Detector
+코드 스멜 감지기
 
-Detects common code smells in Python, JavaScript, and TypeScript files.
-Based on Martin Fowler's catalog of code smells.
+Python, JavaScript, TypeScript 파일에서 흔한 코드 스멜을 감지합니다.
+마틴 파울러의 코드 스멜 카탈로그를 바탕으로 합니다.
 
-Usage:
+사용법:
     python detect-smells.py <file>
     python detect-smells.py --dir <directory>
-    python detect-smells.py -v <file>  # Verbose with code snippets
+    python detect-smells.py -v <file>  # 코드 조각을 함께 보여 주는 자세한 모드
 
-Detects:
-    - Long Method (>30 lines)
-    - Long Parameter List (>4 params)
-    - Duplicate Code (similar code blocks)
-    - Large Class (>300 lines, >10 methods)
-    - Dead Code (unused variables/functions)
-    - Complex Conditionals (deep nesting, long chains)
-    - Magic Numbers/Strings
-    - Feature Envy (methods using other class data heavily)
-    - Comments explaining what (not why)
+감지하는 스멜:
+    - Long Method(긴 메서드, 30줄 초과)
+    - Long Parameter List(긴 매개변수 목록, 매개변수 4개 초과)
+    - Duplicate Code(중복 코드, 비슷한 코드 블록)
+    - Large Class(거대한 클래스, 300줄 초과, 메서드 10개 초과)
+    - Dead Code(죽은 코드, 쓰이지 않는 변수/함수)
+    - Complex Conditionals(복잡한 조건문, 깊은 중첩, 긴 연쇄)
+    - Magic Numbers/Strings(매직 넘버/문자열)
+    - Feature Envy(기능 편애, 다른 클래스의 데이터를 많이 쓰는 메서드)
+    - 왜(why)가 아니라 무엇(what)을 설명하는 주석
 """
 
 import argparse
@@ -33,7 +33,7 @@ from collections import defaultdict
 
 
 class SmellSeverity(Enum):
-    """Severity levels for code smells."""
+    """코드 스멜의 심각도 수준."""
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
@@ -41,7 +41,7 @@ class SmellSeverity(Enum):
 
 
 class SmellType(Enum):
-    """Types of code smells."""
+    """코드 스멜의 종류."""
     LONG_METHOD = "Long Method"
     LONG_PARAMETER_LIST = "Long Parameter List"
     DUPLICATE_CODE = "Duplicate Code"
@@ -60,7 +60,7 @@ class SmellType(Enum):
 
 @dataclass
 class CodeSmell:
-    """Represents a detected code smell."""
+    """감지된 코드 스멜 하나를 나타냅니다."""
     smell_type: SmellType
     severity: SmellSeverity
     location: str
@@ -73,7 +73,7 @@ class CodeSmell:
 
 @dataclass
 class SmellReport:
-    """Report of all smells found in a file."""
+    """파일에서 찾은 모든 스멜의 보고서."""
     filename: str
     smells: List[CodeSmell] = field(default_factory=list)
 
@@ -95,9 +95,9 @@ class SmellReport:
 
 
 class SmellDetector:
-    """Detect code smells in source files."""
+    """소스 파일에서 코드 스멜을 감지합니다."""
 
-    # Thresholds (configurable)
+    # 임계값(설정 가능)
     THRESHOLDS = {
         'long_method_lines': 30,
         'very_long_method_lines': 50,
@@ -120,7 +120,7 @@ class SmellDetector:
         self.smells: List[CodeSmell] = []
 
     def _detect_language(self) -> str:
-        """Detect programming language from file extension."""
+        """파일 확장자로 프로그래밍 언어를 감지합니다."""
         ext = os.path.splitext(self.filepath)[1].lower()
         ext_map = {
             '.py': 'python',
@@ -132,7 +132,7 @@ class SmellDetector:
         return ext_map.get(ext, 'python')
 
     def detect_all(self) -> SmellReport:
-        """Run all smell detectors."""
+        """모든 스멜 감지기를 실행합니다."""
         self._detect_long_methods()
         self._detect_long_parameter_lists()
         self._detect_large_class()
@@ -148,7 +148,7 @@ class SmellDetector:
         return SmellReport(filename=self.filename, smells=self.smells)
 
     def _get_snippet(self, start: int, end: int, context: int = 2) -> str:
-        """Get code snippet with context."""
+        """앞뒤 맥락을 포함한 코드 조각을 가져옵니다."""
         actual_start = max(0, start - context)
         actual_end = min(len(self.lines), end + context)
         snippet_lines = []
@@ -158,7 +158,7 @@ class SmellDetector:
         return '\n'.join(snippet_lines)
 
     def _detect_long_methods(self) -> None:
-        """Detect methods that are too long."""
+        """너무 긴 메서드를 감지합니다."""
         if self.language == 'python':
             pattern = r'^\s*def\s+(\w+)\s*\([^)]*\):'
         else:
@@ -172,7 +172,7 @@ class SmellDetector:
         for i, line in enumerate(self.lines):
             match = re.search(pattern, line)
             if match:
-                # Check previous method if exists
+                # 이전 메서드가 있으면 확인
                 if current_method:
                     method_lines = i - method_start
                     self._check_method_length(current_method, method_start, i - 1, method_lines)
@@ -181,7 +181,7 @@ class SmellDetector:
                 method_start = i
                 indent_level = len(line) - len(line.lstrip())
 
-            # Track end of Python functions by indentation
+            # Python 함수의 끝은 들여쓰기로 추적
             if self.language == 'python' and current_method:
                 if line.strip() and not line.strip().startswith('#'):
                     current_indent = len(line) - len(line.lstrip())
@@ -190,13 +190,13 @@ class SmellDetector:
                         self._check_method_length(current_method, method_start, i - 1, method_lines)
                         current_method = None
 
-        # Check last method
+        # 마지막 메서드 확인
         if current_method:
             method_lines = len(self.lines) - method_start
             self._check_method_length(current_method, method_start, len(self.lines) - 1, method_lines)
 
     def _check_method_length(self, name: str, start: int, end: int, lines: int) -> None:
-        """Check if method is too long and add smell if so."""
+        """메서드가 너무 긴지 확인하고, 그렇다면 스멜을 추가합니다."""
         if lines > self.THRESHOLDS['very_long_method_lines']:
             severity = SmellSeverity.HIGH
             desc = f"Method '{name}' is {lines} lines (threshold: {self.THRESHOLDS['long_method_lines']})"
@@ -218,7 +218,7 @@ class SmellDetector:
         ))
 
     def _detect_long_parameter_lists(self) -> None:
-        """Detect functions with too many parameters."""
+        """매개변수가 너무 많은 함수를 감지합니다."""
         if self.language == 'python':
             pattern = r'def\s+(\w+)\s*\(([^)]*)\)'
         else:
@@ -227,17 +227,17 @@ class SmellDetector:
         for i, line in enumerate(self.lines):
             match = re.search(pattern, line)
             if match:
-                # Safely extract groups
+                # 그룹을 안전하게 추출
                 groups = match.groups()
                 func_name = groups[0] or (groups[2] if len(groups) > 2 else None)
                 params_str = groups[1] if len(groups) > 1 else ""
                 if not params_str and len(groups) > 3:
                     params_str = groups[3] or ""
 
-                # Count parameters
+                # 매개변수 세기
                 if params_str.strip():
                     params = [p.strip() for p in params_str.split(',') if p.strip()]
-                    # Filter out 'self', 'cls' for Python
+                    # Python에서는 'self', 'cls' 제외
                     if self.language == 'python':
                         params = [p for p in params if p not in ('self', 'cls')]
                     param_count = len(params)
@@ -256,7 +256,7 @@ class SmellDetector:
                         ))
 
     def _detect_large_class(self) -> None:
-        """Detect classes that are too large."""
+        """너무 큰 클래스를 감지합니다."""
         if self.language == 'python':
             class_pattern = r'^\s*class\s+(\w+)'
             method_pattern = r'^\s+def\s+\w+'
@@ -272,7 +272,7 @@ class SmellDetector:
         for i, line in enumerate(self.lines):
             class_match = re.search(class_pattern, line)
             if class_match:
-                # Check previous class
+                # 이전 클래스 확인
                 if current_class:
                     self._check_class_size(current_class, class_start, i - 1, method_count)
 
@@ -281,16 +281,16 @@ class SmellDetector:
                 method_count = 0
                 class_indent = len(line) - len(line.lstrip())
 
-            # Count methods in current class
+            # 현재 클래스의 메서드 세기
             if current_class and re.search(method_pattern, line):
                 method_count += 1
 
-        # Check last class
+        # 마지막 클래스 확인
         if current_class:
             self._check_class_size(current_class, class_start, len(self.lines) - 1, method_count)
 
     def _check_class_size(self, name: str, start: int, end: int, methods: int) -> None:
-        """Check if class is too large."""
+        """클래스가 너무 큰지 확인합니다."""
         lines = end - start + 1
 
         issues = []
@@ -318,9 +318,9 @@ class SmellDetector:
             ))
 
     def _detect_complex_conditionals(self) -> None:
-        """Detect complex conditional expressions."""
+        """복잡한 조건식을 감지합니다."""
         for i, line in enumerate(self.lines):
-            # Count logical operators in line
+            # 줄 안의 논리 연산자 세기
             and_or_count = len(re.findall(r'\b(and|or|&&|\|\|)\b', line))
 
             if and_or_count >= 3:
@@ -336,23 +336,23 @@ class SmellDetector:
                 ))
 
     def _detect_magic_numbers(self) -> None:
-        """Detect magic numbers and strings."""
-        # Skip common acceptable values
+        """매직 넘버와 매직 문자열을 감지합니다."""
+        # 흔히 허용되는 값은 건너뛰기
         acceptable = {'0', '1', '-1', '2', '100', 'true', 'false', 'null', 'None', '""', "''"}
 
         for i, line in enumerate(self.lines):
-            # Skip comments and imports
+            # 주석과 import는 건너뛰기
             stripped = line.strip()
             if stripped.startswith('#') or stripped.startswith('//') or \
                stripped.startswith('import') or stripped.startswith('from'):
                 continue
 
-            # Find numeric literals (excluding in variable names)
+            # 숫자 리터럴 찾기(변수 이름 안의 숫자는 제외)
             numbers = re.findall(r'(?<![a-zA-Z_])\b(\d+\.?\d*)\b(?![a-zA-Z_])', line)
 
             for num in numbers:
                 if num not in acceptable and float(num) > 2:
-                    # Check if it's likely a magic number (in calculation or comparison)
+                    # 매직 넘버일 가능성이 높은지 확인(계산이나 비교에 쓰인 경우)
                     if re.search(rf'[<>=+\-*/]\s*{re.escape(num)}|{re.escape(num)}\s*[<>=+\-*/]', line):
                         self.smells.append(CodeSmell(
                             smell_type=SmellType.MAGIC_NUMBER,
@@ -364,10 +364,10 @@ class SmellDetector:
                             suggestion="Replace magic number with named constant",
                             code_snippet=self._get_snippet(i, i + 1, 0)
                         ))
-                        break  # One magic number per line is enough
+                        break  # 한 줄에 매직 넘버 하나면 충분
 
     def _detect_excessive_comments(self) -> None:
-        """Detect comments that explain 'what' instead of 'why'."""
+        """'왜'가 아니라 '무엇'을 설명하는 주석을 감지합니다."""
         what_patterns = [
             r'#\s*(set|get|return|loop|iterate|check|if|increment|decrement)',
             r'//\s*(set|get|return|loop|iterate|check|if|increment|decrement)',
@@ -389,17 +389,17 @@ class SmellDetector:
                     break
 
     def _detect_deeply_nested(self) -> None:
-        """Detect deeply nested code blocks."""
+        """깊이 중첩된 코드 블록을 감지합니다."""
         max_depth = 0
         current_depth = 0
         depth_start = 0
 
         for i, line in enumerate(self.lines):
             if self.language == 'python':
-                # Count by indentation
+                # 들여쓰기로 세기
                 if line.strip():
                     indent = len(line) - len(line.lstrip())
-                    depth = indent // 4  # Assume 4-space indent
+                    depth = indent // 4  # 4칸 들여쓰기로 가정
                     if depth > current_depth:
                         if depth > max_depth:
                             max_depth = depth
@@ -407,7 +407,7 @@ class SmellDetector:
                                 depth_start = i
                     current_depth = depth
             else:
-                # Count braces
+                # 중괄호 세기
                 current_depth += line.count('{') - line.count('}')
                 if current_depth > max_depth:
                     max_depth = current_depth
@@ -427,9 +427,9 @@ class SmellDetector:
             ))
 
     def _detect_switch_statements(self) -> None:
-        """Detect switch statements that might need polymorphism."""
+        """다형성이 필요할 수 있는 switch 문을 감지합니다."""
         if self.language == 'python':
-            # Python 3.10+ match statements or if/elif chains
+            # Python 3.10+의 match 문이나 if/elif 연쇄
             pattern = r'^\s*(if|elif).*==.*:'
             consecutive_conditions = 0
             chain_start = 0
@@ -444,11 +444,11 @@ class SmellDetector:
                         self._add_switch_smell(chain_start, i - 1, consecutive_conditions)
                     consecutive_conditions = 0
         else:
-            # JavaScript/TypeScript switch
+            # JavaScript/TypeScript의 switch
             pattern = r'\bswitch\s*\('
             for i, line in enumerate(self.lines):
                 if re.search(pattern, line):
-                    # Count cases
+                    # case 세기
                     case_count = 0
                     for j in range(i, min(i + 50, len(self.lines))):
                         case_count += len(re.findall(r'\bcase\b', self.lines[j]))
@@ -456,7 +456,7 @@ class SmellDetector:
                         self._add_switch_smell(i, i + 1, case_count)
 
     def _add_switch_smell(self, start: int, end: int, cases: int) -> None:
-        """Add a switch statement smell."""
+        """switch 문 스멜을 추가합니다."""
         self.smells.append(CodeSmell(
             smell_type=SmellType.SWITCH_STATEMENT,
             severity=SmellSeverity.MEDIUM,
@@ -469,7 +469,7 @@ class SmellDetector:
         ))
 
     def _detect_message_chains(self) -> None:
-        """Detect long method chains (train wrecks)."""
+        """긴 메서드 체인(열차 사고)을 감지합니다."""
         chain_pattern = r'(\w+(?:\.\w+\([^)]*\)){3,})'
 
         for i, line in enumerate(self.lines):
@@ -489,18 +489,18 @@ class SmellDetector:
                     ))
 
     def _detect_duplicate_code(self) -> None:
-        """Detect potential duplicate code blocks (simplified)."""
-        # Create line hashes for comparison
+        """중복일 가능성이 있는 코드 블록을 감지합니다(단순화)."""
+        # 비교용으로 줄 해시 만들기
         line_hashes: Dict[str, List[int]] = defaultdict(list)
 
         for i, line in enumerate(self.lines):
             normalized = re.sub(r'\s+', ' ', line.strip())
-            if len(normalized) > 20:  # Only significant lines
+            if len(normalized) > 20:  # 의미 있는 줄만
                 line_hashes[normalized].append(i)
 
-        # Find duplicates
+        # 중복 찾기
         for normalized, positions in line_hashes.items():
-            if len(positions) >= 3:  # At least 3 occurrences
+            if len(positions) >= 3:  # 최소 3번 이상 나타남
                 self.smells.append(CodeSmell(
                     smell_type=SmellType.DUPLICATE_CODE,
                     severity=SmellSeverity.MEDIUM,
@@ -513,8 +513,8 @@ class SmellDetector:
                 ))
 
     def _detect_dead_code(self) -> None:
-        """Detect potentially dead code (simplified)."""
-        # Look for common dead code patterns
+        """죽은 코드일 가능성이 있는 코드를 감지합니다(단순화)."""
+        # 흔한 죽은 코드 패턴 찾기
         patterns = [
             (r'^\s*#.*TODO.*delete', "TODO to delete"),
             (r'^\s*#.*FIXME.*remove', "FIXME to remove"),
@@ -540,7 +540,7 @@ class SmellDetector:
 
 
 def print_report(report: SmellReport, verbose: bool = False) -> None:
-    """Print smell report in readable format."""
+    """스멜 보고서를 읽기 쉬운 형식으로 출력합니다."""
     print("=" * 70)
     print(f"CODE SMELL DETECTION REPORT: {report.filename}")
     print("=" * 70)
@@ -558,7 +558,7 @@ def print_report(report: SmellReport, verbose: bool = False) -> None:
         print("=" * 70)
         return
 
-    # Group by type
+    # 종류별로 묶기
     by_type: Dict[SmellType, List[CodeSmell]] = defaultdict(list)
     for smell in report.smells:
         by_type[smell.smell_type].append(smell)
@@ -603,7 +603,7 @@ def print_report(report: SmellReport, verbose: bool = False) -> None:
 
 
 def analyze_directory(directory: str, verbose: bool = False) -> None:
-    """Analyze all supported files in a directory."""
+    """디렉토리 안의 지원되는 파일을 모두 분석합니다."""
     supported_extensions = ['.py', '.js', '.jsx', '.ts', '.tsx']
     files = []
 

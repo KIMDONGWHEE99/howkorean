@@ -1,14 +1,14 @@
-Subject: [Clear, benefit-driven subject]
+제목: [분명하고 이점이 드러나는 제목]
 
-Hi [Name],
+[이름]님, 안녕하세요.
 
-[Opening: What's the value for them]
+[도입: 받는 사람에게 어떤 가치가 있는지]
 
-[Body: How it works / What they'll get]
+[본문: 어떻게 동작하는지 / 무엇을 얻게 되는지]
 
-[Specific example or benefit]
+[구체적인 예시나 이점]
 
-[Call to action: Clear next step]
+[행동 유도: 분명한 다음 단계]
 
-Best regards,
-[Name]
+감사합니다.
+[이름]

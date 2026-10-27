@@ -1,4 +1,4 @@
-[Hook: Grab attention in first line]
-[2-3 lines: Value or interesting fact]
-[Call to action: Link, question, or engagement]
-[Emoji: 1-2 max for visual interest]
+[훅: 첫 줄에서 관심 끌기]
+[2-3줄: 가치나 흥미로운 사실]
+[행동 유도: 링크, 질문, 참여 유도]
+[이모지: 시선을 끌도록 최대 1-2개]

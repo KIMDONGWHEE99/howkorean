@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Compare cyclomatic complexity of code before and after changes.
-Helps identify if refactoring actually simplifies code structure.
+변경 전후 코드의 순환 복잡도를 비교합니다.
+리팩토링이 실제로 코드 구조를 단순하게 만드는지 확인하는 데 도움이 됩니다.
 """
 
 import re
@@ -9,7 +9,7 @@ import sys
 
 
 class ComplexityAnalyzer:
-    """Analyze code complexity metrics."""
+    """코드 복잡도 지표를 분석합니다."""
 
     def __init__(self, code: str):
         self.code = code
@@ -17,12 +17,12 @@ class ComplexityAnalyzer:
 
     def calculate_cyclomatic_complexity(self) -> int:
         """
-        Calculate cyclomatic complexity using McCabe's method.
-        Count decision points: if, elif, else, for, while, except, and, or
+        McCabe 방법으로 순환 복잡도를 계산합니다.
+        결정 지점을 셉니다: if, elif, else, for, while, except, and, or
         """
-        complexity = 1  # Base complexity
+        complexity = 1  # 기본 복잡도
 
-        # Count decision points
+        # 결정 지점 세기
         decision_patterns = [
             r"\bif\b",
             r"\belif\b",
@@ -41,21 +41,21 @@ class ComplexityAnalyzer:
 
     def calculate_cognitive_complexity(self) -> int:
         """
-        Calculate cognitive complexity - how hard is it to understand?
-        Based on nesting depth and control flow.
+        인지 복잡도(코드를 이해하기가 얼마나 어려운지)를 계산합니다.
+        중첩 깊이와 제어 흐름을 바탕으로 합니다.
         """
         cognitive = 0
         nesting_depth = 0
 
         for line in self.lines:
-            # Track nesting depth
+            # 중첩 깊이 추적
             if re.search(r"^\s*(if|for|while|def|class|try)\b", line):
                 nesting_depth += 1
                 cognitive += nesting_depth
             elif re.search(r"^\s*(elif|else|except|finally)\b", line):
                 cognitive += nesting_depth
 
-            # Reduce nesting when unindenting
+            # 들여쓰기가 줄어들면 중첩 깊이 줄이기
             if line and not line[0].isspace():
                 nesting_depth = 0
 
@@ -63,17 +63,17 @@ class ComplexityAnalyzer:
 
     def calculate_maintainability_index(self) -> float:
         """
-        Maintainability Index ranges from 0-100.
-        > 85: Excellent
-        > 65: Good
-        > 50: Fair
-        < 50: Poor
+        유지 보수성 지수는 0-100 범위입니다.
+        > 85: 매우 좋음
+        > 65: 좋음
+        > 50: 보통
+        < 50: 나쁨
         """
         lines = len(self.lines)
         cyclomatic = self.calculate_cyclomatic_complexity()
         cognitive = self.calculate_cognitive_complexity()
 
-        # Simplified MI calculation
+        # 단순화한 MI 계산
         mi = (
             171
             - 5.2 * (cyclomatic / lines)
@@ -84,7 +84,7 @@ class ComplexityAnalyzer:
         return max(0, min(100, mi))
 
     def get_complexity_report(self) -> dict:
-        """Generate comprehensive complexity report."""
+        """종합 복잡도 보고서를 생성합니다."""
         return {
             "cyclomatic_complexity": self.calculate_cyclomatic_complexity(),
             "cognitive_complexity": self.calculate_cognitive_complexity(),
@@ -99,7 +99,7 @@ class ComplexityAnalyzer:
 
 
 def compare_files(before_file: str, after_file: str) -> None:
-    """Compare complexity metrics between two code versions."""
+    """두 코드 버전의 복잡도 지표를 비교합니다."""
 
     with open(before_file) as f:
         before_code = f.read()

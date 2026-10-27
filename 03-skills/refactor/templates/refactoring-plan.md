@@ -1,292 +1,292 @@
-# Refactoring Plan Template
+# 리팩토링 계획 템플릿
 
-Use this template to document and track your refactoring effort.
+리팩토링 작업을 문서화하고 추적할 때 이 템플릿을 쓰세요.
 
 ---
 
-## Project Information
+## 프로젝트 정보
 
-| Field | Value |
+| 항목 | 값 |
 |-------|-------|
-| **Project/Module** | [Project name] |
-| **Target Files** | [List of files to refactor] |
-| **Date Created** | [Date] |
-| **Author** | [Name] |
-| **Status** | Draft / In Review / Approved / In Progress / Completed |
+| **프로젝트/모듈** | [프로젝트 이름] |
+| **대상 파일** | [리팩토링할 파일 목록] |
+| **작성일** | [날짜] |
+| **작성자** | [이름] |
+| **상태** | 초안 / 검토 중 / 승인됨 / 진행 중 / 완료 |
 
 ---
 
-## Executive Summary
+## 요약
 
-### Goals
-- [ ] [Primary goal: e.g., Improve readability of payment processing]
-- [ ] [Secondary goal: e.g., Reduce code duplication]
-- [ ] [Tertiary goal: e.g., Improve testability]
+### 목표
+- [ ] [주요 목표: 예) 결제 처리 코드의 가독성 개선]
+- [ ] [부차 목표: 예) 코드 중복 줄이기]
+- [ ] [세 번째 목표: 예) 테스트하기 쉽게 만들기]
 
-### Constraints
-- [ ] [Constraint 1: e.g., Cannot change public API]
-- [ ] [Constraint 2: e.g., Must maintain backward compatibility]
-- [ ] [Constraint 3: e.g., No changes to database schema]
+### 제약
+- [ ] [제약 1: 예) 공개 API는 바꿀 수 없음]
+- [ ] [제약 2: 예) 하위 호환성을 유지해야 함]
+- [ ] [제약 3: 예) 데이터베이스 스키마는 바꾸지 않음]
 
-### Risk Level
-- [ ] Low - Minor changes, well-tested code
-- [ ] Medium - Moderate changes, some risk
-- [ ] High - Significant changes, careful attention needed
+### 위험 수준
+- [ ] 낮음 - 작은 변경, 테스트가 잘 된 코드
+- [ ] 중간 - 적당한 변경, 어느 정도 위험
+- [ ] 높음 - 큰 변경, 세심한 주의 필요
 
 ---
 
-## Pre-Refactoring Checklist
+## 리팩토링 전 체크리스트
 
-### Test Coverage Assessment
+### 테스트 커버리지 평가
 
-| Metric | Current | Target | Status |
+| 지표 | 현재 | 목표 | 상태 |
 |--------|---------|--------|--------|
-| Unit Test Coverage | __%  | ≥80% | |
-| Integration Tests | Yes/No | Yes | |
-| All Tests Passing | Yes/No | Yes | |
+| 단위 테스트 커버리지 | __%  | ≥80% | |
+| 통합 테스트 | 있음/없음 | 있음 | |
+| 모든 테스트 통과 | 예/아니요 | 예 | |
 
-### Required Before Starting
-- [ ] All tests passing
-- [ ] Code reviewed and understood
-- [ ] Backup/version control in place
-- [ ] User approval obtained
+### 시작 전 필수 사항
+- [ ] 모든 테스트 통과
+- [ ] 코드를 검토하고 이해함
+- [ ] 백업/버전 관리 준비됨
+- [ ] 사용자 승인 받음
 
 ---
 
-## Identified Code Smells
+## 찾아낸 코드 스멜
 
-### Summary
+### 요약
 
-| # | Smell | Location | Severity | Priority |
+| # | 스멜 | 위치 | 심각도 | 우선순위 |
 |---|-------|----------|----------|----------|
-| 1 | [e.g., Long Method] | [file:line] | High | P1 |
-| 2 | [e.g., Duplicate Code] | [file:line] | Medium | P2 |
-| 3 | [e.g., Feature Envy] | [file:line] | Low | P3 |
+| 1 | [예: Long Method] | [file:line] | High | P1 |
+| 2 | [예: Duplicate Code] | [file:line] | Medium | P2 |
+| 3 | [예: Feature Envy] | [file:line] | Low | P3 |
 
-### Detailed Analysis
+### 상세 분석
 
-#### Smell #1: [Name]
+#### 스멜 1: [이름]
 
-**Location**: `path/to/file.js:45-120`
+**위치**: `path/to/file.js:45-120`
 
-**Description**: [Detailed description of the problem]
+**설명**: [문제에 대한 자세한 설명]
 
-**Impact**:
-- [Impact 1]
-- [Impact 2]
+**영향**:
+- [영향 1]
+- [영향 2]
 
-**Proposed Solution**: [Brief overview of how to fix]
+**제안하는 해결책**: [고치는 방법 개요]
 
 ---
 
-## Refactoring Phases
+## 리팩토링 단계
 
-### Phase A: Quick Wins (Low Risk)
+### A단계: 빠른 성과(낮은 위험)
 
-**Objective**: Simple improvements with immediate value
+**목표**: 바로 효과가 나는 간단한 개선
 
-**Estimated Changes**: [X files, Y methods]
+**예상 변경 범위**: [파일 X개, 메서드 Y개]
 
-**User Approval Required**: Yes / No
+**사용자 승인 필요**: 예 / 아니요
 
-| # | Task | File | Refactoring | Status |
+| # | 작업 | 파일 | 리팩토링 | 상태 |
 |---|------|------|-------------|--------|
-| A1 | Rename variable `x` to `userCount` | utils.js:15 | Rename Variable | [ ] |
-| A2 | Remove unused `oldHandler()` | api.js:89 | Remove Dead Code | [ ] |
-| A3 | Extract duplicate validation | form.js:23,67 | Extract Method | [ ] |
+| A1 | 변수 `x`를 `userCount`로 이름 변경 | utils.js:15 | Rename Variable | [ ] |
+| A2 | 쓰이지 않는 `oldHandler()` 제거 | api.js:89 | Remove Dead Code | [ ] |
+| A3 | 중복된 검증 로직 추출 | form.js:23,67 | Extract Method | [ ] |
 
-**Rollback Plan**: Revert commits A1-A3
+**롤백 계획**: A1-A3 커밋 되돌리기
 
 ---
 
-### Phase B: Structural Improvements (Medium Risk)
+### B단계: 구조 개선(중간 위험)
 
-**Objective**: Improve code organization and clarity
+**목표**: 코드 구성과 명확성 개선
 
-**Estimated Changes**: [X files, Y methods]
+**예상 변경 범위**: [파일 X개, 메서드 Y개]
 
-**User Approval Required**: Yes
+**사용자 승인 필요**: 예
 
-**Dependencies**: Phase A must be complete
+**의존성**: A단계가 끝나야 함
 
-| # | Task | File | Refactoring | Status |
+| # | 작업 | 파일 | 리팩토링 | 상태 |
 |---|------|------|-------------|--------|
-| B1 | Extract `calculatePrice()` from long method | order.js:45 | Extract Method | [ ] |
-| B2 | Introduce `OrderDetails` parameter object | order.js:12 | Introduce Parameter Object | [ ] |
-| B3 | Move `formatAddress()` to Address class | customer.js:78 | Move Method | [ ] |
+| B1 | 긴 메서드에서 `calculatePrice()` 추출 | order.js:45 | Extract Method | [ ] |
+| B2 | `OrderDetails` 매개변수 객체 도입 | order.js:12 | Introduce Parameter Object | [ ] |
+| B3 | `formatAddress()`를 Address 클래스로 옮기기 | customer.js:78 | Move Method | [ ] |
 
-**Rollback Plan**: Revert to post-Phase-A commit
+**롤백 계획**: A단계를 마친 뒤의 커밋으로 되돌리기
 
 ---
 
-### Phase C: Architectural Changes (Higher Risk)
+### C단계: 아키텍처 변경(높은 위험)
 
-**Objective**: Address deeper structural issues
+**목표**: 더 깊은 구조적 문제 해결
 
-**Estimated Changes**: [X files, Y methods]
+**예상 변경 범위**: [파일 X개, 메서드 Y개]
 
-**User Approval Required**: Yes
+**사용자 승인 필요**: 예
 
-**Dependencies**: Phases A and B must be complete
+**의존성**: A단계와 B단계가 끝나야 함
 
-| # | Task | File | Refactoring | Status |
+| # | 작업 | 파일 | 리팩토링 | 상태 |
 |---|------|------|-------------|--------|
-| C1 | Replace price switch with polymorphism | pricing.js:30 | Replace Conditional with Polymorphism | [ ] |
-| C2 | Extract `NotificationService` class | user.js:100 | Extract Class | [ ] |
+| C1 | 가격 switch 문을 다형성으로 바꾸기 | pricing.js:30 | Replace Conditional with Polymorphism | [ ] |
+| C2 | `NotificationService` 클래스 추출 | user.js:100 | Extract Class | [ ] |
 
-**Rollback Plan**: Revert to post-Phase-B commit
+**롤백 계획**: B단계를 마친 뒤의 커밋으로 되돌리기
 
 ---
 
-## Detailed Refactoring Steps
+## 세부 리팩토링 단계
 
-### Task [ID]: [Task Name]
+### 작업 [ID]: [작업 이름]
 
-**Smell Addressed**: [Smell name]
+**해결하는 스멜**: [스멜 이름]
 
-**Refactoring Technique**: [Technique name]
+**리팩토링 기법**: [기법 이름]
 
-**Risk Level**: Low / Medium / High
+**위험 수준**: 낮음 / 중간 / 높음
 
-#### Context
+#### 맥락
 
-**Before** (Current State):
+**변경 전**(현재 상태):
 ```javascript
-// Paste current code here
+// 현재 코드를 여기에 붙여 넣기
 ```
 
-**After** (Expected State):
+**변경 후**(기대 상태):
 ```javascript
-// Paste expected code here
+// 기대하는 코드를 여기에 붙여 넣기
 ```
 
-#### Step-by-Step Mechanics
+#### 단계별 절차
 
-1. [ ] **Step 1**: [Description]
-   - Test: Run tests after this step
-   - Expected: All tests pass
+1. [ ] **1단계**: [설명]
+   - 테스트: 이 단계를 마친 뒤 테스트 실행
+   - 기대 결과: 모든 테스트 통과
 
-2. [ ] **Step 2**: [Description]
-   - Test: Run tests after this step
-   - Expected: All tests pass
+2. [ ] **2단계**: [설명]
+   - 테스트: 이 단계를 마친 뒤 테스트 실행
+   - 기대 결과: 모든 테스트 통과
 
-3. [ ] **Step 3**: [Description]
-   - Test: Run tests after this step
-   - Expected: All tests pass
+3. [ ] **3단계**: [설명]
+   - 테스트: 이 단계를 마친 뒤 테스트 실행
+   - 기대 결과: 모든 테스트 통과
 
-#### Verification
+#### 검증
 
-- [ ] All tests passing
-- [ ] Behavior unchanged
-- [ ] Code compiles
-- [ ] No new warnings
+- [ ] 모든 테스트 통과
+- [ ] 동작이 바뀌지 않음
+- [ ] 코드가 컴파일됨
+- [ ] 새 경고 없음
 
-#### Commit Message
+#### 커밋 메시지
 ```
-refactor: [Describe the refactoring]
+refactor: [리팩토링 내용 설명]
 ```
 
 ---
 
-## Progress Tracking
+## 진행 상황 추적
 
-### Phase Status
+### 단계별 상태
 
-| Phase | Status | Started | Completed | Tests Passing |
+| 단계 | 상태 | 시작 | 완료 | 테스트 통과 |
 |-------|--------|---------|-----------|---------------|
-| A | Not Started / In Progress / Done | | | |
-| B | Not Started / In Progress / Done | | | |
-| C | Not Started / In Progress / Done | | | |
+| A | 시작 전 / 진행 중 / 완료 | | | |
+| B | 시작 전 / 진행 중 / 완료 | | | |
+| C | 시작 전 / 진행 중 / 완료 | | | |
 
-### Issues Encountered
+### 마주친 문제
 
-| # | Issue | Resolution | Status |
+| # | 문제 | 해결 방법 | 상태 |
 |---|-------|------------|--------|
-| 1 | [Description] | [How resolved] | Open / Resolved |
+| 1 | [설명] | [해결한 방법] | 미해결 / 해결됨 |
 
 ---
 
-## Metrics Comparison
+## 지표 비교
 
-### Before Refactoring
+### 리팩토링 전
 
-| Metric | File 1 | File 2 | Total |
+| 지표 | 파일 1 | 파일 2 | 합계 |
 |--------|--------|--------|-------|
-| Lines of Code | | | |
-| Cyclomatic Complexity | | | |
-| Maintainability Index | | | |
-| Number of Methods | | | |
-| Avg Method Length | | | |
+| 코드 줄 수 | | | |
+| 순환 복잡도 | | | |
+| 유지 보수성 지수 | | | |
+| 메서드 수 | | | |
+| 평균 메서드 길이 | | | |
 
-### After Refactoring
+### 리팩토링 후
 
-| Metric | File 1 | File 2 | Total | Change |
+| 지표 | 파일 1 | 파일 2 | 합계 | 변화 |
 |--------|--------|--------|-------|--------|
-| Lines of Code | | | | |
-| Cyclomatic Complexity | | | | |
-| Maintainability Index | | | | |
-| Number of Methods | | | | |
-| Avg Method Length | | | | |
+| 코드 줄 수 | | | | |
+| 순환 복잡도 | | | | |
+| 유지 보수성 지수 | | | | |
+| 메서드 수 | | | | |
+| 평균 메서드 길이 | | | | |
 
 ---
 
-## Post-Refactoring Checklist
+## 리팩토링 후 체크리스트
 
-- [ ] All tests passing
-- [ ] No new warnings or errors
-- [ ] Code compiles successfully
-- [ ] Manual verification completed
-- [ ] Documentation updated (if needed)
-- [ ] Code reviewed
-- [ ] Metrics improved
-- [ ] User sign-off obtained
-
----
-
-## Lessons Learned
-
-### What Went Well
-- [Item 1]
-- [Item 2]
-
-### What Could Be Improved
-- [Item 1]
-- [Item 2]
-
-### Recommendations for Future
-- [Item 1]
-- [Item 2]
+- [ ] 모든 테스트 통과
+- [ ] 새 경고나 오류 없음
+- [ ] 코드가 성공적으로 컴파일됨
+- [ ] 직접 확인 완료
+- [ ] 문서 갱신(필요한 경우)
+- [ ] 코드 리뷰 완료
+- [ ] 지표 개선됨
+- [ ] 사용자 최종 승인 받음
 
 ---
 
-## Approvals
+## 배운 점
 
-| Role | Name | Date | Signature |
+### 잘된 점
+- [항목 1]
+- [항목 2]
+
+### 개선할 점
+- [항목 1]
+- [항목 2]
+
+### 앞으로를 위한 권장 사항
+- [항목 1]
+- [항목 2]
+
+---
+
+## 승인
+
+| 역할 | 이름 | 날짜 | 서명 |
 |------|------|------|-----------|
-| Plan Author | | | |
-| Technical Lead | | | |
-| Product Owner | | | |
+| 계획 작성자 | | | |
+| 테크 리드 | | | |
+| 프로덕트 오너 | | | |
 
 ---
 
-## Appendix
+## 부록
 
-### A. Related Documentation
-- [Link to relevant docs]
+### A. 관련 문서
+- [관련 문서 링크]
 
-### B. Reference Materials
-- [Link to code smells catalog]
-- [Link to refactoring catalog]
+### B. 참고 자료
+- [코드 스멜 카탈로그 링크]
+- [리팩토링 카탈로그 링크]
 
-### C. Tools Used
-- [Testing framework]
-- [Linting tools]
-- [Complexity analysis tools]
+### C. 사용한 도구
+- [테스트 프레임워크]
+- [린팅 도구]
+- [복잡도 분석 도구]
 
 ---
 
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/skills
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/skills
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
