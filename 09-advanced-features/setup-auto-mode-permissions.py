@@ -2,12 +2,12 @@
 """
 setup-auto-mode-permissions.py
 
-Seed ~/.claude/settings.json with a conservative baseline of safe permissions
-for Claude Code. The default set is read-only and local-inspection oriented;
-optional flags let you widen the allowlist for editing, test execution, git
-write operations, package installs, and GitHub CLI writes.
+~/.claude/settings.json에 Claude Code용 안전한 권한의 보수적인 기본 세트를
+넣어 줍니다. 기본 세트는 읽기 전용과 로컬 검사 위주이며, 선택 플래그로 편집,
+테스트 실행, git 쓰기 작업, 패키지 설치, GitHub CLI 쓰기까지 허용 목록을
+넓힐 수 있습니다.
 
-Usage:
+사용법:
     python3 setup-auto-mode-permissions.py
     python3 setup-auto-mode-permissions.py --dry-run
     python3 setup-auto-mode-permissions.py --include-edits --include-tests
@@ -23,7 +23,7 @@ from typing import Iterable
 
 SETTINGS_PATH = Path.home() / ".claude" / "settings.json"
 
-# Core baseline: read-only inspection and low-risk local shell commands.
+# 핵심 기본 세트: 읽기 전용 검사와 위험이 낮은 로컬 셸 명령어.
 CORE_PERMISSIONS = [
     "Read(*)",
     "Grep(*)",
@@ -64,15 +64,15 @@ CORE_PERMISSIONS = [
     "Bash(git stash list:*)",
 ]
 
-# Optional but still local: file edits and task bookkeeping.
+# 선택 사항이지만 여전히 로컬: 파일 편집과 작업 관리.
 EDITING_PERMISSIONS = [
     "Edit(*)",
     "TaskCreate(*)",
     "TaskUpdate(*)",
 ]
 
-# Optional dev/test commands. These can still execute arbitrary project scripts,
-# so keep them opt-in rather than part of the default baseline.
+# 선택 사항인 개발/테스트 명령어. 이 명령어들은 여전히 임의의 프로젝트 스크립트를
+# 실행할 수 있으므로, 기본 세트에 넣지 않고 직접 켜도록 둡니다.
 TEST_AND_BUILD_PERMISSIONS = [
     "Bash(npm test:*)",
     "Bash(cargo test:*)",
@@ -83,8 +83,8 @@ TEST_AND_BUILD_PERMISSIONS = [
     "Bash(cmake:*)",
 ]
 
-# Optional local git write operations. History-rewriting commands stay out of
-# the default baseline because they are easy to misuse.
+# 선택 사항인 로컬 git 쓰기 작업. 기록을 다시 쓰는 명령어는 잘못 쓰기 쉬우므로
+# 기본 세트에서 뺍니다.
 GIT_WRITE_PERMISSIONS = [
     "Bash(git add:*)",
     "Bash(git commit:*)",
@@ -94,8 +94,8 @@ GIT_WRITE_PERMISSIONS = [
     "Bash(git tag:*)",
 ]
 
-# Optional dependency/package commands. These are intentionally excluded from
-# the default baseline because they can execute project hooks or fetch code.
+# 선택 사항인 의존성/패키지 명령어. 프로젝트 훅을 실행하거나 코드를 가져올 수
+# 있으므로 일부러 기본 세트에서 뺍니다.
 PACKAGE_MANAGER_PERMISSIONS = [
     "Bash(npm ci:*)",
     "Bash(npm install:*)",
@@ -103,12 +103,12 @@ PACKAGE_MANAGER_PERMISSIONS = [
     "Bash(pip3 install:*)",
 ]
 
-# Optional GitHub CLI write access.
+# 선택 사항인 GitHub CLI 쓰기 권한.
 GITHUB_WRITE_PERMISSIONS = [
     "Bash(gh pr create:*)",
 ]
 
-# Optional extra GitHub CLI read access.
+# 선택 사항인 GitHub CLI 추가 읽기 권한.
 GITHUB_READ_PERMISSIONS = [
     "Bash(gh pr view:*)",
     "Bash(gh pr list:*)",

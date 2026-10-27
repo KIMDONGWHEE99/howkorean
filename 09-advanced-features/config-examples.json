@@ -1,10 +1,10 @@
 {
-  "description": "Example Claude Code settings.json configurations for different use cases",
+  "description": "용도별 Claude Code settings.json 설정 예",
 
   "examples": {
     "development": {
-      "name": "Development Environment",
-      "description": "Configuration for active development work: auto-accept edits, prompt for commands, format/lint on write",
+      "name": "개발 환경",
+      "description": "활발한 개발 작업용 설정: 편집은 자동 승인, 명령어는 확인 요청, 파일을 쓰면 포맷/린트 실행",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
@@ -25,8 +25,8 @@
     },
 
     "code_review": {
-      "name": "Code Review Mode",
-      "description": "Configuration for reviewing code without modifications",
+      "name": "코드 리뷰 모드",
+      "description": "수정 없이 코드를 리뷰하기 위한 설정",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
@@ -39,8 +39,8 @@
     },
 
     "learning": {
-      "name": "Learning Mode",
-      "description": "Configuration for learning and experimentation: prompt before every action, checkpoint often",
+      "name": "학습 모드",
+      "description": "학습과 실험용 설정: 모든 작업 전에 확인 요청, 체크포인트를 자주 활용",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
@@ -54,8 +54,8 @@
     },
 
     "production": {
-      "name": "Production Deployment",
-      "description": "Configuration for production operations with safety checks",
+      "name": "프로덕션 배포",
+      "description": "안전 검사를 갖춘 프로덕션 작업용 설정",
       "config": {
         "model": "claude-opus-5",
         "permissions": {
@@ -77,8 +77,8 @@
     },
 
     "ci_cd": {
-      "name": "CI/CD Pipeline",
-      "description": "Configuration for automated CI/CD operations, run non-interactively via `claude -p`",
+      "name": "CI/CD 파이프라인",
+      "description": "`claude -p`로 비대화형으로 실행하는 자동화된 CI/CD 작업용 설정",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
@@ -92,8 +92,8 @@
     },
 
     "security_audit": {
-      "name": "Security Audit",
-      "description": "Configuration for security-focused code analysis",
+      "name": "보안 감사",
+      "description": "보안 중심 코드 분석용 설정",
       "config": {
         "model": "claude-opus-5",
         "permissions": {
@@ -116,8 +116,8 @@
     },
 
     "performance_optimization": {
-      "name": "Performance Optimization",
-      "description": "Configuration for performance analysis and optimization",
+      "name": "성능 최적화",
+      "description": "성능 분석과 최적화용 설정",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
@@ -128,8 +128,8 @@
     },
 
     "pair_programming": {
-      "name": "Pair Programming",
-      "description": "Configuration for collaborative development",
+      "name": "페어 프로그래밍",
+      "description": "협업 개발용 설정",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
@@ -142,8 +142,8 @@
     },
 
     "refactoring": {
-      "name": "Large Refactoring",
-      "description": "Configuration for major refactoring work: backup before edits, run related tests after",
+      "name": "대규모 리팩토링",
+      "description": "대규모 리팩토링 작업용 설정: 편집 전에 백업하고, 편집 후에 관련 테스트 실행",
       "config": {
         "model": "claude-opus-5",
         "permissions": {
@@ -173,8 +173,8 @@
     },
 
     "autonomous": {
-      "name": "Autonomous Development",
-      "description": "Configuration for autonomous work with auto mode's background safety classifier plus a filesystem/network sandbox",
+      "name": "자율 개발",
+      "description": "자동 모드의 백그라운드 안전 분류기와 파일 시스템/네트워크 샌드박스를 함께 쓰는 자율 작업용 설정",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
@@ -188,8 +188,8 @@
     },
 
     "documentation": {
-      "name": "Documentation Writing",
-      "description": "Configuration for writing documentation",
+      "name": "문서 작성",
+      "description": "문서 작성용 설정",
       "config": {
         "model": "claude-sonnet-5",
         "permissions": {
