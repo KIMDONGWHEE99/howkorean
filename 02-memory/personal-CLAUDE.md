@@ -1,45 +1,45 @@
-# My Development Preferences
+# 나의 개발 선호 설정
 
-## About Me
-- **Experience Level**: 8 years full-stack development
-- **Preferred Languages**: TypeScript, Python
-- **Communication Style**: Direct, with examples
-- **Learning Style**: Visual diagrams with code
+## 나에 대해
+- **경력**: 풀스택 개발 8년
+- **선호 언어**: TypeScript, Python
+- **커뮤니케이션 스타일**: 직설적으로, 예시와 함께
+- **학습 스타일**: 코드를 곁들인 시각적 다이어그램
 
-## Code Preferences
+## 코드 선호
 
-### Error Handling
-I prefer explicit error handling with try-catch blocks and meaningful error messages.
-Avoid generic errors. Always log errors for debugging.
+### 오류 처리
+try-catch 블록과 의미 있는 오류 메시지를 쓰는 명시적인 오류 처리를 선호합니다.
+일반적인 오류는 피하세요. 디버깅을 위해 오류는 항상 로그로 남기세요.
 
-### Comments
-Use comments for WHY, not WHAT. Code should be self-documenting.
-Comments should explain business logic or non-obvious decisions.
+### 주석
+주석은 무엇(WHAT)이 아니라 왜(WHY)를 설명하는 데 쓰세요. 코드는 그 자체로 설명이 되어야 합니다.
+주석은 비즈니스 로직이나 명확하지 않은 결정을 설명해야 합니다.
 
-### Testing
-I prefer TDD (test-driven development).
-Write tests first, then implementation.
-Focus on behavior, not implementation details.
+### 테스트
+TDD(테스트 주도 개발)를 선호합니다.
+테스트를 먼저 쓰고 그다음 구현하세요.
+구현 세부 사항이 아니라 동작에 집중하세요.
 
-### Architecture
-I prefer modular, loosely-coupled design.
-Use dependency injection for testability.
-Separate concerns (Controllers, Services, Repositories).
+### 아키텍처
+모듈식이고 느슨하게 결합된 설계를 선호합니다.
+테스트하기 쉽도록 의존성 주입을 쓰세요.
+관심사를 분리하세요(Controllers, Services, Repositories).
 
-## Debugging Preferences
-- Use console.log with prefix: `[DEBUG]`
-- Include context: function name, relevant variables
-- Use stack traces when available
-- Always include timestamps in logs
+## 디버깅 선호
+- 접두사를 붙여 console.log 사용: `[DEBUG]`
+- 컨텍스트 포함: 함수 이름, 관련 변수
+- 가능하면 스택 트레이스 사용
+- 로그에는 항상 타임스탬프 포함
 
-## Communication
-- Explain complex concepts with diagrams
-- Show concrete examples before explaining theory
-- Include before/after code snippets
-- Summarize key points at the end
+## 커뮤니케이션
+- 복잡한 개념은 다이어그램으로 설명
+- 이론을 설명하기 전에 구체적인 예시부터 보여 주기
+- 변경 전/후 코드 조각 포함
+- 마지막에 핵심 요점 요약
 
-## Project Organization
-I organize my projects as:
+## 프로젝트 구성
+프로젝트는 다음과 같이 구성합니다:
 ```
 project/
   ├── src/
@@ -52,16 +52,16 @@ project/
   └── docker/
 ```
 
-## Tooling
-- **IDE**: VS Code with vim keybindings
-- **Terminal**: Zsh with Oh-My-Zsh
-- **Format**: Prettier (100 char line length)
-- **Linter**: ESLint with airbnb config
-- **Test Framework**: Jest with React Testing Library
+## 도구
+- **IDE**: vim 키 바인딩을 쓰는 VS Code
+- **터미널**: Oh-My-Zsh를 쓰는 Zsh
+- **포맷**: Prettier (한 줄 100자)
+- **린터**: airbnb 설정을 쓰는 ESLint
+- **테스트 프레임워크**: React Testing Library를 곁들인 Jest
 
 ---
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/memory
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/memory
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
