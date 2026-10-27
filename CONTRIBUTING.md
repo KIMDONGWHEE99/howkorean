@@ -97,7 +97,7 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-The first run downloads Node.js 22 for the Mermaid hooks (pre-commit provisions it, so they work even without a system Node.js) and the pinned Pele bundle into `scripts/.vendor-cache/pele/`; later runs work offline. The Mermaid hooks run in strict mode and fail if Pele cannot run. To commit offline before that first download, skip them with `SKIP=mermaid,vietnamese-mermaid,japanese-mermaid`.
+The first run downloads Node.js 22 for the Mermaid hook (pre-commit provisions it, so it works even without a system Node.js) and the pinned Pele bundle into `scripts/.vendor-cache/pele/`; later runs work offline. The Mermaid hook runs in strict mode and fails if Pele cannot run. To commit offline before that first download, skip it with `SKIP=mermaid`.
 
 The hooks that run on every commit are:
 

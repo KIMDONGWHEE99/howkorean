@@ -5,8 +5,8 @@ Catches mechanical rendering bugs that look fine in a diff but render wrong
 on GitHub / in the EPUB build: inner backticks in inline code, unescaped
 pipes in table cells, stray $ARGUMENTS / $N outside code, mismatched fences.
 
-Scope: `**/README.md` across the repo (tutorial modules + ja/uk/vi/zh
-translations). Excludes `.venv`, `node_modules`, `.git`, `blog-posts`,
+Scope: `**/README.md` across the repo (tutorial modules and every other
+README). Excludes `.venv`, `node_modules`, `.git`, `blog-posts`,
 `.agents`, `.claude`, and `openspec` — these are not tutorial output.
 
 Each rule is a function `(file_path, content) -> list[str]`. To add a new

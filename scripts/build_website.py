@@ -96,10 +96,6 @@ EXCLUDE_DIRS = {
     ".claude",
     "site",
     "scripts",
-    "vi",
-    "zh",
-    "ja",
-    "uk",
 }
 
 # Top-level markdown files that should not be rendered as standalone pages.
