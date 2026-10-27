@@ -3,102 +3,102 @@
   <img alt="Claude How To" src="../../resources/logos/claude-howto-logo.svg">
 </picture>
 
-# PR Review Plugin
+# PR 리뷰 플러그인
 
-Complete PR review workflow with security, testing, and documentation checks.
+보안, 테스트, 문서 검사를 아우르는 종합 PR 리뷰 워크플로우입니다.
 
-## Features
+## 기능
 
-✅ Security analysis
-✅ Test coverage checking
-✅ Documentation verification
-✅ Code quality assessment
-✅ Performance impact analysis
+✅ 보안 분석
+✅ 테스트 커버리지 확인
+✅ 문서 검증
+✅ 코드 품질 평가
+✅ 성능 영향 분석
 
-## Installation
+## 설치
 
 ```bash
 claude --plugin-dir ./07-plugins/pr-review
 ```
 
-## What's Included
+## 구성 요소
 
-### Slash Commands
-- `/review-pr` - Comprehensive PR review
-- `/check-security` - Security-focused review
-- `/check-tests` - Test coverage analysis
+### 슬래시 명령어
+- `/review-pr` - 종합 PR 리뷰
+- `/check-security` - 보안 중심 리뷰
+- `/check-tests` - 테스트 커버리지 분석
 
-### Subagents
-- `security-reviewer` - Security vulnerability detection
-- `test-checker` - Test coverage analysis
-- `performance-analyzer` - Performance impact evaluation
+### 서브에이전트
+- `security-reviewer` - 보안 취약점 감지
+- `test-checker` - 테스트 커버리지 분석
+- `performance-analyzer` - 성능 영향 평가
 
-### MCP Servers
-- GitHub integration for PR data
+### MCP 서버
+- PR 데이터를 위한 GitHub 통합
 
-### Hooks
-- `pre-review.js` - Pre-review validation
+### 훅
+- `pre-review.js` - 리뷰 전 검증
 
-## Usage
+## 사용법
 
-### Basic PR Review
+### 기본 PR 리뷰
 ```
 /review-pr
 ```
 
-### Security Check Only
+### 보안 검사만
 ```
 /check-security
 ```
 
-### Test Coverage Check
+### 테스트 커버리지 검사
 ```
 /check-tests
 ```
 
-## Requirements
+## 요구 사항
 
 - Claude Code 2.1+
-- GitHub access
-- Git repository
+- GitHub 접근 권한
+- Git 저장소
 
-## Configuration
+## 설정
 
-Set up your GitHub token:
+GitHub 토큰을 설정하세요:
 ```bash
 export GITHUB_TOKEN="your_github_token"
 ```
 
-## Example Workflow
+## 워크플로우 예
 
 ```
-User: /review-pr
+사용자: /review-pr
 
 Claude:
-1. Runs pre-review hook (validates git repo)
-2. Fetches PR data via GitHub MCP
-3. Delegates security review to security-reviewer subagent
-4. Delegates testing to test-checker subagent
-5. Delegates performance to performance-analyzer subagent
-6. Synthesizes all findings
-7. Provides comprehensive review report
+1. 리뷰 전 훅 실행(git 저장소 검증)
+2. GitHub MCP로 PR 데이터 가져오기
+3. 보안 리뷰는 security-reviewer 서브에이전트에게 위임
+4. 테스트 검사는 test-checker 서브에이전트에게 위임
+5. 성능 분석은 performance-analyzer 서브에이전트에게 위임
+6. 모든 발견 사항 종합
+7. 종합 리뷰 보고서 제공
 
-Result:
-✅ Security: No critical issues found
-⚠️  Testing: Coverage is 65%, recommend 80%+
-✅ Performance: No significant impact
-📝 Recommendations: Add tests for edge cases
+결과:
+✅ 보안: 심각한 문제 없음
+⚠️  테스트: 커버리지 65%, 80% 이상 권장
+✅ 성능: 큰 영향 없음
+📝 권장 사항: 엣지 케이스 테스트 추가
 ```
 
 ---
 
-**Last Updated**: October 18, 2026
-**Claude Code Version**: 2.1.302
-**Sources**:
-- https://code.claude.com/docs/en/plugins
+**최종 업데이트**: 2026년 10월 18일
+**Claude Code 버전**: 2.1.302
+**출처**:
+- https://code.claude.com/docs/ko/plugins
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.131
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.138
-- https://code.claude.com/docs/en/model-config
+- https://code.claude.com/docs/ko/model-config
 - https://code.claude.com/docs/en/plugins/cli-reference
 - https://code.claude.com/docs/en/plugins/install
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
