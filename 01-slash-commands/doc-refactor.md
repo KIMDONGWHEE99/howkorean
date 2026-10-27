@@ -1,30 +1,30 @@
 ---
 name: doc-refactor
-description: Restructure project documentation for clarity and accessibility
+description: 프로젝트 문서를 더 명확하고 찾기 쉽게 재구성
 ---
 
-# Documentation Refactor
+# 문서 리팩토링
 
-Refactor project documentation structure adapted to project type:
+프로젝트 유형에 맞춰 프로젝트 문서 구조를 리팩토링하세요:
 
-1. **Analyze project**: Identify type (library/API/web app/CLI/microservices), architecture, and user personas
-2. **Centralize docs**: Move technical documentation to `docs/` with proper cross-references
-3. **Root README.md**: Streamline as entry point with overview, quickstart, modules/components summary, license, contacts
-4. **Component docs**: Add module/package/service-level README files with setup and testing instructions
-5. **Organize `docs/`** by relevant categories:
-   - Architecture, API Reference, Database, Design, Troubleshooting, Deployment, Contributing (adapt to project needs)
-6. **Create guides** (select applicable):
-   - User Guide: End-user documentation for applications
-   - API Documentation: Endpoints, authentication, examples for APIs
-   - Development Guide: Setup, testing, contribution workflow
-   - Deployment Guide: Production deployment for services/apps
-7. **Use Mermaid** for all diagrams (architecture, flows, schemas)
+1. **프로젝트 분석**: 유형(라이브러리/API/웹 앱/CLI/마이크로서비스), 아키텍처, 사용자 페르소나 파악
+2. **문서를 한곳에 모으기**: 기술 문서를 `docs/`로 옮기고 상호 참조를 제대로 연결
+3. **루트 README.md**: 개요, 빠른 시작, 모듈/컴포넌트 요약, 라이선스, 연락처를 담은 진입점으로 간결하게 정리
+4. **컴포넌트 문서**: 모듈/패키지/서비스 수준의 README 파일을 추가하고 설정 방법과 테스트 방법 안내
+5. 관련 분류에 따라 **`docs/` 정리**:
+   - 아키텍처, API 레퍼런스, 데이터베이스, 설계, 문제 해결, 배포, 기여(프로젝트에 필요한 대로 조정)
+6. 해당하는 **가이드 만들기**:
+   - 사용자 가이드: 애플리케이션의 최종 사용자용 문서
+   - API 문서: API의 엔드포인트, 인증, 예제
+   - 개발 가이드: 설정, 테스트, 기여 워크플로우
+   - 배포 가이드: 서비스/앱의 프로덕션 배포
+7. 모든 다이어그램(아키텍처, 흐름, 스키마)에 **Mermaid 사용**
 
-Keep docs concise, scannable, and contextual to project type.
+문서는 간결하고, 훑어보기 쉽고, 프로젝트 유형에 맞게 유지하세요.
 
 ---
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/commands
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/commands
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
