@@ -3,218 +3,218 @@
   <img alt="Claude How To" src="../resources/logos/claude-howto-logo.svg">
 </picture>
 
-# Checkpoints and Rewind
+# 체크포인트와 되감기
 
-Checkpoints allow you to save conversation state and rewind to previous points in your Claude Code session. This is invaluable for exploring different approaches, recovering from mistakes, or comparing alternative solutions.
+체크포인트를 쓰면 대화 상태를 저장하고 Claude Code 세션의 이전 시점으로 되감을 수 있습니다. 여러 접근 방식을 탐색하거나, 실수를 바로잡거나, 대안을 비교할 때 매우 유용합니다.
 
-## Overview
+## 개요
 
-Checkpoints allow you to save conversation state and rewind to previous points, enabling safe experimentation and exploration of multiple approaches. They are snapshots of your conversation state, including:
-- All messages exchanged
-- File modifications made
-- Tool usage history
-- Session context
+체크포인트를 쓰면 대화 상태를 저장하고 이전 시점으로 되감을 수 있어, 안전하게 실험하고 여러 접근 방식을 탐색할 수 있습니다. 체크포인트는 다음을 포함한 대화 상태의 스냅샷입니다:
+- 주고받은 모든 메시지
+- 파일 수정 내용
+- 도구 사용 기록
+- 세션 컨텍스트
 
-Checkpoints are invaluable when exploring different approaches, recovering from mistakes, or comparing alternative solutions.
+체크포인트는 여러 접근 방식을 탐색하거나, 실수를 바로잡거나, 대안을 비교할 때 매우 유용합니다.
 
-## Key Concepts
+## 핵심 개념
 
-| Concept | Description |
+| 개념 | 설명 |
 |---------|-------------|
-| **Checkpoint** | Snapshot of conversation state including messages, files, and context |
-| **Rewind** | Return to a previous checkpoint, discarding subsequent changes |
-| **Branch Point** | Checkpoint from which multiple approaches are explored |
+| **체크포인트** | 메시지, 파일, 컨텍스트를 포함한 대화 상태의 스냅샷 |
+| **되감기** | 이후 변경 사항을 버리고 이전 체크포인트로 돌아가기 |
+| **분기점** | 여러 접근 방식을 탐색하는 출발점이 되는 체크포인트 |
 
-## Accessing Checkpoints
+## 체크포인트 열기
 
-You can access and manage checkpoints in two primary ways:
+체크포인트는 크게 두 가지 방법으로 열고 관리할 수 있습니다:
 
-### Using Keyboard Shortcut
-Press `Esc` twice (`Esc` + `Esc`) to open the checkpoint interface and browse saved checkpoints.
+### 키보드 단축키 사용
+`Esc`를 두 번(`Esc` + `Esc`) 누르면 체크포인트 인터페이스가 열려 저장된 체크포인트를 둘러볼 수 있습니다.
 
-### Using Slash Command
-Use the `/rewind` command (aliases: `/checkpoint`, `/undo`) for quick access:
+### 슬래시 명령어 사용
+`/rewind` 명령어(별칭: `/checkpoint`, `/undo`)로 빠르게 열 수 있습니다:
 
 ```bash
-# Open rewind interface
+# 되감기 인터페이스 열기
 /rewind
 
-# Or use the alias
+# 또는 별칭 사용
 /checkpoint
 ```
 
-## Rewind Options
+## 되감기 옵션
 
-When you rewind, you are presented with a menu of six options:
+되감으면 여섯 가지 옵션이 있는 메뉴가 표시됩니다:
 
-1. **Restore code and conversation** -- Revert both files and messages to that checkpoint
-2. **Restore conversation** -- Rewind messages only, keep your current code as-is
-3. **Restore code** -- Revert file changes only, keep the full conversation history
-4. **Summarize from here** -- Compress the conversation from this point forward into an AI-generated summary, freeing context window space. Messages before the selected point stay intact. No files on disk are changed. The original messages are preserved in the session transcript. You can optionally provide instructions to focus the summary on specific topics.
-5. **Summarize up to here** -- The backward counterpart: compress everything *before* the selected point into an AI-generated summary, keeping the messages from this point forward intact. Together with "Summarize from here" this gives you bidirectional, targeted compaction of your context window. No files on disk are changed, and the original messages are preserved in the session transcript.
-6. **Never mind** -- Cancel and return to the current state
+1. **Restore code and conversation**(코드와 대화 복원) -- 파일과 메시지를 모두 그 체크포인트로 되돌림
+2. **Restore conversation**(대화 복원) -- 메시지만 되감고 현재 코드는 그대로 유지
+3. **Restore code**(코드 복원) -- 파일 변경만 되돌리고 대화 기록은 모두 유지
+4. **Summarize from here**(여기부터 요약) -- 이 시점부터 이후의 대화를 AI가 만든 요약으로 압축해 컨텍스트 윈도우 공간을 확보합니다. 선택한 시점 이전의 메시지는 그대로 남고, 디스크의 파일은 바뀌지 않습니다. 원래 메시지는 세션 대화 기록에 보존됩니다. 필요하면 특정 주제에 초점을 맞추도록 요약 지침을 줄 수 있습니다.
+5. **Summarize up to here**(여기까지 요약) -- 반대 방향의 짝입니다: 선택한 시점 *이전*의 모든 내용을 AI가 만든 요약으로 압축하고, 이 시점부터의 메시지는 그대로 둡니다. "Summarize from here"와 함께 쓰면 컨텍스트 윈도우를 양방향으로, 원하는 부분만 골라 압축할 수 있습니다. 디스크의 파일은 바뀌지 않으며, 원래 메시지는 세션 대화 기록에 보존됩니다.
+6. **Never mind**(취소) -- 취소하고 현재 상태로 돌아감
 
-> **Note**: After restoring the conversation or choosing **Summarize from here**, the original prompt from the selected message is restored into the input field so you can re-send or edit it. Choosing **Summarize up to here** leaves you at the end of the conversation with the input empty.
+> **참고**: 대화를 복원하거나 **Summarize from here**를 고르면 선택한 메시지의 원래 프롬프트가 입력란에 복원되므로, 다시 보내거나 고쳐 쓸 수 있습니다. **Summarize up to here**를 고르면 입력란이 빈 채로 대화의 끝에 머뭅니다.
 
-> **`/clear` is no longer a hard boundary (v2.1.191+)**: `/rewind` can resume from a checkpoint taken *before* you ran `/clear`. Clearing the conversation no longer permanently discards the state that preceded it — you can rewind back across the clear if you need that earlier code or context again.
+> **`/clear`가 더 이상 넘을 수 없는 경계가 아닙니다(v2.1.191+)**: `/rewind`로 `/clear`를 실행하기 *전에* 만들어진 체크포인트에서 다시 시작할 수 있습니다. 대화를 지워도 그 이전 상태가 영구히 사라지지 않으므로, 이전 코드나 컨텍스트가 다시 필요하면 clear를 넘어 되감을 수 있습니다.
 
-## Automatic Checkpoints
+## 자동 체크포인트
 
-Claude Code automatically creates checkpoints for you:
+Claude Code는 체크포인트를 자동으로 만듭니다:
 
-- **Every user prompt** - A new checkpoint is created with each user input
-- **Persistent** - Checkpoints are saved with the conversation, so `/rewind` still works after you resume a session
-- **Auto-cleaned** - Checkpoints are automatically cleaned up after 30 days
+- **사용자 프롬프트마다** - 사용자가 입력할 때마다 새 체크포인트가 만들어집니다
+- **지속됨** - 체크포인트는 대화와 함께 저장되므로, 세션을 재개한 뒤에도 `/rewind`가 동작합니다
+- **자동 정리** - 체크포인트는 30일이 지나면 자동으로 정리됩니다
 
-This means you can always rewind to any previous point in your conversation, from a few minutes ago to days before.
+따라서 몇 분 전부터 며칠 전까지, 대화의 어느 이전 시점으로든 언제나 되감을 수 있습니다.
 
-## Use Cases
+## 활용 사례
 
-| Scenario | Workflow |
+| 상황 | 워크플로우 |
 |----------|----------|
-| **Exploring Approaches** | Save → Try A → Save → Rewind → Try B → Compare |
-| **Safe Refactoring** | Save → Refactor → Test → If fail: Rewind |
-| **A/B Testing** | Save → Design A → Save → Rewind → Design B → Compare |
-| **Mistake Recovery** | Notice issue → Rewind to last good state |
+| **접근 방식 탐색** | 저장 → A 시도 → 저장 → 되감기 → B 시도 → 비교 |
+| **안전한 리팩토링** | 저장 → 리팩토링 → 테스트 → 실패하면 되감기 |
+| **A/B 테스트** | 저장 → 디자인 A → 저장 → 되감기 → 디자인 B → 비교 |
+| **실수 복구** | 문제 발견 → 마지막 정상 상태로 되감기 |
 
-## Using Checkpoints
+## 체크포인트 사용하기
 
-### Viewing and Rewinding
+### 보기와 되감기
 
-Press `Esc` twice or use `/rewind` to open the checkpoint browser. You'll see a list of all available checkpoints with timestamps. Select any checkpoint to rewind to that state.
+`Esc`를 두 번 누르거나 `/rewind`를 쓰면 체크포인트 브라우저가 열립니다. 사용 가능한 모든 체크포인트가 시각과 함께 나열되며, 아무 체크포인트나 고르면 그 상태로 되감습니다.
 
-### Checkpoint Details
+### 체크포인트 상세 정보
 
-Each checkpoint shows:
-- Timestamp of when it was created
-- Files that were modified
-- Number of messages in the conversation
-- Tools that were used
+체크포인트마다 다음이 표시됩니다:
+- 만들어진 시각
+- 수정된 파일
+- 대화의 메시지 수
+- 사용한 도구
 
-## Practical Examples
+## 실전 예제
 
-### Example 1: Exploring Different Approaches
-
-```
-User: Let's add a caching layer to the API
-
-Claude: I'll add Redis caching to your API endpoints...
-[Makes changes at checkpoint A]
-
-User: Actually, let's try in-memory caching instead
-
-Claude: I'll rewind to explore a different approach...
-[User presses Esc+Esc and rewinds to checkpoint A]
-[Implements in-memory caching at checkpoint B]
-
-User: Now I can compare both approaches
-```
-
-### Example 2: Recovering from Mistakes
+### 예제 1: 여러 접근 방식 탐색
 
 ```
-User: Refactor the authentication module to use JWT
+사용자: API에 캐싱 계층을 추가하자
 
-Claude: I'll refactor the authentication module...
-[Makes extensive changes]
+Claude: API 엔드포인트에 Redis 캐싱을 추가하겠습니다...
+[체크포인트 A에서 변경]
 
-User: Wait, that broke the OAuth integration. Let's go back.
+사용자: 생각해 보니 대신 인메모리 캐싱을 써 보자
 
-Claude: I'll help you rewind to before the refactoring...
-[User presses Esc+Esc and selects the checkpoint before the refactor]
+Claude: 다른 방식을 탐색하도록 되감겠습니다...
+[사용자가 Esc+Esc를 누르고 체크포인트 A로 되감음]
+[체크포인트 B에서 인메모리 캐싱 구현]
 
-User: Let's try a more conservative approach this time
+사용자: 이제 두 방식을 비교할 수 있겠네
 ```
 
-### Example 3: Safe Experimentation
+### 예제 2: 실수에서 복구
 
 ```
-User: Let's try rewriting this in a functional style
-[Creates checkpoint before experiment]
+사용자: 인증 모듈을 JWT를 쓰도록 리팩토링해 줘
 
-Claude: [Makes experimental changes]
+Claude: 인증 모듈을 리팩토링하겠습니다...
+[대규모 변경]
 
-User: The tests are failing. Let's rewind.
-[User presses Esc+Esc and rewinds to the checkpoint]
+사용자: 잠깐, 그 때문에 OAuth 연동이 깨졌어. 되돌리자.
 
-Claude: I've rewound the changes. Let's try a different approach.
+Claude: 리팩토링 전으로 되감는 것을 도와드리겠습니다...
+[사용자가 Esc+Esc를 누르고 리팩토링 전 체크포인트를 선택]
+
+사용자: 이번에는 좀 더 보수적인 방식으로 해 보자
 ```
 
-### Example 4: Branching Approaches
+### 예제 3: 안전한 실험
 
 ```
-User: I want to compare two database designs
-[Takes note of checkpoint - call it "Start"]
+사용자: 이걸 함수형 스타일로 다시 작성해 보자
+[실험 전에 체크포인트 생성]
 
-Claude: I'll create the first design...
-[Implements Schema A]
+Claude: [실험적인 변경]
 
-User: Now let me go back and try the second approach
-[User presses Esc+Esc and rewinds to "Start"]
+사용자: 테스트가 실패하네. 되감자.
+[사용자가 Esc+Esc를 누르고 체크포인트로 되감음]
 
-Claude: Now I'll implement Schema B...
-[Implements Schema B]
-
-User: Great! Now I have both schemas to choose from
+Claude: 변경 사항을 되감았습니다. 다른 방식을 시도해 보겠습니다.
 ```
 
-## Checkpoint Retention
-
-Claude Code automatically manages your checkpoints:
-
-- Checkpoints are created automatically with every user prompt
-- Old checkpoints are retained for up to 30 days
-- Checkpoints are cleaned up automatically to prevent unlimited storage growth
-
-## Workflow Patterns
-
-### Branching Strategy for Exploration
-
-When exploring multiple approaches:
+### 예제 4: 접근 방식 분기
 
 ```
-1. Start with initial implementation → Checkpoint A
-2. Try Approach 1 → Checkpoint B
-3. Rewind to Checkpoint A
-4. Try Approach 2 → Checkpoint C
-5. Compare results from B and C
-6. Choose best approach and continue
+사용자: 데이터베이스 설계 두 가지를 비교하고 싶어
+[체크포인트를 기억해 둠 - "시작"이라고 부르자]
+
+Claude: 첫 번째 설계를 만들겠습니다...
+[스키마 A 구현]
+
+사용자: 이제 돌아가서 두 번째 방식을 시도해 볼게
+[사용자가 Esc+Esc를 누르고 "시작"으로 되감음]
+
+Claude: 이제 스키마 B를 구현하겠습니다...
+[스키마 B 구현]
+
+사용자: 좋아! 이제 두 스키마 중에서 고를 수 있어
 ```
 
-### Safe Refactoring Pattern
+## 체크포인트 보존
 
-When making significant changes:
+Claude Code는 체크포인트를 자동으로 관리합니다:
+
+- 체크포인트는 사용자 프롬프트마다 자동으로 만들어집니다
+- 오래된 체크포인트는 최대 30일 동안 보존됩니다
+- 저장 공간이 끝없이 늘어나지 않도록 체크포인트는 자동으로 정리됩니다
+
+## 워크플로우 패턴
+
+### 탐색을 위한 분기 전략
+
+여러 접근 방식을 탐색할 때:
 
 ```
-1. Current state → Checkpoint (auto)
-2. Start refactoring
-3. Run tests
-4. If tests pass → Continue working
-5. If tests fail → Rewind and try different approach
+1. 초기 구현으로 시작 → 체크포인트 A
+2. 접근 방식 1 시도 → 체크포인트 B
+3. 체크포인트 A로 되감기
+4. 접근 방식 2 시도 → 체크포인트 C
+5. B와 C의 결과 비교
+6. 가장 좋은 방식을 골라 계속 진행
 ```
 
-## Best Practices
+### 안전한 리팩토링 패턴
 
-Since checkpoints are created automatically, you can focus on your work without worrying about manually saving state. However, keep these practices in mind:
+크게 변경할 때:
 
-### Using Checkpoints Effectively
+```
+1. 현재 상태 → 체크포인트(자동)
+2. 리팩토링 시작
+3. 테스트 실행
+4. 테스트가 통과하면 → 계속 작업
+5. 테스트가 실패하면 → 되감고 다른 방식 시도
+```
 
-✅ **Do:**
-- Review available checkpoints before rewinding
-- Use rewind when you want to explore different directions
-- Keep checkpoints to compare different approaches
-- Understand what each rewind option does (restore code and conversation, restore conversation, restore code, or summarize)
+## 모범 사례
 
-❌ **Don't:**
-- Rely on checkpoints alone for code preservation
-- Expect checkpoints to track external file system changes
-- Use checkpoints as a substitute for git commits
+체크포인트는 자동으로 만들어지므로 상태를 직접 저장할 걱정 없이 작업에 집중할 수 있습니다. 그래도 다음 사항을 기억하세요:
 
-## Configuration
+### 체크포인트를 효과적으로 쓰기
 
-Checkpoints are a built-in default behavior in Claude Code and do not require any configuration to enable. Every user prompt automatically creates a checkpoint.
+✅ **권장:**
+- 되감기 전에 사용 가능한 체크포인트 검토하기
+- 다른 방향을 탐색하고 싶을 때 되감기 쓰기
+- 여러 접근 방식을 비교할 수 있도록 체크포인트 남겨 두기
+- 각 되감기 옵션(코드와 대화 복원, 대화 복원, 코드 복원, 요약)이 하는 일 이해하기
 
-Two settings govern checkpoint behavior — whether snapshots are taken at all, and how long they are kept:
+❌ **비권장:**
+- 코드 보존을 체크포인트에만 의존하기
+- 체크포인트가 외부 파일 시스템 변경까지 추적하리라 기대하기
+- git 커밋 대신 체크포인트 쓰기
+
+## 설정
+
+체크포인트는 Claude Code의 기본 동작이며, 켜기 위해 따로 설정할 필요가 없습니다. 사용자 프롬프트마다 체크포인트가 자동으로 만들어집니다.
+
+체크포인트 동작을 좌우하는 설정은 두 가지입니다 — 스냅샷을 찍을지 여부와 얼마나 오래 보관할지:
 
 ```json
 {
@@ -223,127 +223,127 @@ Two settings govern checkpoint behavior — whether snapshots are taken at all, 
 }
 ```
 
-| Setting | Default | Effect |
+| 설정 | 기본값 | 효과 |
 |---------|---------|--------|
-| `fileCheckpointingEnabled` | `true` | Snapshot files before each edit so `/rewind` can restore them. Requires v2.1.119+. Surfaces in `/config` as **Rewind code (checkpoints)**. Env equivalent: `CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING` |
-| `cleanupPeriodDays` | `30` | Number of days to retain session history and checkpoints |
+| `fileCheckpointingEnabled` | `true` | `/rewind`로 복원할 수 있도록 편집할 때마다 그 전에 파일 스냅샷을 찍습니다. v2.1.119 이상이 필요합니다. `/config`에서는 **Rewind code (checkpoints)**(코드 되감기(체크포인트))로 표시됩니다. 같은 효과의 환경 변수: `CLAUDE_CODE_DISABLE_FILE_CHECKPOINTING` |
+| `cleanupPeriodDays` | `30` | 세션 기록과 체크포인트를 보존하는 일수 |
 
-Claude Code keeps snapshots for the **100 most recent checkpoints**; older ones are dropped even inside the retention window.
+Claude Code는 **가장 최근 체크포인트 100개**의 스냅샷만 보관하며, 그보다 오래된 것은 보존 기간 안이라도 버려집니다.
 
-> **v2.1.117 update**: `cleanupPeriodDays` now governs retention for many on-disk caches, not just checkpoints (a selection below; session transcripts, `file-history/`, `plans/`, `debug/`, `paste-cache/` and more are covered too):
+> **v2.1.117 변경 사항**: 이제 `cleanupPeriodDays`가 체크포인트만이 아니라 디스크의 여러 캐시 보존 기간도 관리합니다(아래는 일부이며, 세션 대화 기록, `file-history/`, `plans/`, `debug/`, `paste-cache/` 등도 포함):
 >
-> - Session checkpoints
-> - `~/.claude/tasks/` — persistent task lists
-> - `~/.claude/shell-snapshots/` — captured shell-environment snapshots
-> - `~/.claude/backups/` — earlier versions of `~/.claude.json` (the five newest are kept)
+> - 세션 체크포인트
+> - `~/.claude/tasks/` — 지속되는 작업 목록
+> - `~/.claude/shell-snapshots/` — 기록해 둔 셸 환경 스냅샷
+> - `~/.claude/backups/` — `~/.claude.json`의 이전 버전(가장 최근 5개는 유지)
 >
-> A single setting now prunes these directories uniformly after the same number of days.
+> 이제 설정 하나로 이 디렉토리들을 같은 일수가 지나면 한꺼번에 정리합니다.
 
-## Limitations
+## 제한 사항
 
-Checkpoints have the following limitations:
+체크포인트에는 다음과 같은 제한이 있습니다:
 
-- **Bash command changes NOT tracked** - Operations like `rm`, `mv`, `cp` on the filesystem are not captured in checkpoints
-- **External changes NOT tracked** - Changes made outside Claude Code (in your editor, terminal, etc.) are not captured
-- **Not a replacement for version control** - Use git for permanent, auditable changes to your codebase
-- **Subagent edits NOT restored** - Files edited by a subagent are untracked, so `/rewind` leaves them as they are; the exception is a foreground `context: fork` skill, whose edits are restored like the main session's
+- **Bash 명령어로 인한 변경은 추적하지 않음** - 파일 시스템에 대한 `rm`, `mv`, `cp` 같은 작업은 체크포인트에 기록되지 않습니다
+- **외부 변경은 추적하지 않음** - Claude Code 밖(편집기, 터미널 등)에서 한 변경은 기록되지 않습니다
+- **버전 관리를 대체하지 않음** - 코드베이스의 영구적이고 감사 가능한 변경에는 git을 쓰세요
+- **서브에이전트의 편집은 복원되지 않음** - 서브에이전트가 편집한 파일은 추적되지 않으므로 `/rewind`가 그대로 둡니다. 예외로 포그라운드 `context: fork` 스킬의 편집은 메인 세션의 편집처럼 복원됩니다
 
-> **v2.1.216 update**: `/rewind` no longer restores or deletes files through symlinks or hard links at tracked paths. If a tracked path resolves through a symlink or hard link, rewind skips it rather than following the link, and it reports how many paths it skipped for this reason.
+> **v2.1.216 변경 사항**: 이제 `/rewind`는 추적 중인 경로의 심볼릭 링크나 하드 링크를 통해 파일을 복원하거나 삭제하지 않습니다. 추적 중인 경로가 심볼릭 링크나 하드 링크로 연결되어 있으면 링크를 따라가지 않고 건너뛰며, 이 때문에 건너뛴 경로 수를 알려 줍니다.
 
-## Troubleshooting
+## 문제 해결
 
-### Missing Checkpoints
+### 체크포인트가 보이지 않을 때
 
-**Problem**: Expected checkpoint not found
+**문제**: 예상한 체크포인트를 찾을 수 없음
 
-**Solution**:
-- Check if checkpoints were cleared
-- Check disk space
-- Ensure `cleanupPeriodDays` is set high enough (default: 30 days)
+**해결 방법**:
+- 체크포인트가 정리되었는지 확인
+- 디스크 공간 확인
+- `cleanupPeriodDays`가 충분히 크게 설정되었는지 확인(기본값: 30일)
 
-### Rewind Failed
+### 되감기 실패
 
-**Problem**: Cannot rewind to checkpoint
+**문제**: 체크포인트로 되감을 수 없음
 
-**Solution**:
-- Ensure no uncommitted changes conflict
-- Check if checkpoint is corrupted
-- Try rewinding to a different checkpoint
+**해결 방법**:
+- 커밋하지 않은 변경 사항과 충돌하지 않는지 확인
+- 체크포인트가 손상되었는지 확인
+- 다른 체크포인트로 되감아 보기
 
-## Integration with Git
+## Git과의 통합
 
-Checkpoints complement (but don't replace) git:
+체크포인트는 git을 보완하지만 대체하지는 않습니다:
 
-| Feature | Git | Checkpoints |
+| 기능 | Git | 체크포인트 |
 |---------|-----|-------------|
-| Scope | File system | Conversation + files |
-| Persistence | Permanent | Session-based |
-| Granularity | Commits | Any point |
-| Speed | Slower | Instant |
-| Sharing | Yes | Limited |
+| 범위 | 파일 시스템 | 대화 + 파일 |
+| 지속성 | 영구 | 세션 기반 |
+| 단위 | 커밋 | 어느 시점이든 |
+| 속도 | 상대적으로 느림 | 즉시 |
+| 공유 | 가능 | 제한적 |
 
-Use both together:
-1. Use checkpoints for rapid experimentation
-2. Use git commits for finalized changes
-3. Create checkpoint before git operations
-4. Commit successful checkpoint states to git
+둘을 함께 쓰세요:
+1. 빠른 실험에는 체크포인트를 쓰세요
+2. 확정된 변경에는 git 커밋을 쓰세요
+3. git 작업 전에 체크포인트를 만드세요
+4. 성공한 체크포인트 상태를 git에 커밋하세요
 
-## Quick Start Guide
+## 빠른 시작 가이드
 
-### Basic Workflow
+### 기본 워크플로우
 
-1. **Work normally** - Claude Code creates checkpoints automatically
-2. **Want to go back?** - Press `Esc` twice or use `/rewind`
-3. **Choose checkpoint** - Select from the list to rewind
-4. **Select what to restore** - Choose from restore code and conversation, restore conversation, restore code, summarize from here, summarize up to here, or cancel
-5. **Continue working** - You're back at that point
+1. **평소처럼 작업** - Claude Code가 체크포인트를 자동으로 만듭니다
+2. **되돌리고 싶다면?** - `Esc`를 두 번 누르거나 `/rewind`를 쓰세요
+3. **체크포인트 고르기** - 목록에서 되감을 체크포인트를 고르세요
+4. **복원할 대상 고르기** - 코드와 대화 복원, 대화 복원, 코드 복원, 여기부터 요약, 여기까지 요약, 취소 중에서 고르세요
+5. **작업 계속** - 그 시점으로 돌아왔습니다
 
-### Keyboard Shortcuts
+### 키보드 단축키
 
-- **`Esc` + `Esc`** - Open checkpoint browser
-- **`/rewind`** - Alternative way to access checkpoints
-- **`/checkpoint`**, **`/undo`** - Aliases for `/rewind`
+- **`Esc` + `Esc`** - 체크포인트 브라우저 열기
+- **`/rewind`** - 체크포인트를 여는 다른 방법
+- **`/checkpoint`**, **`/undo`** - `/rewind`의 별칭
 
-## Knowing When to Rewind: Context Monitoring
+## 되감을 때를 아는 법: 컨텍스트 모니터링
 
-Checkpoints let you go back — but how do you know *when* you should? As your conversation grows, Claude's context window fills up and model quality silently degrades. You might be shipping code from a half-blind model without realizing it.
+체크포인트로 되돌아갈 수는 있지만, *언제* 되돌아가야 하는지는 어떻게 알까요? 대화가 길어지면 Claude의 컨텍스트 윈도우가 차오르고 모델의 품질이 티 나지 않게 떨어집니다. 모르는 사이에 반쯤 눈을 감은 모델이 만든 코드를 내보내고 있을 수도 있습니다.
 
-**[cc-context-stats](https://github.com/luongnv89/cc-context-stats)** solves this by adding real-time **context zones** to your Claude Code status bar. It tracks where you are in the context window — from **Plan** (green, safe to plan and code) through **Code** (yellow, avoid starting new plans) to **Dump** (orange, finish up and rewind). When you see the zone shift, you know it's time to checkpoint and start fresh instead of pushing through with degraded output.
+**[cc-context-stats](https://github.com/luongnv89/cc-context-stats)는** Claude Code 상태 표시줄에 실시간 **컨텍스트 구역**을 추가해 이 문제를 해결합니다. 컨텍스트 윈도우에서 현재 어디쯤인지 추적합니다 — **Plan**(초록, 계획하고 코딩해도 안전)에서 **Code**(노랑, 새 계획 시작은 피하기)를 거쳐 **Dump**(주황, 마무리하고 되감기)까지. 구역이 바뀌는 것이 보이면, 품질이 떨어진 출력으로 밀어붙이지 말고 체크포인트로 돌아가 새로 시작할 때라는 뜻입니다.
 
-## Related Concepts
+## 관련 개념
 
-- **[Advanced Features](../09-advanced-features/)** - Planning mode and other advanced capabilities
-- **[Memory Management](../02-memory/)** - Managing conversation history and context
-- **[Slash Commands](../01-slash-commands/)** - User-invoked shortcuts
-- **[Hooks](../06-hooks/)** - Event-driven automation
-- **[Plugins](../07-plugins/)** - Bundled extension packages
+- **[고급 기능](../09-advanced-features/)** - 계획 모드와 기타 고급 기능
+- **[메모리 관리](../02-memory/)** - 대화 기록과 컨텍스트 관리
+- **[슬래시 명령어](../01-slash-commands/)** - 사용자가 직접 호출하는 단축 명령
+- **[훅](../06-hooks/)** - 이벤트 기반 자동화
+- **[플러그인](../07-plugins/)** - 묶음으로 제공되는 확장 패키지
 
-## Additional Resources
+## 추가 자료
 
-- [Official Checkpointing Documentation](https://code.claude.com/docs/en/checkpointing)
-- [Advanced Features Guide](../09-advanced-features/) - Extended thinking and other capabilities
+- [공식 체크포인팅 문서](https://code.claude.com/docs/ko/checkpointing)
+- [고급 기능 가이드](../09-advanced-features/) - 확장 사고와 기타 기능
 
-## Summary
+## 요약
 
-Checkpoints are an automatic feature in Claude Code that lets you safely explore different approaches without fear of losing work. Every user prompt creates a new checkpoint automatically, so you can rewind to any previous point in your session.
+체크포인트는 작업을 잃을 걱정 없이 여러 접근 방식을 안전하게 탐색하게 해 주는 Claude Code의 자동 기능입니다. 사용자 프롬프트마다 새 체크포인트가 자동으로 만들어지므로 세션의 어느 이전 시점으로든 되감을 수 있습니다.
 
-Key benefits:
-- Experiment fearlessly with multiple approaches
-- Quickly recover from mistakes
-- Compare different solutions side-by-side
-- Integrate safely with version control systems
+주요 이점:
+- 여러 접근 방식을 두려움 없이 실험
+- 실수에서 빠르게 복구
+- 여러 해결책을 나란히 비교
+- 버전 관리 시스템과 안전하게 함께 사용
 
-Remember: checkpoints are not a replacement for git. Use checkpoints for rapid experimentation and git for permanent code changes.
+기억하세요: 체크포인트는 git을 대체하지 않습니다. 빠른 실험에는 체크포인트를, 영구적인 코드 변경에는 git을 쓰세요.
 
 ---
 
-**Last Updated**: October 18, 2026
-**Claude Code Version**: 2.1.302
-**Sources**:
-- https://code.claude.com/docs/en/checkpointing
-- https://code.claude.com/docs/en/settings
+**최종 업데이트**: 2026년 10월 18일
+**Claude Code 버전**: 2.1.302
+**출처**:
+- https://code.claude.com/docs/ko/checkpointing
+- https://code.claude.com/docs/ko/settings
 - https://github.com/anthropics/claude-code/releases/tag/v2.1.117
-- https://code.claude.com/docs/en/model-config
-- https://code.claude.com/docs/en/commands
-- https://code.claude.com/docs/en/claude-directory
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+- https://code.claude.com/docs/ko/model-config
+- https://code.claude.com/docs/ko/commands
+- https://code.claude.com/docs/ko/claude-directory
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
