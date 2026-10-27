@@ -1,23 +1,23 @@
 ---
-description: Check overall system health and status
+description: 전체 시스템 상태 확인
 ---
 
-# System Status Check
+# 시스템 상태 확인
 
-Check system health across all services:
+모든 서비스의 상태를 확인하세요:
 
-1. Query Kubernetes pod status
-2. Check database connections
-3. Monitor API response times
-4. Review error rates
-5. Check resource utilization
-6. Report overall health
+1. Kubernetes 파드 상태 조회
+2. 데이터베이스 연결 확인
+3. API 응답 시간 모니터링
+4. 오류율 검토
+5. 리소스 사용률 확인
+6. 전체 상태 보고
 
 ---
 
-**Last Updated**: October 15, 2026
-**Claude Code Version**: 2.1.300
-**Sources**:
-- https://code.claude.com/docs/en/plugins
-- https://code.claude.com/docs/en/skills#frontmatter-reference
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 10월 15일
+**Claude Code 버전**: 2.1.300
+**출처**:
+- https://code.claude.com/docs/ko/plugins
+- https://code.claude.com/docs/ko/skills#frontmatter-reference
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

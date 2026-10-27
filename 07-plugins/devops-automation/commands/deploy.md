@@ -1,23 +1,23 @@
 ---
-description: Deploy application to production or staging
+description: 애플리케이션을 프로덕션이나 스테이징에 배포
 ---
 
-# Deploy Application
+# 애플리케이션 배포
 
-Execute deployment workflow:
+배포 워크플로우를 실행하세요:
 
-1. Run pre-deployment checks
-2. Build application
-3. Run tests
-4. Deploy to target environment
-5. Run health checks
-6. Notify team on Slack
+1. 배포 전 검사 실행
+2. 애플리케이션 빌드
+3. 테스트 실행
+4. 대상 환경에 배포
+5. 상태 확인 실행
+6. Slack으로 팀에 알리기
 
 ---
 
-**Last Updated**: October 15, 2026
-**Claude Code Version**: 2.1.300
-**Sources**:
-- https://code.claude.com/docs/en/plugins
-- https://code.claude.com/docs/en/skills#frontmatter-reference
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 10월 15일
+**Claude Code 버전**: 2.1.300
+**출처**:
+- https://code.claude.com/docs/ko/plugins
+- https://code.claude.com/docs/ko/skills#frontmatter-reference
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

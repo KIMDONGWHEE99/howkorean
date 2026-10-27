@@ -1,22 +1,22 @@
 ---
-description: Start comprehensive PR review with security and testing checks
+description: 보안과 테스트 검사를 포함한 종합 PR 리뷰 시작
 ---
 
-# PR Review
+# PR 리뷰
 
-This command initiates a complete pull request review including:
+이 명령어는 다음을 포함한 풀 리퀘스트 리뷰 전체를 시작합니다:
 
-1. Security analysis
-2. Test coverage verification
-3. Documentation updates
-4. Code quality checks
-5. Performance impact assessment
+1. 보안 분석
+2. 테스트 커버리지 검증
+3. 문서 갱신
+4. 코드 품질 검사
+5. 성능 영향 평가
 
 ---
 
-**Last Updated**: October 15, 2026
-**Claude Code Version**: 2.1.300
-**Sources**:
-- https://code.claude.com/docs/en/plugins
-- https://code.claude.com/docs/en/skills#frontmatter-reference
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 10월 15일
+**Claude Code 버전**: 2.1.300
+**출처**:
+- https://code.claude.com/docs/ko/plugins
+- https://code.claude.com/docs/ko/skills#frontmatter-reference
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Post-deployment hook
- * Runs after deployment completes
+ * 배포 후 훅
+ * 배포가 끝난 뒤 실행됩니다
  */
 
 async function postDeploy() {
@@ -10,7 +10,7 @@ async function postDeploy() {
 
   const { execSync } = require('child_process');
 
-  // Wait for pods to be ready
+  // 파드가 준비될 때까지 대기
   console.log('Waiting for pods to be ready...');
   try {
     execSync('kubectl wait --for=condition=ready pod -l app=myapp --timeout=300s', {
@@ -21,9 +21,9 @@ async function postDeploy() {
     process.exit(1);
   }
 
-  // Run smoke tests
+  // 스모크 테스트 실행
   console.log('Running smoke tests...');
-  // Add your smoke test commands here
+  // 여기에 스모크 테스트 명령어를 추가하세요
 
   console.log('✅ Post-deployment tasks complete');
 }

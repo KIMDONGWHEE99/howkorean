@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * Pre-review hook
- * Runs before starting PR review to ensure prerequisites are met
+ * 리뷰 전 훅
+ * PR 리뷰를 시작하기 전에 사전 요구 사항을 갖추었는지 확인합니다
  */
 
 async function preReview() {
   console.log('Running pre-review checks...');
 
-  // Check if git repository
+  // git 저장소인지 확인
   const { execSync } = require('child_process');
   try {
     execSync('git rev-parse --git-dir', { stdio: 'pipe' });
@@ -17,7 +17,7 @@ async function preReview() {
     process.exit(1);
   }
 
-  // Check for uncommitted changes
+  // 커밋하지 않은 변경 사항이 있는지 확인
   try {
     const status = execSync('git status --porcelain', { encoding: 'utf-8' });
     if (status.trim()) {

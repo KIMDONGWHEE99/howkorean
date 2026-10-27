@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Pre-deployment hook
- * Validates environment and prerequisites before deployment
+ * 배포 전 훅
+ * 배포하기 전에 환경과 사전 요구 사항을 검증합니다
  */
 
 async function preDeploy() {
@@ -10,7 +10,7 @@ async function preDeploy() {
 
   const { execSync } = require('child_process');
 
-  // Check if kubectl is installed
+  // kubectl이 설치되어 있는지 확인
   try {
     execSync('which kubectl', { stdio: 'pipe' });
   } catch (error) {
@@ -18,7 +18,7 @@ async function preDeploy() {
     process.exit(1);
   }
 
-  // Check if connected to cluster
+  // 클러스터에 연결되어 있는지 확인
   try {
     execSync('kubectl cluster-info', { stdio: 'pipe' });
   } catch (error) {

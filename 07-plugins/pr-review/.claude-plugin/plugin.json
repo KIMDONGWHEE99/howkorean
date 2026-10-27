@@ -1,7 +1,7 @@
 {
   "name": "pr-review",
   "version": "1.0.0",
-  "description": "Complete PR review workflow with security, testing, and docs",
+  "description": "보안, 테스트, 문서를 아우르는 종합 PR 리뷰 워크플로우",
   "author": {
     "name": "Anthropic"
   },

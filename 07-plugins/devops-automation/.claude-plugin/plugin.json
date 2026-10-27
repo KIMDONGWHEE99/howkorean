@@ -1,7 +1,7 @@
 {
   "name": "devops-automation",
   "version": "1.0.0",
-  "description": "Complete DevOps automation for deployment, monitoring, and incident response",
+  "description": "배포, 모니터링, 장애 대응을 위한 종합 DevOps 자동화",
   "author": {
     "name": "Community"
   },

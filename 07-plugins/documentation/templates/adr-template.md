@@ -1,47 +1,47 @@
-# ADR [Number]: [Title]
+# ADR [번호]: [제목]
 
-## Status
-[Proposed | Accepted | Deprecated | Superseded]
+## 상태
+[제안됨 | 승인됨 | 사용 중단됨 | 대체됨]
 
-## Context
-What is the issue that we're seeing that is motivating this decision or change?
+## 맥락
+이 결정이나 변경을 하게 만든 문제는 무엇인가요?
 
-## Decision
-What is the change that we're proposing and/or doing?
+## 결정
+제안하거나 실행하려는 변경은 무엇인가요?
 
-## Consequences
-What becomes easier or more difficult to do because of this change?
+## 결과
+이 변경으로 무엇이 더 쉬워지거나 어려워지나요?
 
-### Positive
-- Benefit 1
-- Benefit 2
+### 긍정적 결과
+- 이점 1
+- 이점 2
 
-### Negative
-- Drawback 1
-- Drawback 2
+### 부정적 결과
+- 단점 1
+- 단점 2
 
-### Neutral
-- Consideration 1
-- Consideration 2
+### 중립적 결과
+- 고려 사항 1
+- 고려 사항 2
 
-## Alternatives Considered
-What other options were considered and why were they not chosen?
+## 검토한 대안
+어떤 다른 선택지를 검토했고, 왜 고르지 않았나요?
 
-### Alternative 1
-Description and reason for not choosing.
+### 대안 1
+설명과 고르지 않은 이유.
 
-### Alternative 2
-Description and reason for not choosing.
+### 대안 2
+설명과 고르지 않은 이유.
 
-## References
-- Related ADRs
-- External documentation
-- Discussion links
+## 참고 자료
+- 관련 ADR
+- 외부 문서
+- 논의 링크
 
 ---
 
-**Last Updated**: August 4, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/plugins
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+**최종 업데이트**: 2026년 8월 4일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/plugins
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5

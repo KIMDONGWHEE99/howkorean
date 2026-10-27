@@ -6,18 +6,18 @@ echo "⏪ Starting rollback..."
 ENV=${1:-staging}
 echo "📦 Target environment: $ENV"
 
-# Get previous deployment
+# 이전 배포 가져오기
 PREVIOUS=$(kubectl rollout history deployment/app -n $ENV | tail -2 | head -1 | awk '{print $1}')
 echo "🔄 Rolling back to revision: $PREVIOUS"
 
-# Execute rollback
+# 롤백 실행
 kubectl rollout undo deployment/app -n $ENV
 
-# Wait for rollback
+# 롤백 완료 대기
 echo "⏳ Waiting for rollback to complete..."
 kubectl rollout status deployment/app -n $ENV
 
-# Health check
+# 상태 확인
 echo "🏥 Running health checks..."
 sleep 5
 curl -f http://api.$ENV.example.com/health
