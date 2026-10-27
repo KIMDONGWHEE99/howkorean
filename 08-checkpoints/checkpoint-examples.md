@@ -1,348 +1,348 @@
-# Checkpoint Examples
+# 체크포인트 예제
 
-Real-world examples of using checkpoints effectively in Claude Code.
+Claude Code에서 체크포인트를 효과적으로 쓰는 실전 예제입니다.
 
-Note: Checkpoints are created automatically with every user prompt. You do not need to manually save them. To rewind, press `Esc` twice (`Esc+Esc`) or use `/rewind` to open the checkpoint browser.
+참고: 체크포인트는 사용자 프롬프트마다 자동으로 만들어지므로 직접 저장할 필요가 없습니다. 되감으려면 `Esc`를 두 번(`Esc+Esc`) 누르거나 `/rewind`로 체크포인트 브라우저를 여세요.
 
-## Example 1: Database Migration
+## 예제 1: 데이터베이스 마이그레이션
 
-### Scenario
-You need to migrate from MySQL to PostgreSQL but want to explore both a direct migration and a gradual dual-write approach.
+### 시나리오
+MySQL에서 PostgreSQL로 옮겨야 하는데, 직접 마이그레이션하는 방식과 이중 쓰기로 점진적으로 옮기는 방식을 모두 살펴보고 싶습니다.
 
-### Workflow
-
-```
-User: Let's implement a direct migration from MySQL to PostgreSQL
-      [Checkpoint A created automatically]
-
-Claude: I'll implement the direct migration...
-[Changes database driver, updates queries, modifies schema]
-
-User: Run the tests
-      [Checkpoint B created automatically]
-
-Claude: Running tests...
-❌ 15 tests failing - connection pool issues
-
-User: This approach has issues. Let's try the dual-write pattern instead.
-[User presses Esc+Esc, selects Checkpoint A, chooses "Restore code and conversation"]
-
-User: Now implement a dual-write pattern where we write to both databases
-
-Claude: I'll implement dual-write migration...
-[Implements dual-write layer, gradual migration strategy]
-
-User: Run the tests
-
-Claude: Running tests...
-✅ All tests passing
-
-User: The dual-write approach is clearly safer. Let's commit this.
-```
-
-## Example 2: Performance Optimization
-
-### Scenario
-Multiple performance optimization strategies to try.
-
-### Workflow
+### 워크플로우
 
 ```
-User: Let's optimize the API response time. Current: 450ms
-      [Checkpoint "Baseline" created automatically]
+사용자: MySQL에서 PostgreSQL로 직접 마이그레이션하는 방식을 구현하자
+      [체크포인트 A 자동 생성]
 
-Claude: I'll add database query caching...
-[Implements Redis caching]
+Claude: 직접 마이그레이션을 구현하겠습니다...
+[데이터베이스 드라이버 변경, 쿼리 갱신, 스키마 수정]
 
-User: Run performance tests
+사용자: 테스트를 실행해 줘
+      [체크포인트 B 자동 생성]
 
-Claude: Results: 280ms average response time (38% improvement)
+Claude: 테스트를 실행합니다...
+❌ 테스트 15개 실패 - 커넥션 풀 문제
 
-User: Let me try a different approach.
-[User presses Esc+Esc, selects "Baseline" checkpoint, chooses "Restore code and conversation"]
+사용자: 이 방식은 문제가 있네. 대신 이중 쓰기 패턴을 시도해 보자.
+[사용자가 Esc+Esc를 누르고 체크포인트 A를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
 
-User: Try database query optimization instead
+사용자: 이제 두 데이터베이스에 모두 쓰는 이중 쓰기 패턴을 구현해 줘
 
-Claude: I'll optimize database queries...
-[Adds indexes, optimizes N+1 queries]
+Claude: 이중 쓰기 마이그레이션을 구현하겠습니다...
+[이중 쓰기 계층과 점진적 마이그레이션 전략 구현]
 
-User: Run performance tests
+사용자: 테스트를 실행해 줘
 
-Claude: Results: 180ms average response time (60% improvement)
+Claude: 테스트를 실행합니다...
+✅ 모든 테스트 통과
 
-User: Let me also try a third approach.
-[User presses Esc+Esc, selects "Baseline" checkpoint, chooses "Restore code and conversation"]
-
-User: Try response compression and CDN
-
-Claude: I'll add compression and CDN...
-[Implements gzip, sets up CDN]
-
-User: Run performance tests
-
-Claude: Results: 320ms average response time (29% improvement)
-
-User: Query optimization was the best. Let me go back and combine it with caching.
-[User presses Esc+Esc, selects the checkpoint after query optimization, chooses "Restore code and conversation"]
-
-User: Now add Redis caching on top of these optimized queries
-
-Claude: [Adds Redis caching on top of optimized queries]
-
-User: Run performance tests
-
-Claude: Results: 95ms average response time (79% improvement) 🎉
-
-User: Perfect! This is the winner. Let's commit this.
+사용자: 이중 쓰기 방식이 확실히 더 안전하네. 이걸 커밋하자.
 ```
 
-## Example 3: UI/UX Iteration
+## 예제 2: 성능 최적화
 
-### Scenario
-Trying different layouts for a dashboard.
+### 시나리오
+여러 성능 최적화 전략을 시도해 봅니다.
 
-### Workflow
-
-```
-User: Let's redesign the dashboard with a sidebar layout
-      [Checkpoint "Start" created automatically]
-
-Claude: [Implements sidebar layout]
-
-User: Show me a screenshot
-
-Claude: [Shows screenshot]
-
-User: The sidebar feels cramped. Let's try a top navigation instead.
-[User presses Esc+Esc, selects "Start" checkpoint, chooses "Restore code and conversation"]
-
-User: Try a top navigation layout
-
-Claude: [Implements top navigation]
-
-User: Show me a screenshot
-
-Claude: [Shows screenshot]
-
-User: Better, but let's try a card-based grid layout
-[User presses Esc+Esc, selects "Start" checkpoint, chooses "Restore code and conversation"]
-
-User: Try a card-based grid layout
-
-Claude: [Implements card grid]
-
-User: Show me a screenshot
-
-Claude: [Shows screenshot]
-
-User: This is great! But can we combine the top nav with the card grid?
-[User presses Esc+Esc, selects the checkpoint after the card grid, chooses "Restore code and conversation"]
-
-User: Add top navigation to the card grid layout
-
-Claude: [Adds top navigation to card grid]
-
-User: Perfect! This is the final design.
-```
-
-## Example 4: Debugging Session
-
-### Scenario
-Hunting down a tricky bug with multiple hypotheses.
-
-### Workflow
+### 워크플로우
 
 ```
-User: There's a memory leak in the application
-      [Checkpoint "Before debugging" created automatically]
+사용자: API 응답 시간을 최적화하자. 현재: 450ms
+      [체크포인트 "기준" 자동 생성]
 
-Claude: Let me investigate...
-[Analyzes code]
+Claude: 데이터베이스 쿼리 캐싱을 추가하겠습니다...
+[Redis 캐싱 구현]
 
-User: I think it's in the event listeners. Let's fix those.
+사용자: 성능 테스트를 실행해 줘
 
-Claude: [Fixes event listener cleanup]
+Claude: 결과: 평균 응답 시간 280ms(38% 개선)
 
-User: Run memory profiler
+사용자: 다른 방식을 시도해 볼게.
+[사용자가 Esc+Esc를 누르고 "기준" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
 
-Claude: Still leaking memory - event listeners weren't the issue
+사용자: 대신 데이터베이스 쿼리 최적화를 시도해 줘
 
-User: Let me go back and try a different hypothesis.
-[User presses Esc+Esc, selects "Before debugging" checkpoint, chooses "Restore code and conversation"]
+Claude: 데이터베이스 쿼리를 최적화하겠습니다...
+[인덱스 추가, N+1 쿼리 최적화]
 
-User: Maybe it's the database connections?
+사용자: 성능 테스트를 실행해 줘
 
-Claude: [Implements connection pooling fixes]
+Claude: 결과: 평균 응답 시간 180ms(60% 개선)
 
-User: Run memory profiler
+사용자: 세 번째 방식도 시도해 볼게.
+[사용자가 Esc+Esc를 누르고 "기준" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
 
-Claude: Still leaking - not the connections either
+사용자: 응답 압축과 CDN을 시도해 줘
 
-User: Let me go back and try another angle.
-[User presses Esc+Esc, selects "Before debugging" checkpoint, chooses "Restore code and conversation"]
+Claude: 압축과 CDN을 추가하겠습니다...
+[gzip 구현, CDN 설정]
 
-User: Let's check for circular references
+사용자: 성능 테스트를 실행해 줘
 
-Claude: [Finds and fixes circular references in cache]
+Claude: 결과: 평균 응답 시간 320ms(29% 개선)
 
-User: Run memory profiler
+사용자: 쿼리 최적화가 가장 좋았어. 그 시점으로 돌아가서 캐싱과 합쳐 보자.
+[사용자가 Esc+Esc를 누르고 쿼리 최적화 직후의 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
 
-Claude: ✅ Memory leak fixed! The circular references in the caching layer were the culprit.
+사용자: 이제 최적화한 쿼리 위에 Redis 캐싱을 추가해 줘
 
-User: Excellent! Let's commit this fix.
+Claude: [최적화한 쿼리 위에 Redis 캐싱 추가]
+
+사용자: 성능 테스트를 실행해 줘
+
+Claude: 결과: 평균 응답 시간 95ms(79% 개선) 🎉
+
+사용자: 완벽해! 이게 최종 선택이야. 커밋하자.
 ```
 
-## Example 5: API Design Evolution
+## 예제 3: UI/UX 반복
 
-### Scenario
-Designing a REST API with multiple iterations.
+### 시나리오
+대시보드에 여러 레이아웃을 시도해 봅니다.
 
-### Workflow
-
-```
-User: Create a REST API for our blog platform
-      [Checkpoint "Before API design" created automatically]
-
-Claude: [Creates basic CRUD API]
-
-User: This is too simple. Let's add pagination and filtering
-
-Claude: [Adds pagination and filtering]
-
-User: We need better resource relationships
-
-Claude: [Implements HATEOAS links]
-
-User: Actually, let's try GraphQL instead of REST
-[User presses Esc+Esc, selects "Before API design" checkpoint, chooses "Restore code and conversation"]
-
-User: Implement a GraphQL API for our blog platform instead
-
-Claude: [Implements GraphQL API]
-
-User: I think REST is better for our use case.
-[User presses Esc+Esc, selects the checkpoint after HATEOAS, chooses "Restore code and conversation"]
-
-User: Let's finalize the REST approach.
-```
-
-## Example 6: Configuration Management
-
-### Scenario
-Testing different configuration approaches.
-
-### Workflow
+### 워크플로우
 
 ```
-User: Move configuration to environment variables
-      [Checkpoint "Original config" created automatically]
+사용자: 사이드바 레이아웃으로 대시보드를 다시 디자인하자
+      [체크포인트 "시작" 자동 생성]
 
-Claude: [Implements env var configuration]
+Claude: [사이드바 레이아웃 구현]
 
-User: Test in development
+사용자: 스크린숏을 보여 줘
 
-Claude: Works locally but deployment issues in production
+Claude: [스크린숏 표시]
 
-User: Let me try a different approach.
-[User presses Esc+Esc, selects "Original config" checkpoint, chooses "Restore code and conversation"]
+사용자: 사이드바가 답답해 보여. 대신 상단 내비게이션을 시도해 보자.
+[사용자가 Esc+Esc를 누르고 "시작" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
 
-User: Try a config file approach with validation
+사용자: 상단 내비게이션 레이아웃을 시도해 줘
 
-Claude: [Implements YAML config with JSON schema validation]
+Claude: [상단 내비게이션 구현]
 
-User: Test in development
+사용자: 스크린숏을 보여 줘
 
-Claude: ✅ Works well, good validation errors
+Claude: [스크린숏 표시]
 
-User: Can we also support env vars for sensitive values?
+사용자: 더 낫긴 한데, 카드 기반 그리드 레이아웃도 시도해 보자
+[사용자가 Esc+Esc를 누르고 "시작" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
 
-Claude: [Adds env var override for secrets]
+사용자: 카드 기반 그리드 레이아웃을 시도해 줘
 
-User: Test deployment
+Claude: [카드 그리드 구현]
 
-Claude: ✅ All environments working correctly
+사용자: 스크린숏을 보여 줘
 
-User: Perfect! This is production-ready.
+Claude: [스크린숏 표시]
+
+사용자: 이거 좋다! 그런데 상단 내비게이션과 카드 그리드를 합칠 수 있을까?
+[사용자가 Esc+Esc를 누르고 카드 그리드 직후의 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
+
+사용자: 카드 그리드 레이아웃에 상단 내비게이션을 추가해 줘
+
+Claude: [카드 그리드에 상단 내비게이션 추가]
+
+사용자: 완벽해! 이게 최종 디자인이야.
 ```
 
-## Example 7: Test Strategy
+## 예제 4: 디버깅 세션
 
-### Scenario
-Implementing comprehensive testing.
+### 시나리오
+여러 가설을 세워 까다로운 버그를 추적합니다.
 
-### Workflow
-
-```
-User: Add unit tests for the auth module
-      [Checkpoint created automatically]
-
-Claude: [Adds Jest unit tests]
-
-User: Run tests
-
-Claude: 45 tests passing, 78% coverage
-
-User: Add integration tests too
-
-Claude: [Adds integration tests]
-
-User: Run tests
-
-Claude: 89 tests passing, 92% coverage, but tests are slow (3 minutes)
-
-User: The tests are too slow. Let's optimize.
-
-Claude: [Optimizes test setup, adds parallel execution]
-
-User: Run tests
-
-Claude: 89 tests passing, 92% coverage, 35 seconds ✅
-
-User: Great! Now add E2E tests for critical paths
-
-Claude: [Adds Playwright E2E tests]
-
-User: Run all tests
-
-Claude: 112 tests passing, 94% coverage, 2 minutes
-
-User: Perfect balance of coverage and speed!
-```
-
-## Example 8: Using Summarize from Checkpoint
-
-### Scenario
-After a long debugging session, you want to condense the conversation while preserving context.
-
-### Workflow
+### 워크플로우
 
 ```
-User: [After 20+ messages of debugging and exploration]
+사용자: 애플리케이션에 메모리 누수가 있어
+      [체크포인트 "디버깅 전" 자동 생성]
 
-[User presses Esc+Esc, selects an early checkpoint, chooses "Summarize from here"]
-[Optionally provides instructions: "Focus on what we tried and what worked"]
+Claude: 조사해 보겠습니다...
+[코드 분석]
 
-Claude: [Generates a summary of the conversation from that point forward]
-[Original messages are preserved in the transcript]
-[The summary replaces the visible conversation, reducing context window usage]
+사용자: 이벤트 리스너 쪽인 것 같아. 그걸 고쳐 보자.
 
-User: Now let's continue with the approach that worked.
+Claude: [이벤트 리스너 정리 로직 수정]
+
+사용자: 메모리 프로파일러를 실행해 줘
+
+Claude: 여전히 메모리가 새고 있습니다 - 이벤트 리스너가 원인이 아니었습니다
+
+사용자: 돌아가서 다른 가설을 시도해 볼게.
+[사용자가 Esc+Esc를 누르고 "디버깅 전" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
+
+사용자: 데이터베이스 연결이 문제일까?
+
+Claude: [커넥션 풀링 수정 구현]
+
+사용자: 메모리 프로파일러를 실행해 줘
+
+Claude: 여전히 새고 있습니다 - 연결 문제도 아닙니다
+
+사용자: 돌아가서 다른 각도로 접근해 볼게.
+[사용자가 Esc+Esc를 누르고 "디버깅 전" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
+
+사용자: 순환 참조가 있는지 확인해 보자
+
+Claude: [캐시에서 순환 참조를 찾아 수정]
+
+사용자: 메모리 프로파일러를 실행해 줘
+
+Claude: ✅ 메모리 누수를 고쳤습니다! 캐싱 계층의 순환 참조가 범인이었습니다.
+
+사용자: 훌륭해! 이 수정을 커밋하자.
 ```
 
-## Key Takeaways
+## 예제 5: API 설계의 진화
 
-1. **Checkpoints are automatic**: Every user prompt creates a checkpoint -- no manual saving needed
-2. **Use Esc+Esc or /rewind**: These are the two ways to access the checkpoint browser
-3. **Choose the right restore option**: Restore code, conversation, both, or summarize depending on your needs
-4. **Don't fear experimentation**: Checkpoints make it safe to try radical changes
-5. **Combine with git**: Use checkpoints for exploration, git for finalized work
-6. **Summarize long sessions**: Use "Summarize from here" to keep conversations manageable
+### 시나리오
+여러 번 반복하며 REST API를 설계합니다.
+
+### 워크플로우
+
+```
+사용자: 블로그 플랫폼용 REST API를 만들어 줘
+      [체크포인트 "API 설계 전" 자동 생성]
+
+Claude: [기본 CRUD API 생성]
+
+사용자: 너무 단순해. 페이지네이션과 필터링을 추가하자
+
+Claude: [페이지네이션과 필터링 추가]
+
+사용자: 리소스 사이의 관계를 더 잘 표현해야 해
+
+Claude: [HATEOAS 링크 구현]
+
+사용자: 생각해 보니 REST 대신 GraphQL을 시도해 보자
+[사용자가 Esc+Esc를 누르고 "API 설계 전" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
+
+사용자: 대신 블로그 플랫폼용 GraphQL API를 구현해 줘
+
+Claude: [GraphQL API 구현]
+
+사용자: 우리 사례에는 REST가 더 나은 것 같아.
+[사용자가 Esc+Esc를 누르고 HATEOAS 직후의 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
+
+사용자: REST 방식으로 마무리하자.
+```
+
+## 예제 6: 설정 관리
+
+### 시나리오
+여러 설정 방식을 시험해 봅니다.
+
+### 워크플로우
+
+```
+사용자: 설정을 환경 변수로 옮겨 줘
+      [체크포인트 "원래 설정" 자동 생성]
+
+Claude: [환경 변수 기반 설정 구현]
+
+사용자: 개발 환경에서 테스트해 줘
+
+Claude: 로컬에서는 동작하지만 프로덕션 배포에서 문제가 있습니다
+
+사용자: 다른 방식을 시도해 볼게.
+[사용자가 Esc+Esc를 누르고 "원래 설정" 체크포인트를 고른 뒤 "Restore code and conversation"(코드와 대화 복원) 선택]
+
+사용자: 검증을 갖춘 설정 파일 방식을 시도해 줘
+
+Claude: [JSON 스키마 검증을 갖춘 YAML 설정 구현]
+
+사용자: 개발 환경에서 테스트해 줘
+
+Claude: ✅ 잘 동작하며, 검증 오류도 알아보기 쉽습니다
+
+사용자: 민감한 값은 환경 변수로도 지정할 수 있게 할 수 있을까?
+
+Claude: [비밀 값에 대한 환경 변수 재정의 추가]
+
+사용자: 배포를 테스트해 줘
+
+Claude: ✅ 모든 환경에서 올바르게 동작합니다
+
+사용자: 완벽해! 프로덕션에 낼 준비가 됐어.
+```
+
+## 예제 7: 테스트 전략
+
+### 시나리오
+빈틈없는 테스트를 구현합니다.
+
+### 워크플로우
+
+```
+사용자: auth 모듈에 단위 테스트를 추가해 줘
+      [체크포인트 자동 생성]
+
+Claude: [Jest 단위 테스트 추가]
+
+사용자: 테스트를 실행해 줘
+
+Claude: 테스트 45개 통과, 커버리지 78%
+
+사용자: 통합 테스트도 추가해 줘
+
+Claude: [통합 테스트 추가]
+
+사용자: 테스트를 실행해 줘
+
+Claude: 테스트 89개 통과, 커버리지 92%, 하지만 테스트가 느립니다(3분)
+
+사용자: 테스트가 너무 느려. 최적화하자.
+
+Claude: [테스트 설정 최적화, 병렬 실행 추가]
+
+사용자: 테스트를 실행해 줘
+
+Claude: 테스트 89개 통과, 커버리지 92%, 35초 ✅
+
+사용자: 좋아! 이제 핵심 경로에 E2E 테스트를 추가해 줘
+
+Claude: [Playwright E2E 테스트 추가]
+
+사용자: 테스트를 전부 실행해 줘
+
+Claude: 테스트 112개 통과, 커버리지 94%, 2분
+
+사용자: 커버리지와 속도의 균형이 딱 좋네!
+```
+
+## 예제 8: 체크포인트에서 요약하기
+
+### 시나리오
+긴 디버깅 세션을 마친 뒤, 맥락은 유지하면서 대화를 압축하고 싶습니다.
+
+### 워크플로우
+
+```
+사용자: [디버깅과 탐색으로 메시지를 20개 넘게 주고받은 뒤]
+
+[사용자가 Esc+Esc를 누르고 초반 체크포인트를 고른 뒤 "Summarize from here"(여기부터 요약) 선택]
+[필요하면 지침도 줌: "우리가 시도한 것과 효과가 있었던 것 위주로 요약해 줘"]
+
+Claude: [그 시점부터 이후의 대화를 요약]
+[원래 메시지는 대화 기록에 보존됨]
+[요약이 화면에 보이는 대화를 대체해 컨텍스트 윈도우 사용량을 줄임]
+
+사용자: 이제 효과가 있었던 방식으로 계속 진행하자.
+```
+
+## 핵심 정리
+
+1. **체크포인트는 자동입니다**: 사용자 프롬프트마다 체크포인트가 만들어지므로 직접 저장할 필요가 없습니다
+2. **Esc+Esc나 /rewind를 쓰세요**: 체크포인트 브라우저를 여는 두 가지 방법입니다
+3. **알맞은 복원 옵션을 고르세요**: 필요에 따라 코드, 대화, 둘 다를 복원하거나 요약을 고르세요
+4. **실험을 두려워하지 마세요**: 체크포인트 덕분에 과감한 변경도 안전하게 시도할 수 있습니다
+5. **git과 함께 쓰세요**: 탐색에는 체크포인트를, 확정된 작업에는 git을 쓰세요
+6. **긴 세션은 요약하세요**: "Summarize from here"(여기부터 요약)로 대화를 감당할 만한 크기로 유지하세요
 
 ---
-**Last Updated**: July 29, 2026
-**Claude Code Version**: 2.1.220
-**Sources**:
-- https://code.claude.com/docs/en/checkpointing
+**최종 업데이트**: 2026년 7월 29일
+**Claude Code 버전**: 2.1.220
+**출처**:
+- https://code.claude.com/docs/ko/checkpointing
 - https://code.claude.com/docs/en/changelog
-- https://code.claude.com/docs/en/model-config
-**Compatible Models**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
+- https://code.claude.com/docs/ko/model-config
+**호환 모델**: Claude Fable 5, Claude Opus 5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Opus 4.8, Claude Haiku 4.5
