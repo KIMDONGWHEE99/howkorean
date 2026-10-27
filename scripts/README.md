@@ -166,14 +166,14 @@ python -m http.server --directory site 8080
 
 ```
 usage: build_website.py [-h] [--root ROOT] [--output OUTPUT]
-                        [--lang {en,vi,zh,ja,uk}] [--repo-url REPO_URL]
+                        [--lang {ko}] [--repo-url REPO_URL]
                         [--branch BRANCH] [--verbose]
 
 options:
   --root, -r ROOT       Source root (default: repo root)
   --output, -o OUTPUT   Output directory (default: <repo>/site)
-  --lang LANG           Language to build: en | vi | zh | ja | uk
-  --repo-url URL        GitHub repo for blob links (default: luongnv89/claude-howto)
+  --lang LANG           Language to build: ko (default)
+  --repo-url URL        GitHub repo for blob links (default: KIMDONGWHEE99/howkorean)
   --branch BRANCH       Branch for blob links (default: main)
   --verbose, -v         Enable verbose logging
 ```

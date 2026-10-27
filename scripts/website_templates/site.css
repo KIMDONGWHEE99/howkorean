@@ -149,3 +149,9 @@ div.mermaid:has(> .pele-zoom:not([hidden])) {
 :root:not(.dark) .codehilite .m,
 :root:not(.dark) .codehilite .mi,
 :root:not(.dark) .codehilite .mf { color: #0550ae; }
+
+/* Korean edition: wrap lines between words, not inside them. */
+html[lang="ko"] body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="ko" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -31,7 +31,7 @@
         type="button"
         id="nav-toggle"
         class="inline-flex items-center justify-center rounded-md border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 lg:hidden"
-        aria-label="Open navigation"
+        aria-label="탐색 메뉴 열기"
       >
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path d="M3 5h14a1 1 0 110 2H3a1 1 0 110-2zm0 4h14a1 1 0 110 2H3a1 1 0 110-2zm0 4h14a1 1 0 110 2H3a1 1 0 110-2z"/>
@@ -58,18 +58,18 @@
           target="_blank"
           rel="noopener noreferrer"
           class="hidden items-center gap-1.5 rounded-md border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 sm:inline-flex"
-          title="View this page's markdown source on GitHub"
+          title="GitHub에서 이 페이지의 마크다운 원본 보기"
         >
           <svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2 .37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
           </svg>
-          <span>Edit on GitHub</span>
+          <span>GitHub에서 편집</span>
         </a>
         <button
           type="button"
           id="theme-toggle"
           class="inline-flex items-center justify-center rounded-md border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-          aria-label="Toggle theme"
+          aria-label="테마 전환"
         >
           <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.95 2.05a1 1 0 010 1.41l-.71.71a1 1 0 11-1.41-1.41l.71-.71a1 1 0 011.41 0zM18 9a1 1 0 110 2h-1a1 1 0 110-2h1zm-2.05 4.95a1 1 0 011.41 1.41l-.71.71a1 1 0 11-1.41-1.41l.71-.71zM10 16a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-4.95-2.05a1 1 0 010 1.41l-.71.71a1 1 0 11-1.41-1.41l.71-.71a1 1 0 011.41 0zM3 9a1 1 0 110 2H2a1 1 0 110-2h1zm2.05-4.95a1 1 0 011.41-1.41l.71.71a1 1 0 11-1.41 1.41l-.71-.71zM10 6a4 4 0 100 8 4 4 0 000-8z"/>
@@ -120,9 +120,9 @@
 
     {# ---------- Main content ---------- #}
     <main class="flex min-w-0 flex-1 flex-col">
-      <nav class="mb-4 text-xs text-slate-500 dark:text-slate-400" aria-label="Breadcrumb">
+      <nav class="mb-4 text-xs text-slate-500 dark:text-slate-400" aria-label="현재 위치">
         <ol class="flex flex-wrap items-center gap-1.5">
-          <li><a href="{{ base_path }}index.html" class="hover:underline">Home</a></li>
+          <li><a href="{{ base_path }}index.html" class="hover:underline">홈</a></li>
           <li aria-hidden="true">/</li>
           <li class="text-slate-700 dark:text-slate-200">{{ section }}</li>
           {% if page_title != section %}
@@ -143,7 +143,7 @@
           href="{{ prev_page.url }}"
           class="group rounded-lg border border-slate-200 p-4 transition hover:border-brand-500 hover:bg-brand-50/50 dark:border-slate-800 dark:hover:border-brand-500 dark:hover:bg-brand-700/10"
         >
-          <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">← Previous</div>
+          <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">← 이전</div>
           <div class="mt-1 font-semibold text-slate-900 group-hover:text-brand-700 dark:text-slate-100 dark:group-hover:text-brand-300">
             {{ prev_page.title }}
           </div>
@@ -156,7 +156,7 @@
           href="{{ next_page.url }}"
           class="group rounded-lg border border-slate-200 p-4 text-right transition hover:border-brand-500 hover:bg-brand-50/50 dark:border-slate-800 dark:hover:border-brand-500 dark:hover:bg-brand-700/10"
         >
-          <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Next →</div>
+          <div class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">다음 →</div>
           <div class="mt-1 font-semibold text-slate-900 group-hover:text-brand-700 dark:text-slate-100 dark:group-hover:text-brand-300">
             {{ next_page.title }}
           </div>
@@ -167,13 +167,13 @@
 
       <footer class="mt-12 border-t border-slate-200 pt-6 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
         <p>
-          Content rendered from
+          이 페이지는 GitHub의
           <a href="{{ github_source_url }}" target="_blank" rel="noopener noreferrer" class="underline hover:text-brand-700 dark:hover:text-brand-300">
             {{ page_title }}
           </a>
-          on GitHub. Markdown is the single source of truth — re-run
-          <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono dark:bg-slate-800">scripts/build_website.py</code>
-          after editing to refresh the site.
+          문서를 렌더링한 것입니다. 모든 내용의 원본은 마크다운이므로, 고친 뒤
+          <code class="rounded bg-slate-100 px-1.5 py-0.5 font-mono dark:bg-slate-800">scripts/build_website.py</code>를
+          다시 실행해 사이트를 갱신하세요.
         </p>
       </footer>
     </main>
@@ -183,7 +183,7 @@
     <aside class="hidden w-56 xl:block">
       <div class="sticky top-24 text-sm">
         <div class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          On this page
+          이 페이지의 내용
         </div>
         <ul class="space-y-1">
           {% for entry in toc %}
@@ -222,7 +222,7 @@
       }
       document.querySelectorAll('pre.mermaid').forEach(function (pre) {
         var source = pre.textContent;
-        var name = headingBefore(pre) || 'Diagram';
+        var name = headingBefore(pre) || '다이어그램';
         var container = document.createElement('div');
         container.className = 'mermaid';
         pre.replaceWith(container);

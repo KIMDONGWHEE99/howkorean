@@ -11,7 +11,6 @@ Build a static website from the Claude How-To markdown files.
 
 Usage:
     uv run scripts/build_website.py
-    uv run scripts/build_website.py --lang vi
     uv run scripts/build_website.py --output site/ --verbose
 
 The website renders the existing markdown files as the single source of truth.
@@ -68,7 +67,7 @@ from vendor_assets import (
 # Configuration
 # =============================================================================
 
-REPO_URL = "https://github.com/luongnv89/claude-howto"
+REPO_URL = "https://github.com/KIMDONGWHEE99/howkorean"
 DEFAULT_BRANCH = "main"
 
 # Files/dirs that exist in the repo but should not appear on the site.
@@ -113,24 +112,24 @@ EXCLUDE_TOP_LEVEL_PREFIXES = ("update-plan",)
 
 # Match the EPUB chapter ordering.
 CHAPTER_ORDER: list[tuple[str, str]] = [
-    ("README.md", "Introduction"),
-    ("LEARNING-ROADMAP.md", "Learning Roadmap"),
-    ("QUICK_REFERENCE.md", "Quick Reference"),
-    ("claude_concepts_guide.md", "Claude Concepts Guide"),
-    ("01-slash-commands", "Slash Commands"),
-    ("02-memory", "Memory"),
-    ("03-skills", "Skills"),
-    ("04-subagents", "Subagents"),
-    ("05-mcp", "MCP Protocol"),
-    ("06-hooks", "Hooks"),
-    ("07-plugins", "Plugins"),
-    ("08-checkpoints", "Checkpoints"),
-    ("09-advanced-features", "Advanced Features"),
-    ("10-cli", "CLI Reference"),
-    ("CATALOG.md", "Feature Catalog"),
-    ("INDEX.md", "Index"),
-    ("STYLE_GUIDE.md", "Style Guide"),
-    ("resources.md", "Resources"),
+    ("README.md", "소개"),
+    ("LEARNING-ROADMAP.md", "학습 로드맵"),
+    ("QUICK_REFERENCE.md", "빠른 참조"),
+    ("claude_concepts_guide.md", "Claude 개념 가이드"),
+    ("01-slash-commands", "슬래시 명령어"),
+    ("02-memory", "메모리"),
+    ("03-skills", "스킬"),
+    ("04-subagents", "서브에이전트"),
+    ("05-mcp", "MCP 프로토콜"),
+    ("06-hooks", "훅"),
+    ("07-plugins", "플러그인"),
+    ("08-checkpoints", "체크포인트"),
+    ("09-advanced-features", "고급 기능"),
+    ("10-cli", "CLI 레퍼런스"),
+    ("CATALOG.md", "기능 카탈로그"),
+    ("INDEX.md", "색인"),
+    ("STYLE_GUIDE.md", "스타일 가이드"),
+    ("resources.md", "참고 자료"),
 ]
 
 
@@ -142,9 +141,9 @@ class WebsiteConfig:
     output_path: Path
     repo_url: str = REPO_URL
     branch: str = DEFAULT_BRANCH
-    site_title: str = "Claude Code How-To Guide"
-    site_subtitle: str = "Master Claude Code in a Weekend"
-    language: str = "en"
+    site_title: str = "Claude Code 사용 가이드"
+    site_subtitle: str = "주말에 마스터하는 Claude Code"
+    language: str = "ko"
     landing: bool = False  # render the marketing landing page as index.html
     roadmap_path: Path | None = None  # defaults to website_templates/roadmap.json
 
@@ -382,7 +381,7 @@ def collect_pages(config: WebsiteConfig, logger: logging.Logger) -> BuildState:
                 rel_source=rel,
                 output_url=url,
                 title=title,
-                section="Additional Docs",
+                section="추가 문서",
                 is_section_index=False,
                 content=content,
             )
@@ -940,8 +939,8 @@ def render_landing(
 ) -> None:
     """Render the marketing landing page as `index.html`.
 
-    The landing is generated only for the English build — translated sites
-    keep their README at index.html because their heading anchors differ.
+    The landing is generated for the default build of the Korean edition;
+    every lesson `heading` in roadmap.json must match a Korean README heading.
     """
     template_dir = Path(__file__).parent / "website_templates"
     roadmap_path = config.roadmap_path or (template_dir / "roadmap.json")
@@ -1091,9 +1090,9 @@ def main() -> int:
     parser.add_argument(
         "--lang",
         type=str,
-        default="en",
-        choices=["en", "vi", "zh", "ja", "uk"],
-        help="Language code for the source tree (default: en — root markdown)",
+        default="ko",
+        choices=["ko"],
+        help="Language code for the source tree (default: ko — root markdown)",
     )
     parser.add_argument(
         "--repo-url",
@@ -1116,15 +1115,11 @@ def main() -> int:
     repo_root = (args.root or Path(__file__).parent.parent).resolve()
 
     lang_root_map = {
-        "en": repo_root,
-        "vi": repo_root / "vi",
-        "zh": repo_root / "zh",
-        "ja": repo_root / "ja",
-        "uk": repo_root / "uk",
+        "ko": repo_root,
     }
     source_root = lang_root_map[args.lang].resolve()
 
-    default_output = repo_root / ("site" if args.lang == "en" else f"site-{args.lang}")
+    default_output = repo_root / "site"
     output_path = (args.output or default_output).resolve()
 
     logger = setup_logging(args.verbose)
@@ -1134,7 +1129,7 @@ def main() -> int:
         repo_url=args.repo_url,
         branch=args.branch,
         language=args.lang,
-        landing=(args.lang == "en"),
+        landing=True,
     )
 
     try:

@@ -1896,3 +1896,9 @@ html.theme-anim body * {
     animation: none;
   }
 }
+
+/* Korean edition: wrap lines between words, not inside them. */
+html[lang="ko"] body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
