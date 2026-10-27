@@ -9,7 +9,7 @@
 ### Q1
 - **분류**: 개념
 - **질문**: Claude Code의 슬래시 명령어 네 가지 유형은 무엇인가요?
-- **보기**: A) 기본 제공 명령어, 스킬, 플러그인 명령어, MCP 프롬프트 | B) 기본 제공 명령어, 사용자 지정 명령어, 훅 명령어, API 프롬프트 | C) 시스템, 사용자, 플러그인, 터미널 명령어 | D) 코어, 확장, 매크로, 스크립트 명령어
+- **보기**: A) 기본 제공 명령어, 스킬, 플러그인 명령어, MCP 프롬프트 | B) 기본 제공 명령어, 사용자 정의 명령어, 훅 명령어, API 프롬프트 | C) 시스템, 사용자, 플러그인, 터미널 명령어 | D) 코어, 확장, 매크로, 스크립트 명령어
 - **정답**: A
 - **해설**: Claude Code에는 기본 제공 명령어(/help, /compact 등), 스킬(SKILL.md 파일), 플러그인 명령어(plugin-name:command 형식의 네임스페이스), MCP 프롬프트(/mcp__server__prompt)가 있습니다.
 - **복습**: 개요 섹션
@@ -40,7 +40,7 @@
 
 ### Q5
 - **분류**: 개념
-- **질문**: 스킬 프런트매터의 `disable-model-invocation: true`는 무엇을 하나요?
+- **질문**: 스킬 frontmatter의 `disable-model-invocation: true`는 무엇을 하나요?
 - **보기**: A) 스킬이 아예 실행되지 않게 한다 | B) 사용자만 호출할 수 있게 한다(Claude가 자동으로 호출할 수 없음) | C) /help 메뉴에서 숨긴다 | D) 스킬의 AI 처리를 끈다
 - **정답**: B
 - **해설**: `disable-model-invocation: true`이면 사용자만 `/command-name`으로 명령어를 실행할 수 있습니다. Claude는 절대 자동으로 호출하지 않으므로, 배포처럼 부수 효과가 있는 스킬에 유용합니다.
@@ -48,7 +48,7 @@
 
 ### Q6
 - **분류**: 실무
-- **질문**: Claude만 자동으로 호출할 수 있는(사용자의 / 메뉴에서는 숨겨진) 스킬을 만들고 싶습니다. 어떤 프런트매터 필드를 설정하나요?
+- **질문**: Claude만 자동으로 호출할 수 있는(사용자의 / 메뉴에서는 숨겨진) 스킬을 만들고 싶습니다. 어떤 frontmatter 필드를 설정하나요?
 - **보기**: A) `disable-model-invocation: true` | B) `user-invocable: false` | C) `hidden: true` | D) `auto-only: true`
 - **정답**: B
 - **해설**: `user-invocable: false`는 사용자의 슬래시 메뉴에서 스킬을 숨기지만, Claude는 맥락에 따라 자동으로 호출할 수 있습니다.
@@ -56,7 +56,7 @@
 
 ### Q7
 - **분류**: 실무
-- **질문**: "deploy"라는 새 사용자 지정 스킬의 올바른 디렉토리 구조는 무엇인가요?
+- **질문**: "deploy"라는 새 사용자 정의 스킬의 올바른 디렉토리 구조는 무엇인가요?
 - **보기**: A) `.claude/commands/deploy.md` | B) `.claude/skills/deploy/SKILL.md` | C) `.claude/skills/deploy.md` | D) `.claude/deploy/SKILL.md`
 - **정답**: B
 - **해설**: 스킬은 `.claude/skills/` 아래의 디렉토리에 두고 그 안에 `SKILL.md` 파일을 넣습니다. 디렉토리 이름이 명령어 이름이 됩니다.
@@ -72,7 +72,7 @@
 
 ### Q9
 - **분류**: 실무
-- **질문**: 스킬이 특정 도구를 쓸 때마다 권한을 묻지 않게 하고 싶습니다. 어떤 프런트매터 필드를 추가하나요?
+- **질문**: 스킬이 특정 도구를 쓸 때마다 권한을 묻지 않게 하고 싶습니다. 어떤 frontmatter 필드를 추가하나요?
 - **보기**: A) `tools: [Read, Grep]` | B) `allowed-tools: [Read, Grep]` | C) `permissions: [Read, Grep]` | D) `restrict-tools: [Read, Grep]`
 - **정답**: B
 - **해설**: `allowed-tools`는 스킬을 호출한 턴 동안 나열한 도구를 미리 승인하므로, Claude가 권한 확인 없이 그 도구를 쓸 수 있습니다. 이 승인은 다음 메시지를 보내면 사라집니다. 쓸 수 있는 도구를 제한하는 기능은 아닙니다 — 스킬이 활성인 동안 도구를 빼려면 `disallowed-tools`를 쓰세요.
@@ -117,9 +117,9 @@
 ### Q4
 - **분류**: 실무
 - **질문**: 규칙 파일이 `src/api/` 안의 파일에만 적용되게 하려면 어떻게 하나요?
-- **보기**: A) 규칙을 `src/api/CLAUDE.md`에 넣는다 | B) `.claude/rules/*.md` 파일에 `paths: src/api/**` YAML 프런트매터를 추가한다 | C) 파일 이름을 `.claude/rules/api.md`로 짓는다 | D) 규칙 파일에 `@scope: src/api`를 쓴다
+- **보기**: A) 규칙을 `src/api/CLAUDE.md`에 넣는다 | B) `.claude/rules/*.md` 파일에 `paths: src/api/**` YAML frontmatter를 추가한다 | C) 파일 이름을 `.claude/rules/api.md`로 짓는다 | D) 규칙 파일에 `@scope: src/api`를 쓴다
 - **정답**: B
-- **해설**: `.claude/rules/`의 파일은 `paths:` 프런트매터 필드에 glob 패턴을 지정해 규칙을 특정 디렉토리로 한정할 수 있습니다.
+- **해설**: `.claude/rules/`의 파일은 `paths:` frontmatter 필드에 glob 패턴을 지정해 규칙을 특정 디렉토리로 한정할 수 있습니다.
 - **복습**: YAML frontmatter로 경로별 규칙 지정 섹션
 
 ### Q5
@@ -185,7 +185,7 @@
 ### Q2
 - **분류**: 실무
 - **질문**: Claude가 스킬을 자동으로 호출하게 만드는 가장 중요한 요소는 무엇인가요?
-- **보기**: A) 스킬 파일 이름 | B) 언제 쓰는지를 알려 주는 키워드가 담긴 프런트매터의 `description` 필드 | C) 스킬 디렉토리의 위치 | D) `auto-invoke: true` 프런트매터 필드
+- **보기**: A) 스킬 파일 이름 | B) 언제 쓰는지를 알려 주는 키워드가 담긴 frontmatter의 `description` 필드 | C) 스킬 디렉토리의 위치 | D) `auto-invoke: true` frontmatter 필드
 - **정답**: B
 - **해설**: Claude는 스킬의 `description`(그리고 선택 사항인 `when_to_use`)을 보고 자동으로 호출할지 정합니다. 구체적인 트리거 문구와 상황이 들어 있어야 합니다.
 - **복습**: 스킬 호출 제어 섹션
@@ -201,9 +201,9 @@
 ### Q4
 - **분류**: 실무
 - **질문**: 스킬이 자체 컨텍스트를 가진 격리된 서브에이전트에서 실행되게 하려면 어떻게 하나요?
-- **보기**: A) 프런트매터에 `isolation: true` 설정 | B) 프런트매터에 `context: fork`와 함께 `agent` 필드 설정 | C) 프런트매터에 `subagent: true` 설정 | D) 스킬을 `.claude/agents/`에 둔다
+- **보기**: A) frontmatter에 `isolation: true` 설정 | B) frontmatter에 `context: fork`와 함께 `agent` 필드 설정 | C) frontmatter에 `subagent: true` 설정 | D) 스킬을 `.claude/agents/`에 둔다
 - **정답**: B
-- **해설**: `context: fork`는 스킬을 별도의 컨텍스트에서 실행하고, `agent` 필드는 어떤 에이전트 유형(예: `Explore`, `Plan`, 사용자 지정 에이전트)을 쓸지 지정합니다.
+- **해설**: `context: fork`는 스킬을 별도의 컨텍스트에서 실행하고, `agent` 필드는 어떤 에이전트 유형(예: `Explore`, `Plan`, 사용자 정의 에이전트)을 쓸지 지정합니다.
 - **복습**: 서브에이전트에서 스킬 실행 섹션
 
 ### Q5
@@ -232,7 +232,7 @@
 
 ### Q8
 - **분류**: 실무
-- **질문**: claude.ai나 Skills API(Agent Skills 명세)로 공유할 스킬이라면, 프런트매터의 `name` 필드에 어떤 문자를 쓸 수 있나요?
+- **질문**: claude.ai나 Skills API(Agent Skills 명세)로 공유할 스킬이라면, frontmatter의 `name` 필드에 어떤 문자를 쓸 수 있나요?
 - **보기**: A) 아무 문자나 | B) 영문 소문자, 숫자, 하이픈만(최대 64자) | C) 영문자와 밑줄 | D) 영문자와 숫자만
 - **정답**: B
 - **해설**: 이름은 케밥 케이스(소문자, 하이픈)여야 하고 최대 64자입니다. `name` 자체는 선택 사항이라 생략하면 스킬 디렉토리 이름이 기본값이 되지만, 지정한다면 이 규칙을 따라야 합니다. Claude Code에서는 `anthropic-skills`라는 이름과 네임스페이스가 claude.ai에서 동기화한 스킬용으로 예약되어 있어 그 이름의 스킬은 로드되지 않습니다. "anthropic"이나 "claude"를 더 넓게 금지하는 규칙은 claude.ai 스킬 업로드와 Skills API에 적용됩니다. Claude Code 자체(v2.1.299)는 숨겨진 문자, 방향을 바꾸는 문자, 공백처럼 보이는 문자, `<`나 `>`가 들어 있거나 256자를 넘는 이름만 거부합니다.
@@ -469,17 +469,17 @@
 ### Q6
 - **분류**: 실무
 - **질문**: 도구를 호출할 때마다가 아니라 스킬이 처음 로드될 때 한 번만 실행되는 훅을 원합니다. 어떤 필드를 추가하나요?
-- **보기**: A) `run-once: true` | B) 스킬 프런트매터의 훅에 `once: true` | C) `single: true` | D) `max-runs: 1`
+- **보기**: A) `run-once: true` | B) 스킬 frontmatter의 훅에 `once: true` | C) `single: true` | D) `max-runs: 1`
 - **정답**: B
-- **해설**: 스킬 프런트매터에 선언한 훅은 `once: true`를 지원합니다 — Claude Code는 훅이 처음 성공적으로 실행되면 그 훅을 제거합니다(실패하거나, 차단하거나, 시간이 초과되면 그대로 남음). `once`는 스킬 프런트매터에서만 적용됩니다.
+- **해설**: 스킬 frontmatter에 선언한 훅은 `once: true`를 지원합니다 — Claude Code는 훅이 처음 성공적으로 실행되면 그 훅을 제거합니다(실패하거나, 차단하거나, 시간이 초과되면 그대로 남음). `once`는 스킬 frontmatter에서만 적용됩니다.
 - **복습**: 구성 요소 범위 훅 섹션
 
 ### Q7
 - **분류**: 개념
-- **질문**: 서브에이전트의 프런트매터에 Stop 훅을 정의하면 자동으로 무엇으로 바뀌나요?
+- **질문**: 서브에이전트의 frontmatter에 Stop 훅을 정의하면 자동으로 무엇으로 바뀌나요?
 - **보기**: A) PostToolUse 훅 | B) SubagentStop 훅 | C) SessionEnd 훅 | D) Stop 훅 그대로 유지된다
 - **정답**: B
-- **해설**: 서브에이전트의 프런트매터에 둔 Stop 훅은 자동으로 SubagentStop으로 바뀌어, 그 서브에이전트가 끝날 때 실행됩니다.
+- **해설**: 서브에이전트의 frontmatter에 둔 Stop 훅은 자동으로 SubagentStop으로 바뀌어, 그 서브에이전트가 끝날 때 실행됩니다.
 - **복습**: 구성 요소 범위 훅 섹션
 
 ### Q8
