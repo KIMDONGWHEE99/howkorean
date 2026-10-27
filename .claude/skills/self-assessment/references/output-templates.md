@@ -1,119 +1,119 @@
-# Output Templates
+# 출력 템플릿
 
-Blank markdown templates for the assessment results and learning path. The Step 3A/3B result templates and the Step 4 path-format template are duplicated verbatim in SKILL.md so results can be produced without re-reading this file.
+진단 결과와 학습 경로를 위한 빈 마크다운 템플릿입니다. 3A/3B단계의 결과 템플릿과 4단계의 경로 형식 템플릿은 SKILL.md에도 그대로 들어 있으므로, 이 파일을 다시 읽지 않고도 결과를 만들 수 있습니다.
 
-## Quick Assessment results (Step 3A)
+## 빠른 진단 결과(3A단계)
 
 ```markdown
-## Claude Code Skill Assessment Results
+## Claude Code 기술 진단 결과
 
-### Your Level: [Level 1: Beginner / Level 2: Intermediate / Level 3: Advanced]
+### 내 레벨: [레벨 1: 입문 / 레벨 2: 중급 / 레벨 3: 고급]
 
-You checked **N/8** items.
+**N/8**개 항목을 체크했습니다.
 
-[One-line motivational summary based on level]
+[레벨에 맞춘 한 줄 격려 요약]
 
-### Your Skill Profile
+### 내 기술 프로필
 
-| Area | Status |
+| 영역 | 상태 |
 |------|--------|
-| Basic CLI & Conversations | [Checked/Gap] |
-| CLAUDE.md & Memory | [Checked/Gap] |
-| Slash Commands (built-in) | [Checked/Gap] |
-| Custom Commands & Skills | [Checked/Gap] |
-| MCP Servers | [Checked/Gap] |
-| Hooks | [Checked/Gap] |
-| Subagents | [Checked/Gap] |
-| Print Mode & CI/CD | [Checked/Gap] |
+| 기본 CLI와 대화 | [체크함/부족] |
+| CLAUDE.md와 메모리 | [체크함/부족] |
+| 슬래시 명령어(기본 제공) | [체크함/부족] |
+| 사용자 정의 명령어와 스킬 | [체크함/부족] |
+| MCP 서버 | [체크함/부족] |
+| 훅 | [체크함/부족] |
+| 서브에이전트 | [체크함/부족] |
+| print 모드와 CI/CD | [체크함/부족] |
 
-### Identified Gaps
+### 찾아낸 부족한 부분
 
-[For each unchecked item, provide a 1-line description of what to learn and a link to the tutorial]
+[체크하지 않은 항목마다 무엇을 배워야 하는지 한 줄로 설명하고 튜토리얼 링크를 붙이세요]
 
-### Your Personalized Learning Path
+### 맞춤 학습 경로
 
-[Output the level-specific learning path — see Step 4]
+[레벨에 맞는 학습 경로를 출력하세요 — 4단계 참고]
 ```
 
-## Deep Assessment results (Step 3B)
+## 심층 진단 결과(3B단계)
 
 ```markdown
-## Claude Code Skill Assessment Results
+## Claude Code 기술 진단 결과
 
-### Overall Level: [Level 1 / Level 2 / Level 3]
+### 전체 레벨: [레벨 1 / 레벨 2 / 레벨 3]
 
-**Total Score: N/20 points**
+**총점: N/20점**
 
-[One-line motivational summary]
+[한 줄 격려 요약]
 
-### Your Skill Profile
+### 내 기술 프로필
 
-| Feature Area | Score | Mastery | Status |
+| 기능 영역 | 점수 | 숙련도 | 상태 |
 |-------------|-------|---------|--------|
-| Slash Commands | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| Memory | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| Skills | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| Hooks | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| MCP | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| Subagents | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| Checkpoints | N/1 | [None/Proficient] | [Learn/Mastered] |
-| Advanced Features | N/3 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| Plugins | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
-| CLI | N/2 | [None/Basic/Proficient] | [Learn/Review/Mastered] |
+| 슬래시 명령어 | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
+| 메모리 | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
+| 스킬 | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
+| 훅 | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
+| MCP | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
+| 서브에이전트 | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
+| 체크포인트 | N/1 | [없음/능숙] | [학습/숙달] |
+| 고급 기능 | N/3 | [없음/기초/능숙] | [학습/복습/숙달] |
+| 플러그인 | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
+| CLI | N/2 | [없음/기초/능숙] | [학습/복습/숙달] |
 
-**Mastery key:** 0 = None, 1 = Basic, 2 = Proficient
+**숙련도 기준:** 0 = 없음, 1 = 기초, 2 = 능숙
 
-### Strength Areas
-[List topics with score 2/2 — these are mastered]
+### 강점 영역
+[2/2점인 주제를 나열하세요 — 숙달한 주제입니다]
 
-### Priority Gaps (Learn Next)
-[List topics with score 0 — these need attention first, ordered by dependency]
+### 우선 보완할 부분(다음에 학습)
+[0점인 주제를 나열하세요 — 가장 먼저 챙겨야 할 주제이며, 의존 순서대로 정렬합니다]
 
-### Review Areas
-[List topics with score 1/2 — basics known but advanced features not yet used]
+### 복습 영역
+[1/2점인 주제를 나열하세요 — 기초는 알지만 고급 기능은 아직 써 보지 않은 주제입니다]
 
-### Your Personalized Learning Path
+### 맞춤 학습 경로
 
-[Output gap-specific learning path — see Step 4]
+[부족한 부분에 맞춘 학습 경로를 출력하세요 — 4단계 참고]
 ```
 
-## Learning Path (Step 4)
+## 학습 경로(4단계)
 
 ```markdown
-### Your Personalized Learning Path
+### 맞춤 학습 경로
 
-**Estimated time**: ~N hours (adjusted for your current skills)
+**예상 소요 시간**: 약 N시간(현재 실력에 맞춰 조정함)
 
-#### Phase 1: [Phase Name] (~N hours)
-[Only if they have gaps in these areas]
+#### 1단계: [단계 이름] (약 N시간)
+[이 영역에 부족한 부분이 있을 때만]
 
-**[Topic Name]** — [Learn from scratch / Deep dive into advanced features]
-- Tutorial: [link to tutorial directory]
-- Focus on: [specific sections/concepts they need]
-- Key exercise: [one concrete exercise to do]
-- You'll know it's done when: [specific success criterion]
+**[주제 이름]** — [처음부터 배우기 / 고급 기능 심화 학습]
+- 튜토리얼: [튜토리얼 디렉토리 링크]
+- 집중할 부분: [사용자에게 필요한 구체적인 섹션/개념]
+- 핵심 실습: [해 볼 구체적인 실습 하나]
+- 완료 기준: [구체적인 성공 기준]
 
-**[Topic Name]** — ...
+**[주제 이름]** — ...
 
 ---
 
-#### Phase 2: [Phase Name] (~N hours)
+#### 2단계: [단계 이름] (약 N시간)
 ...
 
 ---
 
-### Recommended Practice Projects
+### 추천 연습 프로젝트
 
-Based on your gaps, try these real-world exercises to solidify your learning:
+부족한 부분을 바탕으로, 배운 내용을 확실히 다질 수 있는 실전 연습을 해 보세요:
 
-1. **[Project name]**: [1-line description combining 2-3 gap topics]
-2. **[Project name]**: [1-line description]
-3. **[Project name]**: [1-line description]
+1. **[프로젝트 이름]**: [부족한 주제 2-3개를 엮은 한 줄 설명]
+2. **[프로젝트 이름]**: [한 줄 설명]
+3. **[프로젝트 이름]**: [한 줄 설명]
 ```
 
 ---
 
-**Last Updated**: September 2, 2026
-**Claude Code Version**: 2.1.257
-**Sources**:
-- https://code.claude.com/docs/en/overview
+**최종 업데이트**: 2026년 9월 2일
+**Claude Code 버전**: 2.1.257
+**출처**:
+- https://code.claude.com/docs/ko/overview
