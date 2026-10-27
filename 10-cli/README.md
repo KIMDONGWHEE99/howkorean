@@ -157,7 +157,7 @@ claude -p "TODO 목록을 보여 줘" | grep "URGENT"
 | `--model` | 모델 설정(sonnet, opus, haiku 또는 전체 이름) | `claude --model opus` |
 | `--fallback-model` | 기본 모델이 과부하 상태이거나 사용할 수 없을 때 자동으로 대체 모델 사용. `fallbackModel` 설정으로 최대 세 개까지 지정할 수 있습니다. v2.1.166부터는 대화형 세션에도 적용됩니다(이전에는 print 모드 전용) | `claude -p --fallback-model sonnet "query"` |
 | `--agent` | 세션에 쓸 에이전트 지정 | `claude --agent my-custom-agent` |
-| `--agents` | JSON으로 사용자 지정 서브에이전트 정의 | [에이전트 설정](#에이전트-설정) 참고 |
+| `--agents` | JSON으로 사용자 정의 서브에이전트 정의 | [에이전트 설정](#에이전트-설정) 참고 |
 | `--effort` | 노력 수준 설정(low, medium, high, xhigh, max) | `claude --effort xhigh` |
 
 ### 모델 선택 예
@@ -430,7 +430,7 @@ claude --ide "이 파일 작업을 도와줘"
 
 ## 에이전트 설정
 
-`--agents` 플래그는 세션에서 쓸 사용자 지정 서브에이전트를 정의하는 JSON 객체를 받습니다.
+`--agents` 플래그는 세션에서 쓸 사용자 정의 서브에이전트를 정의하는 JSON 객체를 받습니다.
 
 **v2.1.243**부터 `--agents`는 잘못된 JSON이나 잘못된 에이전트 정의를 조용히 무시하지 않고, `--mcp-config`가 이미 그랬던 것처럼 명확한 오류와 함께 종료합니다.
 
@@ -484,7 +484,7 @@ claude --ide "이 파일 작업을 도와줘"
 ### 에이전트 명령어 예
 
 ```bash
-# 사용자 지정 에이전트를 인라인으로 정의
+# 사용자 정의 에이전트를 인라인으로 정의
 claude --agents '{
   "security-auditor": {
     "description": "취약점 분석을 맡는 보안 전문가",
@@ -667,7 +667,7 @@ claude --resume feature-auth --fork-session "대신 OAuth를 시도해 줘"
 claude -r "feature-payments" "Stripe 통합을 계속 진행해 줘"
 ```
 
-### 4. 사용자 지정 에이전트 설정
+### 4. 사용자 정의 에이전트 설정
 
 팀 워크플로우에 맞는 전문 에이전트를 정의합니다.
 
@@ -898,7 +898,7 @@ export CLAUDE_CODE_EFFORT_LEVEL=high   # low, medium, high, xhigh(Opus 5.5, Sonn
 | `CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN` | `1`로 설정하면 전체 화면용 대체 화면(alternate screen) 렌더러를 쓰지 않고, 세션이 일반 터미널 스크롤백에 머뭅니다. 대화 기록을 로그로 파이프하거나 `script(1)`과 함께 쓸 때 유용합니다(v2.1.132+). |
 | `CLAUDE_CODE_SESSION_ID` | Claude Code가 실행하는 모든 Bash 도구 하위 프로세스에 설정되며, 훅 입력 JSON의 `session_id`와 같습니다. bash 로그를 훅 텔레메트리와 연결할 때 쓰세요(v2.1.132+). |
 | `CLAUDE_CODE_ENABLE_FEEDBACK_SURVEY_FOR_OTEL` | `1`로 설정하면 OpenTelemetry 데이터를 수집하는 조직에서 Anthropic의 세션 품질 설문을 다시 켭니다. OTEL 배포에서는 기본으로 꺼져 있습니다(v2.1.136+). |
-| `OTEL_LOG_TOOL_DETAILS` | `1`로 설정하면 OpenTelemetry 이벤트에서 사용자 지정 명령어와 MCP 명령어 이름을 가리지 않습니다(v2.1.117+). 기본값은 여전히 가림 처리입니다. `tool_decision` 이벤트에 `classifier_category`도 추가합니다(v2.1.301). |
+| `OTEL_LOG_TOOL_DETAILS` | `1`로 설정하면 OpenTelemetry 이벤트에서 사용자 정의 명령어와 MCP 명령어 이름을 가리지 않습니다(v2.1.117+). 기본값은 여전히 가림 처리입니다. `tool_decision` 이벤트에 `classifier_category`도 추가합니다(v2.1.301). |
 | `CLAUDE_CODE_OTEL_CONTENT_MAX_LENGTH` | OpenTelemetry 콘텐츠 속성에 적용하는 잘라내기 한도 설정(기본값 60 KB)(v2.1.214) |
 | `FORCE_HYPERLINK` | `0`으로 설정하면 하단의 클릭할 수 있는 PR 배지 하이퍼링크를 끕니다. 이 링크는 이제 터미널 지원 여부를 자동으로 감지하지 못해도 렌더링됩니다(v2.1.217) |
 | `ANTHROPIC_BEDROCK_SERVICE_TIER` | Bedrock 서비스 등급 선택: `default`, `flex`, `priority`(v2.1.122+) |
