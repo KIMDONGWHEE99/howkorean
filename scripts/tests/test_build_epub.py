@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 from typing import Any
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -21,7 +21,9 @@ from build_epub import (
     MermaidRenderer,
     MermaidRenderError,
     ValidationError,
+    _supports_hangul,
     create_chapter_html,
+    create_cover_image,
     extract_all_mermaid_blocks,
     flatten_svg_vars,
     get_chapter_order,
@@ -210,8 +212,8 @@ class TestEPUBConfig:
             output_path=tmp_path / "out.epub",
         )
         assert config.identifier == "claude-howto-guide"
-        assert config.title == "Claude Code How-To Guide"
-        assert config.language == "en"
+        assert config.title == "Claude Code 사용 가이드"
+        assert config.language == "ko"
         assert config.author == "Claude Code Community"
 
     def test_custom_values(self, tmp_path: Path) -> None:
@@ -472,6 +474,28 @@ class TestHTMLGeneration:
 # =============================================================================
 
 
+class TestCoverText:
+    """The cover uses the Korean text only when a Hangul-capable font loads."""
+
+    def test_supports_hangul_by_font_path(self) -> None:
+        noto = MagicMock(path="/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc")
+        dejavu = MagicMock(path="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+        assert _supports_hangul(noto)
+        assert not _supports_hangul(dejavu)
+
+    def test_english_fallback_without_hangul_font(self, tmp_path: Path) -> None:
+        config = EPUBConfig(
+            root_path=tmp_path,
+            output_path=tmp_path / "out.epub",
+            title_font_paths=["/nonexistent/font.ttf"],
+            subtitle_font_paths=["/nonexistent/font.ttf"],
+        )
+        with patch("build_epub._draw_text_centered", return_value=0) as draw:
+            create_cover_image(config, logging.getLogger("test"))
+        drawn = [call.args[1] for call in draw.call_args_list]
+        assert drawn == [config.cover_fallback_title, config.cover_fallback_subtitle]
+
+
 class TestChapterOrder:
     """Tests for chapter ordering."""
 
@@ -480,7 +504,7 @@ class TestChapterOrder:
         order = get_chapter_order()
 
         assert len(order) > 0
-        assert order[0] == ("README.md", "Introduction")
+        assert order[0] == ("README.md", "소개")
 
         # Check that all expected chapters are present
         chapter_names = [name for name, _ in order]

@@ -63,14 +63,15 @@ python scripts/build_epub.py
 
 ```
 usage: build_epub.py [-h] [--root ROOT] [--output OUTPUT] [--verbose]
-                     [--lang {en,vi,zh,ja}]
+                     [--lang {ko}]
 
 options:
   -h, --help            show this help message and exit
   --root, -r ROOT       Root directory (default: repo root)
   --output, -o OUTPUT   Output path (default: claude-howto-guide.epub)
   --verbose, -v         Enable verbose logging
-  --lang {en,vi,zh,ja}  Language to build (default: en)
+  --lang {ko}           Language to build (default: ko, the Korean edition
+                        at the repo root)
 ```
 
 ## Examples
@@ -81,9 +82,6 @@ uv run scripts/build_epub.py --verbose
 
 # Custom output location
 uv run scripts/build_epub.py --output ~/Desktop/claude-guide.epub
-
-# Build a translated edition
-uv run scripts/build_epub.py --lang vi
 ```
 
 ## Output
@@ -183,9 +181,11 @@ options:
 ## GitHub Pages Deploy
 
 The repo ships a workflow at `.github/workflows/pages.yml` that builds the
-site on every push to `main` (when any `.md` or generator file changes) and
-publishes via `actions/deploy-pages`. Enable GitHub Pages in repo settings
-with **Source: GitHub Actions** to activate it.
+site and publishes it via `actions/deploy-pages`. In this Korean edition it
+runs only when started manually from the Actions tab (`workflow_dispatch`);
+the original push trigger is kept commented out in the workflow. Enable
+GitHub Pages in repo settings with **Source: GitHub Actions** before running
+it.
 
 ## Architecture
 

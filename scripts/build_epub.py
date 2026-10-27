@@ -17,7 +17,8 @@ Usage:
         --root, -r      Root directory containing markdown files (default: repo root)
         --output, -o    Output EPUB file path (default: <root>/claude-howto-guide.epub)
         --verbose, -v   Enable verbose logging
-        --lang          Language tree to build: en, vi, zh or ja (default: en)
+        --lang          Language tree to build: ko, the Korean edition at the
+                        repository root (default: ko)
 
     The script uses inline script dependencies (PEP 723), so uv will
     automatically install required packages in an isolated environment.
@@ -113,21 +114,22 @@ class EPUBConfig:
     output_path: Path
     logo_path: Path | None = None
 
-    # EPUB Metadata
+    # EPUB Metadata (Korean edition)
     identifier: str = "claude-howto-guide"
-    title: str = "Claude Code How-To Guide"
-    language: str = "en"
+    title: str = "Claude Code 사용 가이드"
+    language: str = "ko"
     author: str = "Claude Code Community"
 
     # Language-specific metadata
-    vi_title: str = "Hướng Dẫn Claude Code"
-    vi_subtitle: str = "Làm chủ Claude Code trong một cuối tuần"
-    en_title: str = "Claude Code How-To Guide"
-    en_subtitle: str = "Master Claude Code in a Weekend"
-    zh_title: str = "Claude Code 使用指南"
-    zh_subtitle: str = "一个周末掌握 Claude Code"
-    ja_title: str = "Claude Code ハウツーガイド"
-    ja_subtitle: str = "週末で Claude Code をマスターする"
+    ko_title: str = "Claude Code 사용 가이드"
+    ko_subtitle: str = "주말에 마스터하는 Claude Code"
+
+    # Cover text. The Korean text needs a font with Hangul glyphs; when only a
+    # Latin font is found, the cover falls back to the English text.
+    cover_title: str = "Claude Code\n사용 가이드"
+    cover_subtitle: str = "주말에 마스터하는 Claude Code"
+    cover_fallback_title: str = "Claude Code\nHow-To Guide"
+    cover_fallback_subtitle: str = "Complete Guide to Claude Code Features"
 
     # Cover Settings
     cover_width: int = 600
@@ -136,9 +138,14 @@ class EPUBConfig:
     cover_title_color: tuple[int, int, int] = (78, 205, 196)
     cover_subtitle_color: tuple[int, int, int] = (168, 178, 209)
 
-    # Font paths (platform-specific)
+    # Font paths (platform-specific). Hangul-capable fonts come first so the
+    # Korean cover text renders; the Latin fonts after them are the fallback.
     title_font_paths: list[str] = field(
         default_factory=lambda: [
+            "/System/Library/Fonts/AppleSDGothicNeo.ttc",  # macOS
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",  # Linux
+            "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",  # Linux
+            "C:\\Windows\\Fonts\\malgunbd.ttf",  # Windows
             "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
             "/System/Library/Fonts/Helvetica.ttc",
             "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",  # Linux
@@ -147,6 +154,10 @@ class EPUBConfig:
     )
     subtitle_font_paths: list[str] = field(
         default_factory=lambda: [
+            "/System/Library/Fonts/AppleSDGothicNeo.ttc",  # macOS
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # Linux
+            "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",  # Linux
+            "C:\\Windows\\Fonts\\malgun.ttf",  # Windows
             "/System/Library/Fonts/Supplemental/Arial.ttf",
             "/System/Library/Fonts/Helvetica.ttc",
             "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",  # Linux
@@ -488,20 +499,20 @@ def extract_all_mermaid_blocks(
 def get_chapter_order() -> list[tuple[str, str]]:
     """Define the order of chapters based on folder structure."""
     return [
-        ("README.md", "Introduction"),
-        ("LEARNING-ROADMAP.md", "Learning Roadmap"),
-        ("QUICK_REFERENCE.md", "Quick Reference"),
-        ("claude_concepts_guide.md", "Claude Concepts Guide"),
-        ("01-slash-commands", "Slash Commands"),
-        ("02-memory", "Memory"),
-        ("03-skills", "Skills"),
-        ("04-subagents", "Subagents"),
-        ("05-mcp", "MCP Protocol"),
-        ("06-hooks", "Hooks"),
-        ("07-plugins", "Plugins"),
-        ("08-checkpoints", "Checkpoints"),
-        ("09-advanced-features", "Advanced Features"),
-        ("resources.md", "Resources"),
+        ("README.md", "소개"),
+        ("LEARNING-ROADMAP.md", "학습 로드맵"),
+        ("QUICK_REFERENCE.md", "빠른 참조"),
+        ("claude_concepts_guide.md", "Claude 개념 가이드"),
+        ("01-slash-commands", "슬래시 명령어"),
+        ("02-memory", "메모리"),
+        ("03-skills", "스킬"),
+        ("04-subagents", "서브에이전트"),
+        ("05-mcp", "MCP 프로토콜"),
+        ("06-hooks", "훅"),
+        ("07-plugins", "플러그인"),
+        ("08-checkpoints", "체크포인트"),
+        ("09-advanced-features", "고급 기능"),
+        ("resources.md", "참고 자료"),
     ]
 
 
@@ -512,7 +523,7 @@ def collect_folder_files(folder_path: Path) -> list[tuple[Path, str]]:
     # Get README first if it exists
     readme = folder_path / "README.md"
     if readme.exists():
-        files.append((readme, "Overview"))
+        files.append((readme, "개요"))
 
     # Get all other markdown files
     for md_file in sorted(folder_path.glob("*.md")):
@@ -677,13 +688,27 @@ def _draw_text_centered(
     return y_offset
 
 
+# File-name fragments of the Hangul-capable fonts listed in EPUBConfig.
+HANGUL_FONT_MARKERS = ("AppleSDGothicNeo", "NotoSansCJK", "Nanum", "malgun")
+
+
+def _supports_hangul(font: ImageFont.FreeTypeFont | ImageFont.ImageFont) -> bool:
+    """Return True if the font was loaded from a known Hangul-capable file."""
+    path = str(getattr(font, "path", ""))
+    return any(marker in path for marker in HANGUL_FONT_MARKERS)
+
+
 def create_cover_image(
     config: EPUBConfig,
     logger: logging.Logger,
-    title: str = "Claude Code\nHow-To Guide",
-    subtitle: str = "Complete Guide to Claude Code Features",
+    title: str | None = None,
+    subtitle: str | None = None,
 ) -> bytes:
-    """Create a cover image with proper error handling."""
+    """Create a cover image with proper error handling.
+
+    Without an explicit title or subtitle, the Korean cover text is used when
+    a Hangul-capable font was found, and the English fallback text otherwise.
+    """
     try:
         cover = Image.new(
             "RGB", (config.cover_width, config.cover_height), config.cover_bg_color
@@ -693,6 +718,16 @@ def create_cover_image(
         # Load fonts once
         title_font = load_font(config.title_font_paths, 72, logger)
         subtitle_font = load_font(config.subtitle_font_paths, 24, logger)
+
+        hangul = _supports_hangul(title_font) and _supports_hangul(subtitle_font)
+        if not hangul and (title is None or subtitle is None):
+            logger.warning("No Hangul-capable font found, using English cover text")
+        if title is None:
+            title = config.cover_title if hangul else config.cover_fallback_title
+        if subtitle is None:
+            subtitle = (
+                config.cover_subtitle if hangul else config.cover_fallback_subtitle
+            )
 
         # Add logo if available
         logo_path = config.logo_path or (config.root_path / "claude-howto-logo.png")
@@ -1161,11 +1196,11 @@ def main() -> int:
     parser.add_argument(
         "--lang",
         type=str,
-        default="en",
-        choices=["en", "vi", "zh", "ja"],
+        default="ko",
+        choices=["ko"],
         help=(
-            "Language code: 'en' for English, 'vi' for Vietnamese, "
-            "'zh' for Chinese, 'ja' for Japanese (default: en)"
+            "Language code: 'ko' for the Korean edition at the repository "
+            "root (default: ko)"
         ),
     )
 
@@ -1178,10 +1213,7 @@ def main() -> int:
     # Set language-specific paths and metadata.
     # Each entry: (source root, default output filename, title)
     lang_map: dict[str, tuple[Path, str, str]] = {
-        "en": (repo_root, "claude-howto-guide.epub", EPUBConfig.en_title),
-        "vi": (repo_root / "vi", "claude-howto-guide-vi.epub", EPUBConfig.vi_title),
-        "zh": (repo_root / "zh", "claude-howto-guide-zh.epub", EPUBConfig.zh_title),
-        "ja": (repo_root / "ja", "claude-howto-guide-ja.epub", EPUBConfig.ja_title),
+        "ko": (repo_root, "claude-howto-guide.epub", EPUBConfig.ko_title),
     }
     root, default_output_name, title = lang_map[args.lang]
     output = args.output or (repo_root / default_output_name)

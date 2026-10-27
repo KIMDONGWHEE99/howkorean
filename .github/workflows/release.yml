@@ -14,7 +14,7 @@ jobs:
       # whichever languages built successfully.
       fail-fast: false
       matrix:
-        lang: [en, vi, zh]
+        lang: [ko]
 
     steps:
       - uses: actions/checkout@v4
@@ -27,6 +27,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
+      # The Korean cover text needs a Hangul font (build_epub.py falls back
+      # to the English cover text without one).
+      - name: Install Korean fonts
+        run: sudo apt-get update && sudo apt-get install -y fonts-nanum
 
       - name: Install Python dependencies
         run: |
