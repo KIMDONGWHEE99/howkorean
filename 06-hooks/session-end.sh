@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
-# SessionEnd hook: records the modules worked on, then appends a session record
-# to ~/.claude-howto-progress.json for persistent learning progress tracking.
+# SessionEnd 훅: 작업한 모듈을 기록한 다음, 학습 진도를 계속 추적할 수 있도록
+# ~/.claude-howto-progress.json에 세션 기록을 덧붙입니다.
 #
-# Fires once when the Claude Code session terminates — not after every response.
-# Hooks run without a controlling terminal (/dev/tty is unavailable), so modules and
-# notes come from the CLAUDE_HOWTO_MODULES / CLAUDE_HOWTO_NOTES environment variables.
+# 응답할 때마다가 아니라 Claude Code 세션이 끝날 때 한 번만 실행됩니다.
+# 훅은 제어 터미널 없이 실행되므로(/dev/tty를 쓸 수 없음), 모듈과 메모는
+# CLAUDE_HOWTO_MODULES / CLAUDE_HOWTO_NOTES 환경 변수에서 가져옵니다.
 #
-# Install: add to .claude/settings.json under the "SessionEnd" event (see below).
+# 설치: .claude/settings.json의 "SessionEnd" 이벤트 아래에 추가하세요(아래 참고).
 
 PROGRESS_FILE="$HOME/.claude-howto-progress.json"
 
-# Guard: only run inside this repo
+# 보호 장치: 이 저장소 안에서만 실행
 if [[ "$CLAUDE_PROJECT_DIR" != *"claude-howto"* ]] && [[ "$PWD" != *"claude-howto"* ]]; then
   exit 0
 fi
 
-# Create progress file if it doesn't exist
+# 진도 파일이 없으면 만들기
 if [ ! -f "$PROGRESS_FILE" ]; then
   echo '{"sessions":[]}' > "$PROGRESS_FILE"
 fi
@@ -29,7 +29,7 @@ echo " Claude Code — Learning Session End"
 echo " $DATE $TIME"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-# Modules worked on, e.g. launch with: CLAUDE_HOWTO_MODULES=06,07 claude
+# 작업한 모듈. 예: CLAUDE_HOWTO_MODULES=06,07 claude 로 시작
 # 01=Slash  02=Memory  03=Skills  04=Subagents  05=MCP
 # 06=Hooks  07=Plugins 08=Checkpoints 09=Advanced 10=CLI
 INPUT="${CLAUDE_HOWTO_MODULES:-}"
@@ -40,11 +40,11 @@ if [ -z "$INPUT" ] || [ "$INPUT" = "skip" ]; then
   exit 0
 fi
 
-# Map short numbers to module names (for loop avoids pipeline+while, which bash 3.2 can't parse)
+# 짧은 번호를 모듈 이름으로 변환(bash 3.2가 파싱하지 못하는 파이프라인+while 대신 for 반복문 사용)
 IFS=',' read -ra PARTS <<< "$INPUT"
 MODULES_JSON=""
 for m in "${PARTS[@]}"; do
-  m="${m// /}"  # strip spaces
+  m="${m// /}"  # 공백 제거
   case "$m" in
     01) label='"01-slash-commands"' ;;
     02) label='"02-memory"' ;;
@@ -61,11 +61,11 @@ for m in "${PARTS[@]}"; do
   MODULES_JSON="${MODULES_JSON:+$MODULES_JSON,}$label"
 done
 
-# Optional notes, e.g. CLAUDE_HOWTO_NOTES="tried the pre-commit example"
+# 선택 사항인 메모. 예: CLAUDE_HOWTO_NOTES="pre-commit 예제를 해 봄"
 NOTES="${CLAUDE_HOWTO_NOTES:-}"
 
-# Pass NOTES as a separate argument so Python handles JSON escaping —
-# avoids broken JSON when notes contain quotes or backslashes.
+# JSON 이스케이프를 Python이 처리하도록 NOTES를 별도 인수로 넘김 —
+# 메모에 따옴표나 백슬래시가 들어 있어도 JSON이 깨지지 않음.
 python3 - "$PROGRESS_FILE" "$DATE" "$TIME" "$MODULES_JSON" "$NOTES" <<'PYEOF'
 import sys, json
 

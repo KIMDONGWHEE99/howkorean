@@ -1,24 +1,24 @@
 #!/bin/bash
-# Check for known vulnerabilities in dependencies after manifest files are modified.
-# Hook: PostToolUse (matcher: Write)
+# 매니페스트 파일이 수정되면 의존성에 알려진 취약점이 있는지 확인합니다.
+# 훅: PostToolUse (matcher: Write)
 #
-# Reads the target file path from stdin JSON (Claude Code hook protocol).
-# Source: https://code.claude.com/docs/en/hooks
+# stdin으로 들어오는 JSON에서 대상 파일 경로를 읽습니다(Claude Code 훅 프로토콜).
+# 출처: https://code.claude.com/docs/ko/hooks
 
-# Read JSON input from stdin (Claude Code hook protocol)
+# stdin에서 JSON 입력 읽기(Claude Code 훅 프로토콜)
 INPUT=$(cat)
 
-# Extract file_path using sed (compatible with all platforms)
+# sed로 file_path 추출(모든 플랫폼과 호환)
 FILE=$(echo "$INPUT" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
 
 if [ -z "$FILE" ]; then
   exit 0
 fi
 
-# Use basename for matching — file_path may be an absolute path
+# 매칭에는 basename 사용 — file_path가 절대 경로일 수 있음
 BASENAME=$(basename "$FILE")
 
-# Only run when a dependency manifest is written
+# 의존성 매니페스트를 쓸 때만 실행
 case "$BASENAME" in
   package.json|package-lock.json|yarn.lock|pnpm-lock.yaml| \
   requirements.txt|Pipfile|Pipfile.lock|pyproject.toml| \
@@ -140,7 +140,7 @@ if [[ "$BASENAME" == Gemfile || "$BASENAME" == Gemfile.lock ]]; then
   fi
 fi
 
-# ── Generic fallback: trivy ──────────────────────────────────────────────────
+# ── 범용 대체: trivy ──────────────────────────────────────────────────────────
 if command -v trivy &>/dev/null; then
   echo "🔍 Running trivy fs scan..."
   if ! trivy fs --exit-code 1 --severity HIGH,CRITICAL --quiet . 2>/dev/null; then
@@ -158,5 +158,5 @@ else
   echo "   This hook is advisory only and will not block your workflow."
 fi
 
-# Always exit 0 — this hook warns but does not block
+# 항상 0으로 종료 — 이 훅은 경고만 하고 차단하지 않음
 exit 0

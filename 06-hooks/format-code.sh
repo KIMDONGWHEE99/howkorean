@@ -1,23 +1,23 @@
 #!/bin/bash
-# Auto-format code after writing
-# Hook: PostToolUse (matcher: Write)
+# 파일을 쓴 뒤 코드 자동 포맷팅
+# 훅: PostToolUse (matcher: Write)
 #
-# Reads the target file path from stdin JSON and runs the appropriate formatter
-# in-place on the file after Claude writes it.
+# stdin으로 들어오는 JSON에서 대상 파일 경로를 읽고, Claude가 파일을 쓴 뒤
+# 그 파일에 알맞은 포매터를 실행해 제자리에서 고칩니다.
 #
-# Compatible with: macOS, Linux, Windows (Git Bash)
+# 호환: macOS, Linux, Windows(Git Bash)
 
-# Read JSON input from stdin (Claude Code hook protocol)
+# stdin에서 JSON 입력 읽기(Claude Code 훅 프로토콜)
 INPUT=$(cat)
 
-# Extract file_path using sed (compatible with all platforms)
+# sed로 file_path 추출(모든 플랫폼과 호환)
 FILE_PATH=$(echo "$INPUT" | sed -n 's/.*"file_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
 
 if [ -z "$FILE_PATH" ] || [ ! -f "$FILE_PATH" ]; then
   exit 0
 fi
 
-# Detect file type and format accordingly
+# 파일 유형을 감지해 그에 맞게 포맷팅
 case "$FILE_PATH" in
   *.js|*.jsx|*.ts|*.tsx)
     if command -v prettier &> /dev/null; then

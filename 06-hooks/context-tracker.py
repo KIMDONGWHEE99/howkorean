@@ -1,44 +1,44 @@
 #!/usr/bin/env python3
 """
-Context Usage Tracker - Tracks token consumption per request.
+컨텍스트 사용량 추적기 - 요청마다 토큰 소비량을 추적합니다.
 
-Uses UserPromptSubmit as "pre-message" hook and Stop as "post-response" hook
-to calculate the delta in token usage for each request.
+UserPromptSubmit을 "메시지 전" 훅으로, Stop을 "응답 후" 훅으로 써서
+요청마다 토큰 사용량의 차이를 계산합니다.
 
-This version uses character-based estimation (no dependencies).
-For better accuracy, see context-tracker-tiktoken.py.
+이 버전은 글자 수 기반 추정을 씁니다(의존성 없음).
+더 정확하게 계산하려면 context-tracker-tiktoken.py를 참고하세요.
 
-Usage:
-    Configure both hooks to use the same script:
-    - UserPromptSubmit: saves current token count
-    - Stop: calculates delta and reports usage
+사용법:
+    두 훅이 같은 스크립트를 쓰도록 설정하세요:
+    - UserPromptSubmit: 현재 토큰 수 저장
+    - Stop: 차이를 계산하고 사용량 보고
 """
 import json
 import os
 import sys
 import tempfile
 
-# Configuration
-CONTEXT_LIMIT = 1000000  # 1M on Opus 5, Sonnet 5, Opus 4.8, Sonnet 4.6; 200000 on Haiku 4.5 (adjust for your model)
+# 설정
+CONTEXT_LIMIT = 1000000  # Opus 5, Sonnet 5, Opus 4.8, Sonnet 4.6은 1M, Haiku 4.5는 200000(사용하는 모델에 맞게 조정)
 
 
 def get_state_file(session_id: str) -> str:
-    """Get temp file path for storing pre-message token count, isolated by session."""
+    """메시지 전 토큰 수를 저장할, 세션별로 분리된 임시 파일 경로를 가져옵니다."""
     return os.path.join(tempfile.gettempdir(), f"claude-context-{session_id}.json")
 
 
 def count_tokens_estimate(text: str) -> int:
     """
-    Estimate token count using character-based approximation.
+    글자 수 기반 근삿값으로 토큰 수를 추정합니다.
 
-    Uses ~4 characters per token ratio, which provides ~80-90% accuracy
-    for English text. Less accurate for code and non-English text.
+    토큰당 약 4글자 비율을 쓰며, 영어 텍스트에서는 약 80-90% 정확도를 보입니다.
+    코드나 영어가 아닌 텍스트(한국어 등)에서는 덜 정확합니다.
     """
     return len(text) // 4
 
 
 def read_transcript(transcript_path: str) -> str:
-    """Read and concatenate all content from transcript file."""
+    """대화 기록 파일의 내용을 모두 읽어 하나로 합칩니다."""
     if not transcript_path or not os.path.exists(transcript_path):
         return ""
 
@@ -47,7 +47,7 @@ def read_transcript(transcript_path: str) -> str:
         for line in f:
             try:
                 entry = json.loads(line.strip())
-                # Extract text content from various message formats
+                # 여러 메시지 형식에서 텍스트 내용 추출
                 if "message" in entry:
                     msg = entry["message"]
                     if isinstance(msg.get("content"), str):
@@ -63,28 +63,28 @@ def read_transcript(transcript_path: str) -> str:
 
 
 def handle_user_prompt_submit(data: dict) -> None:
-    """Pre-message hook: Save current token count before request."""
+    """메시지 전 훅: 요청 전에 현재 토큰 수를 저장합니다."""
     session_id = data.get("session_id", "unknown")
     transcript_path = data.get("transcript_path", "")
 
     transcript_content = read_transcript(transcript_path)
     current_tokens = count_tokens_estimate(transcript_content)
 
-    # Save to temp file for later comparison
+    # 나중에 비교하도록 임시 파일에 저장
     state_file = get_state_file(session_id)
     with open(state_file, "w") as f:
         json.dump({"pre_tokens": current_tokens}, f)
 
 
 def handle_stop(data: dict) -> None:
-    """Post-response hook: Calculate and report token delta."""
+    """응답 후 훅: 토큰 차이를 계산하고 보고합니다."""
     session_id = data.get("session_id", "unknown")
     transcript_path = data.get("transcript_path", "")
 
     transcript_content = read_transcript(transcript_path)
     current_tokens = count_tokens_estimate(transcript_content)
 
-    # Load pre-message count
+    # 메시지 전 토큰 수 불러오기
     state_file = get_state_file(session_id)
     pre_tokens = 0
     if os.path.exists(state_file):
@@ -95,12 +95,12 @@ def handle_stop(data: dict) -> None:
         except (json.JSONDecodeError, IOError):
             pass
 
-    # Calculate delta
+    # 차이 계산
     delta_tokens = current_tokens - pre_tokens
     remaining = CONTEXT_LIMIT - current_tokens
     percentage = (current_tokens / CONTEXT_LIMIT) * 100
 
-    # Report usage (stderr so it doesn't interfere with hook output)
+    # 사용량 보고(훅 출력과 섞이지 않도록 stderr로)
     print(
         f"Context (estimated): ~{current_tokens:,} tokens "
         f"({percentage:.1f}% used, ~{remaining:,} remaining)",

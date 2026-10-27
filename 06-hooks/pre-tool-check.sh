@@ -1,15 +1,15 @@
 #!/bin/bash
-# Pre-tool safety check for Bash commands
-# Hook: PreToolUse (matcher: Bash)
+# Bash 명령어 실행 전 안전 검사
+# 훅: PreToolUse (matcher: Bash)
 #
-# This hook runs before every Bash tool execution and blocks or warns on
-# potentially destructive or high-risk shell commands.
+# 이 훅은 Bash 도구가 실행되기 전마다 실행되어, 파괴적이거나 위험도가 높을 수 있는
+# 셸 명령어를 차단하거나 경고합니다.
 #
-# Setup:
+# 설정:
 #   cp 06-hooks/pre-tool-check.sh ~/.claude/hooks/
 #   chmod +x ~/.claude/hooks/pre-tool-check.sh
 #
-# Configure in ~/.claude/settings.json:
+# ~/.claude/settings.json에서 설정:
 #   {
 #     "hooks": {
 #       "PreToolUse": [
@@ -26,38 +26,38 @@
 #     }
 #   }
 #
-# Input: JSON via stdin with the shape:
+# 입력: 다음 형태의 JSON이 stdin으로 들어옴:
 #   { "tool_name": "Bash", "tool_input": { "command": "..." } }
 #
-# Output convention (per Claude Code hook protocol):
-#   - exit 0 → allow. stdout may contain JSON (hookSpecificOutput); stderr
-#     is silently discarded, so warnings printed to stderr are NOT visible.
-#     For observability on allowed commands, write to an audit log file.
-#   - exit 2 → block. stderr is surfaced back to Claude as the block reason.
-#     Any echo explaining *why* a command was blocked MUST be redirected to
-#     stderr with `>&2`, otherwise Claude Code reports "No stderr output".
+# 출력 규칙(Claude Code 훅 프로토콜 기준):
+#   - exit 0 → 허용. stdout에는 JSON(hookSpecificOutput)을 담을 수 있음. stderr는
+#     아무 알림 없이 버려지므로, stderr로 출력한 경고는 보이지 않음.
+#     허용된 명령어를 관찰하려면 감사 로그 파일에 기록하세요.
+#   - exit 2 → 차단. stderr가 차단 이유로 Claude에게 전달됨.
+#     명령어가 *왜* 차단되었는지 설명하는 echo는 반드시 `>&2`로 stderr에
+#     보내야 함. 그렇지 않으면 Claude Code가 "No stderr output"이라고 보고함.
 #
-# Audit log: every invocation is recorded to
+# 감사 로그: 모든 호출이 판정 결과(BLOCK/WARN/ALLOW)와 함께
 #   $CLAUDE_PROJECT_DIR/.claude/hooks/audit.log
-# with the decision (BLOCK/WARN/ALLOW), so you can observe WARN-tier
-# matches even though their stderr output is dropped by Claude Code.
+# 에 기록되므로, Claude Code가 stderr 출력을 버리더라도 WARN 단계에
+# 걸린 명령어를 확인할 수 있음.
 
-# Read the full JSON input from stdin
+# stdin에서 JSON 입력 전체 읽기
 INPUT=$(cat)
 
-# Extract the command using portable sed (compatible with macOS and Linux)
+# 이식성 있는 sed로 명령어 추출(macOS, Linux와 호환)
 COMMAND=$(echo "$INPUT" | sed -n 's/.*"command"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
 
-# Fall back to the raw input if extraction fails
+# 추출에 실패하면 원래 입력을 그대로 사용
 if [ -z "$COMMAND" ]; then
   COMMAND="$INPUT"
 fi
 
-# ── Audit log ─────────────────────────────────────────────────────────────────
-# Records every invocation with the final decision. This is the only reliable
-# way to observe the WARN tier, because Claude Code silently drops stderr on
-# exit 0. Falls back to $(pwd) when the hook is invoked outside Claude Code
-# (e.g. for local testing).
+# ── 감사 로그 ─────────────────────────────────────────────────────────────────
+# 모든 호출을 최종 판정과 함께 기록합니다. exit 0일 때 Claude Code가 stderr를
+# 아무 알림 없이 버리므로, WARN 단계를 확인할 수 있는 유일하게 확실한 방법입니다.
+# 훅을 Claude Code 밖에서(예: 로컬 테스트) 호출하면 $(pwd)를
+# 대신 사용합니다.
 LOG_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}/.claude/hooks"
 LOG_FILE="$LOG_DIR/audit.log"
 mkdir -p "$LOG_DIR" 2>/dev/null
@@ -65,35 +65,35 @@ log_decision() {
   echo "$(date -u +%FT%TZ) [$1] $COMMAND" >> "$LOG_FILE"
 }
 
-# ── Blocked patterns ──────────────────────────────────────────────────────────
-# These commands are blocked unconditionally because they are almost always
-# destructive and rarely intentional in an automated context.
+# ── 차단 패턴 ─────────────────────────────────────────────────────────────────
+# 이 명령어들은 거의 항상 파괴적이고 자동화된 맥락에서 의도한 경우가 드물기
+# 때문에 무조건 차단합니다.
 
 BLOCKED_PATTERNS=(
-  # Anchor `rm -rf /` so `/` must be followed by whitespace or end of line,
-  # otherwise substring matching would falsely flag e.g. `rm -rf /tmp/foo`.
+  # `rm -rf /` 뒤에 공백이나 줄 끝이 와야 하도록 고정합니다. 그렇지 않으면
+  # 부분 문자열 매칭 때문에 `rm -rf /tmp/foo` 같은 명령어까지 잘못 걸립니다.
   "rm -rf /([[:space:]]|$)"
   "rm -rf \*"
   "dd if=/dev/zero"
   "dd if=/dev/random"
-  ":\(\)\{:\|:&\};:"  # Fork bomb (regex metachars escaped)
-  "mkfs\."           # Filesystem format
-  "format c:"        # Windows disk format
+  ":\(\)\{:\|:&\};:"  # 포크 폭탄(정규식 메타 문자는 이스케이프)
+  "mkfs\."           # 파일 시스템 포맷
+  "format c:"        # Windows 디스크 포맷
 )
 
 for pattern in "${BLOCKED_PATTERNS[@]}"; do
   if echo "$COMMAND" | grep -qE "$pattern"; then
     log_decision "BLOCK:$pattern"
-    # These echoes MUST go to stderr — Claude Code surfaces stderr as the
-    # block reason on exit 2. Writing to stdout would show "No stderr output".
+    # 이 echo들은 반드시 stderr로 보내야 함 — exit 2일 때 Claude Code는 stderr를
+    # 차단 이유로 보여 줌. stdout에 쓰면 "No stderr output"이 표시됨.
     echo "❌ Blocked: Potentially destructive command detected: $pattern" >&2
     echo "   Command: $COMMAND" >&2
     exit 2
   fi
 done
 
-# ── Warning patterns ──────────────────────────────────────────────────────────
-# These patterns are risky but may be intentional. Log a warning and allow.
+# ── 경고 패턴 ─────────────────────────────────────────────────────────────────
+# 위험하지만 의도한 것일 수도 있는 패턴입니다. 경고를 기록하고 허용합니다.
 
 WARNING_PATTERNS=(
   "rm -rf"
@@ -111,9 +111,9 @@ MATCHED_WARNINGS=""
 for pattern in "${WARNING_PATTERNS[@]}"; do
   if echo "$COMMAND" | grep -qi "$pattern"; then
     MATCHED_WARNINGS="${MATCHED_WARNINGS:+$MATCHED_WARNINGS,}$pattern"
-    # Mirror the warning on stderr for humans running the hook manually.
-    # Claude Code drops this on exit 0 — the audit log is the reliable
-    # record (see WARN entries).
+    # 훅을 직접 실행하는 사람을 위해 stderr에도 경고를 출력합니다.
+    # exit 0이면 Claude Code는 이 출력을 버리므로, 확실한 기록은 감사 로그입니다
+    # (WARN 항목 참고).
     echo "⚠️  Warning: High-risk operation detected: $pattern" >&2
   fi
 done
@@ -126,5 +126,5 @@ else
   log_decision "ALLOW"
 fi
 
-# ── Allow ─────────────────────────────────────────────────────────────────────
+# ── 허용 ──────────────────────────────────────────────────────────────────────
 exit 0

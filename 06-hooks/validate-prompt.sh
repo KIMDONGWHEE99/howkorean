@@ -1,23 +1,23 @@
 #!/bin/bash
-# Validate user prompts
-# Hook: UserPromptSubmit
+# 사용자 프롬프트 검증
+# 훅: UserPromptSubmit
 #
-# Reads the user prompt from stdin JSON and blocks dangerous operations.
+# stdin으로 들어오는 JSON에서 사용자 프롬프트를 읽어 위험한 작업을 차단합니다.
 #
-# Compatible with: macOS, Linux, Windows (Git Bash)
+# 호환: macOS, Linux, Windows(Git Bash)
 
-# Read JSON input from stdin (Claude Code hook protocol)
+# stdin에서 JSON 입력 읽기(Claude Code 훅 프로토콜)
 INPUT=$(cat)
 
-# Extract the prompt text from JSON input
-# Claude Code sends the UserPromptSubmit text in the "prompt" field
+# JSON 입력에서 프롬프트 텍스트 추출
+# Claude Code는 UserPromptSubmit 텍스트를 "prompt" 필드에 담아 보냄
 PROMPT=$(echo "$INPUT" | sed -n 's/.*"prompt"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
 
 if [ -z "$PROMPT" ]; then
   exit 0
 fi
 
-# Check for dangerous operations
+# 위험한 작업 확인
 DANGEROUS_PATTERNS=(
   "rm -rf /"
   "delete database"
@@ -33,7 +33,7 @@ for pattern in "${DANGEROUS_PATTERNS[@]}"; do
   fi
 done
 
-# Check for production deployments
+# 프로덕션 배포 확인
 if echo "$PROMPT" | grep -qiE "(deploy|push).*production"; then
   if [ ! -f ".deployment-approved" ]; then
     echo '{"decision": "block", "reason": "Production deployment requires approval. Create .deployment-approved file to proceed."}'
@@ -41,7 +41,7 @@ if echo "$PROMPT" | grep -qiE "(deploy|push).*production"; then
   fi
 fi
 
-# Check for required context in certain operations
+# 특정 작업에 필요한 컨텍스트가 있는지 확인
 if echo "$PROMPT" | grep -qi "refactor"; then
   if [ ! -d "tests" ] && [ ! -d "test" ]; then
     printf '{"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": "Warning: Refactoring without tests may be risky. Consider writing tests first."}}'
