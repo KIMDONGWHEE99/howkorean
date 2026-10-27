@@ -133,7 +133,7 @@ Claude Code는 도구 사용을 어떻게 승인할지 정하는 6가지 권한 
 | `bypassPermissions` | 모든 권한 확인 건너뛰기 | CI/CD, 헤드리스 환경 |
 | `dontAsk` | 권한이 필요한 도구는 건너뛰기 | 비대화형 스크립팅 |
 
-> **참고**: `auto` 모드는 대상 요금제, 모델, 제공자 조건을 갖춰야 쓸 수 있습니다 — [09-advanced-features/](09-advanced-features/#auto-mode)를 참고하세요. `bypassPermissions`는 신뢰할 수 있는 샌드박스 환경에서만 쓰세요.
+> **참고**: `auto` 모드는 대상 요금제, 모델, 제공자 조건을 갖춰야 쓸 수 있습니다 — [09-advanced-features/](09-advanced-features/#자동-모드)를 참고하세요. `bypassPermissions`는 신뢰할 수 있는 샌드박스 환경에서만 쓰세요.
 
 **참고**: [공식 문서](https://code.claude.com/docs/ko/permissions)
 
@@ -485,19 +485,19 @@ cp 02-memory/personal-CLAUDE.md ~/.claude/CLAUDE.md
 | **/tui** | 터미널 UI 렌더러 설정: 깜빡임 없는 렌더링은 `/tui fullscreen`, 되돌리려면 `/tui default`. 인수 없이 `/tui`를 입력하면 현재 렌더러 출력(v2.1.110) | 전체 화면 터미널이나 tmux에서 `/tui fullscreen` 사용 |
 | **/undo** | `/rewind`의 별칭(v2.1.108) | `/undo`, `/checkpoint`, `/rewind`를 같은 용도로 사용 |
 | **Monitor 도구** | 폴링하는 대신 백그라운드 명령어의 stdout 스트림을 지켜보다가 이벤트에 반응(v2.1.98+) | [고급 기능](09-advanced-features/)에서 Monitor 도구 사용법 참고 |
-| **출력 스타일** | 시스템 프롬프트로 Claude의 역할, 톤, 기본 응답 형식을 변경. 기본 제공: Default, Proactive, Explanatory, Learning, Concise | `/config` → Output style, `outputStyle` 설정, 또는 `/output-style` 실행(v2.1.91에서 제거됐다가 v2.1.269에서 다시 추가). [고급 기능](09-advanced-features/#output-styles) 참고 |
-| **상태 표시줄** | 세션, 모델, 비용, 컨텍스트 JSON을 stdin으로 받는 명령어로 사용자 정의 상태 표시줄 렌더링 | `/statusline` 또는 `statusLine` 설정. [고급 기능](09-advanced-features/#status-line) 참고 |
+| **출력 스타일** | 시스템 프롬프트로 Claude의 역할, 톤, 기본 응답 형식을 변경. 기본 제공: Default, Proactive, Explanatory, Learning, Concise | `/config` → Output style, `outputStyle` 설정, 또는 `/output-style` 실행(v2.1.91에서 제거됐다가 v2.1.269에서 다시 추가). [고급 기능](09-advanced-features/#출력-스타일) 참고 |
+| **상태 표시줄** | 세션, 모델, 비용, 컨텍스트 JSON을 stdin으로 받는 명령어로 사용자 정의 상태 표시줄 렌더링 | `/statusline` 또는 `statusLine` 설정. [고급 기능](09-advanced-features/#상태-표시줄) 참고 |
 | **커뮤니티 마켓플레이스** | Anthropic의 자동 검증을 통과한 서드파티 플러그인. 각 플러그인은 커밋 SHA로 고정됨 | `/plugin marketplace add anthropics/claude-plugins-community` 실행 후 `/plugin install <name>@claude-community` |
 | **/team-onboarding** | 프로젝트의 Claude Code 설정으로 팀원 적응 가이드 자동 생성(v2.1.101) | 프로젝트에서 `/team-onboarding` 실행 |
 | **Remote Control** | API로 Claude Code 세션을 원격 제어. **더 이상 연구 미리보기가 아닙니다** — `claude remote-control`을 실행 중인 컴퓨터는 모두 Claude 앱의 Code 탭에 기기 카드로 나타나므로 휴대폰에서 그 컴퓨터로 세션을 시작할 수 있습니다 | 컴퓨터에서 `claude remote-control`을 실행한 뒤 Claude 앱에서 기기 카드 선택. [고급 기능](09-advanced-features/README.md) 참고 |
 | **웹 세션** | 클라우드 세션에서 Claude Code 실행 | `claude --cloud "task"`나 claude.ai/code에서 시작 |
 | **데스크톱 앱** | Claude Code용 네이티브 데스크톱 애플리케이션 | `/desktop`을 쓰거나 Anthropic 웹사이트에서 다운로드 |
-| **세션 간 메시징** | 세션끼리 메시지를 주고받음 — 내 다른 컴퓨터와 클라우드 세션 포함, `ListAgents`로 찾음(macOS/Linux v2.1.224+, 네이티브 Windows v2.1.234+) | [고급 기능](09-advanced-features/README.md#cross-session-messaging) 참고. 받는 메시지는 `crossSessionInbound`로 제어 |
+| **세션 간 메시징** | 세션끼리 메시지를 주고받음 — 내 다른 컴퓨터와 클라우드 세션 포함, `ListAgents`로 찾음(macOS/Linux v2.1.224+, 네이티브 Windows v2.1.234+) | [고급 기능](09-advanced-features/README.md#세션-간-메시지) 참고. 받는 메시지는 `crossSessionInbound`로 제어 |
 | **자체 호스팅 러너** | Claude Code 웹, 모바일, 데스크톱 세션을 내 컴퓨터나 컨테이너에서 실행(v2.1.224+, Team/Enterprise) | `claude self-hosted-runner setup`. [CLI](10-cli/README.md) 참고 |
 | **`archive` 플러그인 소스** | HTTPS zip에서 플러그인 설치. 선택적으로 `sha256`으로 고정(v2.1.224+) | [플러그인](07-plugins/README.md#archive-소스-v21224) 참고 |
 | **`command` 플러그인 소스** | 로컬에 설치된 도구가 플러그인 디렉토리 경로를 출력(v2.1.229+) | [플러그인](07-plugins/README.md#command-소스-v21229) 참고 |
 | **마켓플레이스 소유자 와일드카드** | `"owner/*"`로 GitHub 소유자 아래의 모든 마켓플레이스 저장소를 허용하거나 차단 — `strictKnownMarketplaces`와 `blockedMarketplaces`에서만(v2.1.223+) | [플러그인](07-plugins/README.md#마켓플레이스-설정) 참고 |
-| **샌드박스 자격 증명 마스킹** | 샌드박스 안의 명령어는 대리 값(sentinel)을 읽고, 프록시가 외부로 나가는 요청에서 실제 비밀 정보로 바꿔 넣음(v2.1.221+, Linux/WSL) | [고급 기능](09-advanced-features/README.md#credential-masking-v21221-v21224) 참고 |
+| **샌드박스 자격 증명 마스킹** | 샌드박스 안의 명령어는 대리 값(sentinel)을 읽고, 프록시가 외부로 나가는 요청에서 실제 비밀 정보로 바꿔 넣음(v2.1.221+, Linux/WSL) | [고급 기능](09-advanced-features/README.md#자격-증명-마스킹-v21221-v21224) 참고 |
 | **에이전트 팀** | 관련된 작업을 하는 여러 에이전트를 조율 | 협업하며 컨텍스트를 공유하는 팀원 에이전트 구성 |
 | **작업 목록** | 백그라운드 작업 관리와 모니터링 | `/tasks`로 백그라운드 작업 보기와 관리 |
 | **프롬프트 제안** | 컨텍스트를 반영한 명령어 제안 | 현재 컨텍스트에 따라 제안이 자동으로 나타남 |
@@ -525,7 +525,7 @@ cp 02-memory/personal-CLAUDE.md ~/.claude/CLAUDE.md
 | **`spellcheck` 설정** | `PATH`에 있는 aspell, hunspell, ispell 중 하나로 프롬프트 입력의 맞춤법 오류에 밑줄 표시. 기본값은 꺼짐(v2.1.235) | 검사기를 설치한 뒤 `~/.claude/settings.json`에 `"spellcheck": { "enabled": true }` 설정. 사용자 설정, `--settings`, 관리형 설정에서만 읽고 프로젝트 설정에서는 무시됨. [고급 기능](09-advanced-features/) 참고 |
 | **에이전트 팀 기본 모델** | `/config`의 "Default teammate model" 설정이 제거됨. 이제 생성 호출에서 따로 지정하지 않는 한 팀원은 기본으로 팀 리더의 모델을 상속(v2.1.234) | [서브에이전트 — 에이전트 팀](04-subagents/README.md#에이전트-팀실험적-기능) 참고 |
 | **`/design`** | 디자인 캔버스 — 아티팩트를 바탕으로 만들고 코드가 아니라 시각적으로 다듬는, 여러 아트보드로 구성된 시각 디자인(UI 목업, 화면 흐름, 랜딩 페이지, 포스터). v2.1.265+ 필요, Pro/Max/Team/Enterprise | CLI나 데스크톱 앱에서 `/design` 실행. [슬래시 명령어](01-slash-commands/README.md) 참고 |
-| **`notify_when_idle`** | 같은 컴퓨터의 다른 세션에 다음에 유휴 상태가 될 때 알림을 한 번 보내 달라고 요청하는 세션 간 `SendMessage` 입력 — 선택 기능, 일회성, 폴링 없음(v2.1.236). 관련 변경: `ListAgents`가 세션 자신의 이름을 알려 주고 실행 중인 팀원을 나열하며, Windows에서도 세션 간 메시징을 쓸 수 있게 됨(v2.1.239) | `SendMessage`에 `notify_when_idle` 전달. [고급 기능](09-advanced-features/README.md#cross-session-messaging) 참고 |
+| **`notify_when_idle`** | 같은 컴퓨터의 다른 세션에 다음에 유휴 상태가 될 때 알림을 한 번 보내 달라고 요청하는 세션 간 `SendMessage` 입력 — 선택 기능, 일회성, 폴링 없음(v2.1.236). 관련 변경: `ListAgents`가 세션 자신의 이름을 알려 주고 실행 중인 팀원을 나열하며, Windows에서도 세션 간 메시징을 쓸 수 있게 됨(v2.1.239) | `SendMessage`에 `notify_when_idle` 전달. [고급 기능](09-advanced-features/README.md#세션-간-메시지) 참고 |
 | **플러그인 매니페스트 필드** | `plugin.json`이 `workflows`, `channels`, `dependencies`(semver), `outputStyles`, `keywords`, `metadata`, `lspServers`, `experimental.themes` / `experimental.monitors`를 받음. CLI에 `claude plugin new`, `remove`/`rm`, `prune`/`autoremove`와 플래그 `--with`, `-f`/`--force`, `--available`, `--push`, `--dry-run`이 추가됨 | [플러그인](07-plugins/README.md) 참고 |
 | **제한 모드** | `--tools`에서 하나씩 지정하지 않는 한(`default` 프리셋으로는 안 됨) 명령어나 코드를 실행하는 기본 제공 도구(Bash, PowerShell 등)와 WebFetch를 제거합니다. 사용자·프로젝트·로컬 설정을 무시하고(관리형 설정과 `--settings`는 여전히 적용), 파일 도구를 작업 디렉토리로 제한하며, `bypassPermissions`를 거부하고, 클라우드 세션 생성도 거부합니다(v2.1.248+) | `claude --restricted` 또는 `CLAUDE_CODE_RESTRICTED=1`. [CLI](10-cli/README.md) 참고 |
 | **`/advisor` 텍스트 형식** | `/advisor`, `/advisor <model>`, `/advisor off`가 대화 상자뿐 아니라 데스크톱 앱, Remote Control, 기타 헤드리스(`-p` / Agent SDK) 세션에서 텍스트 명령어로도 동작(v2.1.260+) | 헤드리스 세션에서 `/advisor off` 입력. [슬래시 명령어](01-slash-commands/README.md) 참고 |
