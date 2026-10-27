@@ -494,9 +494,9 @@ cp 02-memory/personal-CLAUDE.md ~/.claude/CLAUDE.md
 | **데스크톱 앱** | Claude Code용 네이티브 데스크톱 애플리케이션 | `/desktop`을 쓰거나 Anthropic 웹사이트에서 다운로드 |
 | **세션 간 메시징** | 세션끼리 메시지를 주고받음 — 내 다른 컴퓨터와 클라우드 세션 포함, `ListAgents`로 찾음(macOS/Linux v2.1.224+, 네이티브 Windows v2.1.234+) | [고급 기능](09-advanced-features/README.md#cross-session-messaging) 참고. 받는 메시지는 `crossSessionInbound`로 제어 |
 | **자체 호스팅 러너** | Claude Code 웹, 모바일, 데스크톱 세션을 내 컴퓨터나 컨테이너에서 실행(v2.1.224+, Team/Enterprise) | `claude self-hosted-runner setup`. [CLI](10-cli/README.md) 참고 |
-| **`archive` 플러그인 소스** | HTTPS zip에서 플러그인 설치. 선택적으로 `sha256`으로 고정(v2.1.224+) | [플러그인](07-plugins/README.md#archive-source-v21224) 참고 |
-| **`command` 플러그인 소스** | 로컬에 설치된 도구가 플러그인 디렉토리 경로를 출력(v2.1.229+) | [플러그인](07-plugins/README.md#command-source-v21229) 참고 |
-| **마켓플레이스 소유자 와일드카드** | `"owner/*"`로 GitHub 소유자 아래의 모든 마켓플레이스 저장소를 허용하거나 차단 — `strictKnownMarketplaces`와 `blockedMarketplaces`에서만(v2.1.223+) | [플러그인](07-plugins/README.md#marketplace-configuration) 참고 |
+| **`archive` 플러그인 소스** | HTTPS zip에서 플러그인 설치. 선택적으로 `sha256`으로 고정(v2.1.224+) | [플러그인](07-plugins/README.md#archive-소스-v21224) 참고 |
+| **`command` 플러그인 소스** | 로컬에 설치된 도구가 플러그인 디렉토리 경로를 출력(v2.1.229+) | [플러그인](07-plugins/README.md#command-소스-v21229) 참고 |
+| **마켓플레이스 소유자 와일드카드** | `"owner/*"`로 GitHub 소유자 아래의 모든 마켓플레이스 저장소를 허용하거나 차단 — `strictKnownMarketplaces`와 `blockedMarketplaces`에서만(v2.1.223+) | [플러그인](07-plugins/README.md#마켓플레이스-설정) 참고 |
 | **샌드박스 자격 증명 마스킹** | 샌드박스 안의 명령어는 대리 값(sentinel)을 읽고, 프록시가 외부로 나가는 요청에서 실제 비밀 정보로 바꿔 넣음(v2.1.221+, Linux/WSL) | [고급 기능](09-advanced-features/README.md#credential-masking-v21221-v21224) 참고 |
 | **에이전트 팀** | 관련된 작업을 하는 여러 에이전트를 조율 | 협업하며 컨텍스트를 공유하는 팀원 에이전트 구성 |
 | **작업 목록** | 백그라운드 작업 관리와 모니터링 | `/tasks`로 백그라운드 작업 보기와 관리 |
