@@ -999,6 +999,8 @@ import re
 
 BLOCKED_PATTERNS = [
     (r"delete\s+(all\s+)?database", "Dangerous: database deletion"),
+    # 한국어 요청도 막음(예: "데이터베이스를 전부 삭제해 줘")
+    (r"데이터베이스\S*\s*(전부\s*|모두\s*|다\s*)?(삭제|지워|지우)", "Dangerous: database deletion"),
     (r"rm\s+-rf\s+/", "Dangerous: root deletion"),
 ]
 
