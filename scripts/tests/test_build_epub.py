@@ -22,11 +22,13 @@ from build_epub import (
     MermaidRenderError,
     ValidationError,
     _supports_hangul,
+    collect_folder_files,
     create_chapter_html,
     create_cover_image,
     extract_all_mermaid_blocks,
     flatten_svg_vars,
     get_chapter_order,
+    heading_title,
     setup_logging,
     validate_inputs,
 )
@@ -421,6 +423,51 @@ class TestChapterCollector:
         assert "01-test-chapter/README.md" in state.path_to_chapter
 
 
+class TestSectionTitles:
+    """Table-of-contents titles come from each file's own H1 heading."""
+
+    def test_heading_title_skips_frontmatter_and_code(self, tmp_path: Path) -> None:
+        md = tmp_path / "doc-refactor.md"
+        md.write_text(
+            "---\nname: doc-refactor\n---\n\n```bash\n# 주석일 뿐\n```\n\n"
+            "# **문서** 리팩토링\n\n본문\n"
+        )
+        assert heading_title(md) == "문서 리팩토링"
+
+    def test_heading_title_none_without_usable_h1(self, tmp_path: Path) -> None:
+        no_h1 = tmp_path / "commit.md"
+        no_h1.write_text("## 컨텍스트\n\n본문\n")
+        placeholder = tmp_path / "adr-template.md"
+        placeholder.write_text("# ADR [번호]: [제목]\n")
+        inline_code = tmp_path / "function-docs.md"
+        inline_code.write_text("# 함수: `functionName`\n")
+
+        assert heading_title(no_h1) is None
+        assert heading_title(placeholder) is None
+        assert heading_title(inline_code) is None
+
+    def test_collect_folder_files_uses_headings(self, tmp_path: Path) -> None:
+        chapter = tmp_path / "07-plugins"
+        plugin = chapter / "pr-review"
+        agents = plugin / "agents"
+        agents.mkdir(parents=True)
+        (chapter / "README.md").write_text("# 플러그인\n")
+        (chapter / "push-all.md").write_text("## 할 일\n")
+        (plugin / "README.md").write_text("# PR 리뷰 플러그인\n")
+        (agents / "security-reviewer.md").write_text("# 보안 리뷰어\n")
+        (agents / "test-checker.md").write_text("본문만 있음\n")
+
+        titles = [title for _, title in collect_folder_files(chapter)]
+
+        assert titles == [
+            "개요",
+            "Push All",
+            "PR 리뷰 플러그인",
+            "보안 리뷰어",
+            "Pr Review: Agents: Test Checker",
+        ]
+
+
 # =============================================================================
 # HTML Generation Tests
 # =============================================================================
@@ -454,6 +501,30 @@ class TestHTMLGeneration:
 
         assert "<h2>Section</h2>" in html
         assert "<h1>" not in html
+
+    def test_create_chapter_html_skips_label_matching_h1(self) -> None:
+        """A section that opens with its own H1 does not repeat it as a label."""
+        html = create_chapter_html(
+            display_name="체크포인트",
+            file_title="체크포인트 예제",
+            html_content='<h1 id="_1">체크포인트 예제</h1><p>본문</p>',
+            is_overview=False,
+        )
+
+        assert "<h2>" not in html
+        assert html.count("체크포인트 예제</h1>") == 1
+
+    def test_create_chapter_html_lang(self) -> None:
+        """Chapters declare the book language (Korean by default)."""
+        html = create_chapter_html(
+            display_name="개요",
+            file_title="개요",
+            html_content="<p>본문</p>",
+            is_overview=True,
+        )
+
+        assert 'lang="ko"' in html
+        assert 'lang="en"' not in html
 
     def test_html_escaping(self) -> None:
         """Test that HTML special characters are escaped."""

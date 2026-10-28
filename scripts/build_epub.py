@@ -516,36 +516,92 @@ def get_chapter_order() -> list[tuple[str, str]]:
     ]
 
 
-def collect_folder_files(folder_path: Path) -> list[tuple[Path, str]]:
-    """Collect all markdown files from a folder, README first."""
-    files: list[tuple[Path, str]] = []
+_FRONTMATTER_RE = re.compile(r"\A---\n.*?\n---\n", re.DOTALL)
+_FENCED_BLOCK_RE = re.compile(r"^(`{3,}|~{3,}).*?^\1[ \t]*$", re.DOTALL | re.MULTILINE)
+_H1_RE = re.compile(r"^#[ \t]+(.+?)(?:[ \t]+#+)?[ \t]*$", re.MULTILINE)
 
-    # Get README first if it exists
+
+def heading_title(md_file: Path) -> str | None:
+    """Return the first H1 heading of a markdown file as plain text, or None.
+
+    YAML frontmatter and fenced code blocks are skipped, so a ``# comment`` in
+    a bash example is not mistaken for a heading. Headings that hold template
+    placeholders (``[제목]``) or inline code are skipped as well: they make poor
+    table-of-contents entries, and the caller falls back to the file name.
+    """
+    try:
+        text = md_file.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return None
+    text = _FENCED_BLOCK_RE.sub("", _FRONTMATTER_RE.sub("", text))
+    match = _H1_RE.search(text)
+    if not match:
+        return None
+    title = match.group(1).replace("**", "").strip()
+    if not title or "[" in title or "`" in title:
+        return None
+    return title
+
+
+def _file_name_title(name: str) -> str:
+    """Build a display title from a file or folder name (``push-all`` -> ``Push All``)."""
+    return name.replace("-", " ").replace("_", " ").title()
+
+
+def _collect_folder_entries(
+    folder_path: Path, top_level: bool
+) -> list[tuple[Path, str, bool]]:
+    """Return ``(path, title, titled_from_heading)`` for each file, README first."""
+    entries: list[tuple[Path, str, bool]] = []
+
+    # The top-level README is the chapter overview; a subfolder README (a
+    # plugin or skill) is listed under its own heading when it has one.
     readme = folder_path / "README.md"
     if readme.exists():
-        files.append((readme, "개요"))
+        heading = None if top_level else heading_title(readme)
+        entries.append((readme, heading or "개요", heading is not None))
 
-    # Get all other markdown files
     for md_file in sorted(folder_path.glob("*.md")):
         if md_file.name != "README.md":
-            title = md_file.stem.replace("-", " ").replace("_", " ").title()
-            files.append((md_file, title))
+            heading = heading_title(md_file)
+            entries.append(
+                (
+                    md_file,
+                    heading or _file_name_title(md_file.stem),
+                    heading is not None,
+                )
+            )
 
-    # Recursively get subfolders
+    # Files titled by their own heading are self-describing; only the file-name
+    # fallbacks keep the "Subfolder: " prefix that tells them apart.
     for subfolder in sorted(folder_path.iterdir()):
         if subfolder.is_dir() and not subfolder.name.startswith("."):
-            subfiles = collect_folder_files(subfolder)
-            for sf, st in subfiles:
-                rel_path = sf.relative_to(folder_path)
-                if len(rel_path.parts) > 1:
-                    prefix = (
-                        rel_path.parts[0].replace("-", " ").replace("_", " ").title()
+            prefix = _file_name_title(subfolder.name)
+            for path, title, from_heading in _collect_folder_entries(
+                subfolder, top_level=False
+            ):
+                entries.append(
+                    (
+                        path,
+                        title if from_heading else f"{prefix}: {title}",
+                        from_heading,
                     )
-                    files.append((sf, f"{prefix}: {st}"))
-                else:
-                    files.append((sf, st))
+                )
 
-    return files
+    return entries
+
+
+def collect_folder_files(folder_path: Path) -> list[tuple[Path, str]]:
+    """Collect all markdown files from a folder, README first.
+
+    Each file is titled by its first H1 heading (the Korean title). Files
+    without a usable heading fall back to a title built from the file name,
+    prefixed with the subfolders they sit in.
+    """
+    return [
+        (path, title)
+        for path, title, _ in _collect_folder_entries(folder_path, top_level=True)
+    ]
 
 
 class ChapterCollector:
@@ -773,16 +829,29 @@ def create_cover_image(
 # =============================================================================
 
 
+def _starts_with_heading(html_content: str, title: str) -> bool:
+    """True when the content opens with an ``<h1>`` whose text is ``title``."""
+    match = re.match(r"\s*<h1[^>]*>(.*?)</h1>", html_content, re.DOTALL)
+    if not match:
+        return False
+    return html.unescape(re.sub(r"<[^>]+>", "", match.group(1))).strip() == title
+
+
 def create_chapter_html(
-    display_name: str, file_title: str, html_content: str, is_overview: bool = False
+    display_name: str,
+    file_title: str,
+    html_content: str,
+    is_overview: bool = False,
+    lang: str = "ko",
 ) -> str:
     """Create chapter HTML with proper escaping."""
     safe_display = html.escape(display_name)
     safe_title = html.escape(file_title)
+    safe_lang = html.escape(lang)
 
     if is_overview:
         return f"""<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{safe_lang}">
 <head>
     <meta charset="utf-8"/>
     <title>{safe_display}</title>
@@ -793,14 +862,20 @@ def create_chapter_html(
 </body>
 </html>"""
     else:
+        # A section titled by its own H1 would otherwise show that title twice.
+        label = (
+            ""
+            if _starts_with_heading(html_content, file_title)
+            else f"<h2>{safe_title}</h2>"
+        )
         return f"""<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{safe_lang}">
 <head>
     <meta charset="utf-8"/>
     <title>{safe_title}</title>
 </head>
 <body>
-    <h2>{safe_title}</h2>
+    {label}
     {html_content}
 </body>
 </html>"""
@@ -1100,13 +1175,14 @@ def build_epub_async(
         chapter = epub.EpubHtml(
             title=chapter_info.file_title,
             file_name=chapter_info.chapter_filename,
-            lang="en",
+            lang=config.language,
         )
 
         chapter.content = create_chapter_html(
             chapter_info.display_name,
             chapter_info.file_title,
             html_content,
+            lang=config.language,
             is_overview=chapter_info.is_folder_overview
             or chapter_info.folder_name is None,
         )

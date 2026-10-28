@@ -23,6 +23,7 @@ Build an EPUB ebook from the Claude How-To markdown files.
 ## Features
 
 - Organizes chapters by folder structure (01-slash-commands, 02-memory, etc.)
+- Titles each table-of-contents entry with the file's first H1 heading; files without one (or whose heading is a template placeholder) fall back to the file name
 - Renders Mermaid diagrams as SVG images with [Pele](https://github.com/obsidianmd/pele), a pinned bundle run by Node.js; CSS variables are flattened to plain colours on a white background so every EPUB reader shows them
 - Caches identical diagrams so each unique diagram is rendered only once
 - Generates a cover image from the project logo
