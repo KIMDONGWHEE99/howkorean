@@ -17,13 +17,17 @@ if [ -z "$PROMPT" ]; then
   exit 0
 fi
 
-# 위험한 작업 확인
+# 위험한 작업 확인(한국어 요청도 잡도록 같은 뜻의 한국어 표현을 함께 둠)
 DANGEROUS_PATTERNS=(
   "rm -rf /"
   "delete database"
   "drop database"
   "format disk"
   "dd if="
+  "데이터베이스 삭제"
+  "데이터베이스를 삭제"
+  "디스크 포맷"
+  "디스크를 포맷"
 )
 
 for pattern in "${DANGEROUS_PATTERNS[@]}"; do
@@ -33,8 +37,8 @@ for pattern in "${DANGEROUS_PATTERNS[@]}"; do
   fi
 done
 
-# 프로덕션 배포 확인
-if echo "$PROMPT" | grep -qiE "(deploy|push).*production"; then
+# 프로덕션 배포 확인(한국어는 "프로덕션에 배포"처럼 대상이 동사보다 먼저 옴)
+if echo "$PROMPT" | grep -qiE "(deploy|push).*production|(production|프로덕션|운영 ?서버|운영 ?환경|운영계).*(deploy|push|배포|푸시)"; then
   if [ ! -f ".deployment-approved" ]; then
     echo '{"decision": "block", "reason": "Production deployment requires approval. Create .deployment-approved file to proceed."}'
     exit 0
@@ -42,7 +46,7 @@ if echo "$PROMPT" | grep -qiE "(deploy|push).*production"; then
 fi
 
 # 특정 작업에 필요한 컨텍스트가 있는지 확인
-if echo "$PROMPT" | grep -qi "refactor"; then
+if echo "$PROMPT" | grep -qiE "refactor|리팩토|리팩터"; then
   if [ ! -d "tests" ] && [ ! -d "test" ]; then
     printf '{"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": "Warning: Refactoring without tests may be risky. Consider writing tests first."}}'
   fi

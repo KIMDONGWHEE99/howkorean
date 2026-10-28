@@ -54,6 +54,7 @@
 - **EPUB 빌드**: `uv run scripts/build_epub.py`가 저장소 루트의 한국어판을 언어 코드 `ko`, 한국어 제목과 장 이름으로 빌드합니다. 표지는 한글 글꼴(Apple SD Gothic Neo, Noto Sans CJK, 나눔고딕, 맑은 고딕 중 하나)이 있으면 한국어로, 없으면 영어로 만듭니다.
 - **웹사이트 빌드**: `uv run scripts/build_website.py`가 한국어 화면 문구로 사이트를 만들고, GitHub 링크는 이 저장소를 가리킵니다. 랜딩 페이지 로드맵(`scripts/website_templates/roadmap.json`)의 `heading`은 각 장 README의 한국어 제목과 글자 그대로 같아야 합니다. 제목을 바꾸면 이 값도 함께 바꾸세요. `pytest scripts/tests/`가 어긋난 곳을 알려 줍니다.
 - **GitHub Pages**: 자동 배포를 끄고 Actions 탭에서 수동으로만 실행하도록 바꿨습니다(`.github/workflows/pages.yml`).
+- **훅 예제의 한국어 패턴**: `06-hooks/validate-prompt.sh`가 한국어 요청에도 반응하도록, 영어 패턴 옆에 같은 뜻의 한국어 표현(데이터베이스 삭제, 디스크 포맷, 프로덕션 배포, 리팩토링)을 추가했습니다. 차단 사유 메시지는 원문 그대로 영어입니다.
 
 ## 문체
 
