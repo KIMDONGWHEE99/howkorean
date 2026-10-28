@@ -581,7 +581,17 @@ class TestChapterOrder:
         chapter_names = [name for name, _ in order]
         assert "01-slash-commands" in chapter_names
         assert "02-memory" in chapter_names
+        assert "10-cli" in chapter_names
         assert "resources.md" in chapter_names
+
+    def test_chapter_order_covers_every_module(self) -> None:
+        """Every numbered module folder (01- to 10-) is a chapter of the book."""
+        repo_root = Path(__file__).resolve().parents[2]
+        modules = sorted(p.name for p in repo_root.glob("[0-9][0-9]-*") if p.is_dir())
+        chapter_names = [name for name, _ in get_chapter_order()]
+
+        assert len(modules) == 10
+        assert [m for m in modules if m not in chapter_names] == []
 
 
 # =============================================================================

@@ -512,6 +512,7 @@ def get_chapter_order() -> list[tuple[str, str]]:
         ("07-plugins", "플러그인"),
         ("08-checkpoints", "체크포인트"),
         ("09-advanced-features", "고급 기능"),
+        ("10-cli", "CLI 레퍼런스"),
         ("resources.md", "참고 자료"),
     ]
 
