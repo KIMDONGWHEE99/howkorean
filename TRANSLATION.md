@@ -1,6 +1,6 @@
 # 한국어판 번역 안내
 
-이 문서는 한국어판의 번역 기준입니다. 원본 정보, 번역 범위, 문체, 번역하지 않는 것, 용어집을 정리했습니다. 내용을 고치거나 원본 업데이트를 반영할 때 이 기준을 따르세요.
+이 문서는 한국어판의 번역 기준입니다. 원본 정보, 번역 범위, 한국어 전용판 정리 내용, 문체, 번역하지 않는 것, 용어집을 정리했습니다. 내용을 고치거나 원본 업데이트를 반영할 때 이 기준을 따르세요.
 
 ## 원본 정보
 
@@ -23,8 +23,10 @@
 2. 기준 커밋 이후 바뀐 문서를 확인합니다.
 
    ```bash
-   git diff --stat 188f468 upstream/main -- '*.md'
+   git diff --stat 188f468 upstream/main -- '*.md' ':!ja' ':!zh' ':!uk' ':!vi'
    ```
+
+   원본의 다른 언어판(`ja/`, `zh/`, `uk/`, `vi/`)은 이 저장소에서 지웠으므로 비교에서 뺍니다.
 
 3. 바뀐 파일만 이 문서의 기준에 맞춰 다시 번역합니다.
 4. 위의 **번역 기준 커밋**을 새 커밋으로 갱신합니다.
@@ -35,12 +37,23 @@
 |------|------|------|
 | 입문 안내서 | `README.md`, `INDEX.md`, `CATALOG.md`, `LEARNING-ROADMAP.md`, `QUICK_REFERENCE.md`, `claude_concepts_guide.md`, `resources.md` | 번역 |
 | 강의 10개 장 | `01-`~`10-` 폴더의 `README.md` | 번역 |
-| 장별 예제·템플릿 | 명령어·스킬·서브에이전트·플러그인 정의 파일, 예제 스크립트의 주석 | 번역 |
+| 장별 예제·템플릿 | 명령어·스킬·서브에이전트·플러그인 정의 파일, 예제 스크립트의 주석, `clean-code-rules.md` | 번역 |
 | 내장 학습 스킬 | `.claude/skills/` (`/lesson-quiz`, `/self-assessment`) | 번역 |
-| 운영 문서 | `CLAUDE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `STYLE_GUIDE.md`, `.github/`, `scripts/`, `docs/`, `prompts/` | 영어 원문 유지 |
-| 법적 문서·자료 | `LICENSE`, `slides/`의 PDF | 영어 원문 유지 |
+| 학습 진도 페이지 | `local-progress/index.html` | 화면 문구 번역 |
+| EPUB·웹사이트 출력 | `scripts/website_templates/`의 화면 문구와 `roadmap.json`, `build_epub.py`·`build_website.py`의 제목과 장 이름 | 화면에 보이는 문구만 번역(코드와 주석은 영어 유지) |
+| 운영 문서 | `CLAUDE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`, `STYLE_GUIDE.md`, `.github/`, `scripts/`(위의 출력 문구 제외), `docs/`, `prompts/` | 영어 원문 유지 |
+| 법적 문서·자료 | `LICENSE`, `slides/`의 PDF, `resources/`의 로고·디자인 자료 문서 | 영어 원문 유지 |
 
 영어 원문을 유지하는 문서로 가는 링크에는 `(영문)`을 붙입니다.
+
+## 한국어 전용판 정리
+
+이 저장소는 한국어 사용자만을 위한 판입니다. 원본과 다른 점은 다음과 같습니다.
+
+- **다른 언어판 제거**: 원본의 일본어(`ja/`), 중국어(`zh/`), 우크라이나어(`uk/`), 베트남어(`vi/`) 번역판과 그 전용 검사 훅, 베트남어 번역 동기화 스크립트를 지웠습니다. 다른 언어판이 필요하면 [원본 저장소](https://github.com/luongnv89/claude-howto)를 참고하세요.
+- **EPUB 빌드**: `uv run scripts/build_epub.py`가 저장소 루트의 한국어판을 언어 코드 `ko`, 한국어 제목과 장 이름으로 빌드합니다. 표지는 한글 글꼴(Apple SD Gothic Neo, Noto Sans CJK, 나눔고딕, 맑은 고딕 중 하나)이 있으면 한국어로, 없으면 영어로 만듭니다.
+- **웹사이트 빌드**: `uv run scripts/build_website.py`가 한국어 화면 문구로 사이트를 만들고, GitHub 링크는 이 저장소를 가리킵니다. 랜딩 페이지 로드맵(`scripts/website_templates/roadmap.json`)의 `heading`은 각 장 README의 한국어 제목과 글자 그대로 같아야 합니다. 제목을 바꾸면 이 값도 함께 바꾸세요. `pytest scripts/tests/`가 어긋난 곳을 알려 줍니다.
+- **GitHub Pages**: 자동 배포를 끄고 Actions 탭에서 수동으로만 실행하도록 바꿨습니다(`.github/workflows/pages.yml`).
 
 ## 문체
 
